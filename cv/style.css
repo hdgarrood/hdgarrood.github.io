@@ -1,0 +1,87 @@
+/* fonts */
+body {
+  font-family: "Abyssinica SIL", serif;
+}
+
+h1, h2, h3, h4, h5, .date-range, #contact-info {
+  font-family: "Liberation Sans", sans-serif;
+}
+
+/* layout */
+.container {
+  margin-left: auto;
+  margin-right: auto;
+  width: 860px;
+}
+
+header {
+  width: 100%;
+  clear: both;
+}
+
+.col-one {
+  float: left;
+  width: 70%;
+}
+
+.col-two {
+  margin-left: 4%;
+  float: right;
+  width: 26%;
+}
+
+.grades {
+  width: 100%;
+}
+
+/* Everything else */
+#contact-info span:not(:first-child):before {
+  content: "•"
+}
+
+p {
+  line-height: 1.4;
+}
+
+h1 {
+  margin-bottom: 0.2em;
+}
+
+h2 {
+  color: #07a;
+  border-bottom: 1px dotted #ccc;
+}
+
+.job-header h3 {
+  margin-bottom: 0.25em;
+}
+
+.job-header h4 {
+  margin-top: 0.25em;
+  margin-bottom: 0.25em;
+  color: #08e;
+}
+
+h5 {
+  font-size: 100%;
+  margin-top: 0.5em;
+  margin-bottom: 0.25em;
+}
+
+.date-range {
+  font-style: italic;
+  font-size: 80%;
+}
+
+a {
+  color: #07a;
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+#links {
+  font-size: 80%;
+}

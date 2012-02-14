@@ -1,0 +1,31 @@
+---
+layout: default
+---
+
+<article class=hentry>
+
+<header>
+{% if page.link %}
+<h2><a class=entry-title href="{{ page.link | escape }}">{{ page.title }}</a>&nbsp;→</h2>
+{% else %}
+<h2 class=entry-title>{{ page.title }}</h2>
+{% endif %}
+
+<p class="byline author vcard instapaper_ignore entry-unrelated">
+  {% unless page.link %}
+  By <a href="/" rel=author class=fn>Harry Garrood</a>
+  {% endunless %}
+  {% if page.updated %}
+  on <time class=published datetime="{{ page.date | date_to_xmlschema }}" pubdate>{{ page.date | date_to_string }}</time>
+  <time class=updated datetime="{{ page.updated }}"></time>
+  {% else %}
+  on <time class=updated datetime="{{ page.date | date_to_xmlschema }}" pubdate>{{ page.date | date_to_string }}</time>
+  {% endif %}
+</p>
+</header>
+
+<div id="post" class="entry-content{% if page.link %} link{% endif %}">
+  {{ content }}
+</div>
+
+</article>

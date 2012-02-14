@@ -1,0 +1,42 @@
+canvas {
+    border: dotted;
+}
+
+.popup {
+    position: fixed;
+    top: 180px;
+    left: 180px;
+    background: #f44;
+    color: #ddd;
+    border-radius: 10px;
+    padding: 10px;
+    display: none;
+}
+
+.error {
+    border-radius: 4px;
+    border: solid 1px #ff2;
+    display: none;
+}
+
+.wobbling {
+    animation: wobble 0.1s infinite;
+}
+
+@keyframes wobble {
+    0% {
+        transform: translate3d(0px, 0px, 0px);
+    }
+    25% {
+        transform: translate3d(10px, 0px, 0px);
+    }
+    50% {
+        transform: translate3d(0px, 0px, 0px);
+    }
+    75% {
+        transform: translate3d(-10px, 0px, 0px);
+    }
+    100% {
+        transform: translate3d(0px, 0px, 0px);
+    }
+}
