@@ -43,7 +43,7 @@ h1, h2, h3, h4, h5, .date-range, #contact-info {
   }
 }
 
-@media handheld {
+@media handheld, (max-width: 639px) {
   .container {
     width: 100%;
   }
