@@ -7,38 +7,69 @@ h1, h2, h3, h4, h5, .date-range, #contact-info {
   font-family: "Liberation Sans", sans-serif;
 }
 
-/* layout */
+/* mobile-only */
 .container {
-  margin-left: auto;
-  margin-right: auto;
-  width: 860px;
+  width: 100%;
 }
 
+#contact-info strong {
+  min-width: 30em;
+}
+
+#contact-info span:not(:first-child) {
+  /* I regret nothing */
+  display: block;
+  margin-top: 3px;
+}
+
+/* 640-860px */
+@media only screen and (min-width: 640px) {
+  .container {
+    margin-left: auto;
+    margin-right: auto;
+    width: 100%;
+  }
+
+  .col-one {
+    float: left;
+    width: 70%;
+  }
+
+  .col-two {
+    margin-left: 4%;
+    float: right;
+    width: 26%;
+  }
+
+  #contact-info span:not(:first-child) {
+    display: inline;
+    margin-top: 0px;
+  }
+
+  #contact-info span:not(:first-child):before {
+    content: "•"
+  }
+}
+
+/* 860px+ */
+@media only screen and (min-width: 860px) {
+  .container {
+    width: 860px;
+  }
+}
+
+/* layout */
 header {
   width: 100%;
   clear: both;
 }
 
-.col-one {
-  float: left;
-  width: 70%;
-}
-
-.col-two {
-  margin-left: 4%;
-  float: right;
-  width: 26%;
-}
-
 .grades {
   width: 100%;
+  max-width: 300px;
 }
 
 /* Everything else */
-#contact-info span:not(:first-child):before {
-  content: "•"
-}
-
 p {
   line-height: 1.4;
 }
