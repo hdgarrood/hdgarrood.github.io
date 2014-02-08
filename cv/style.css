@@ -7,21 +7,6 @@ h1, h2, h3, h4, h5, .date-range, #contact-info {
   font-family: "Liberation Sans", sans-serif;
 }
 
-/* mobile-only */
-.container {
-  width: 100%;
-}
-
-#contact-info strong {
-  min-width: 30em;
-}
-
-#contact-info span:not(:first-child) {
-  /* I regret nothing */
-  display: block;
-  margin-top: 3px;
-}
-
 /* 640-860px */
 @media only screen and (min-width: 640px) {
   .container {
@@ -55,6 +40,18 @@ h1, h2, h3, h4, h5, .date-range, #contact-info {
 @media only screen and (min-width: 860px) {
   .container {
     width: 860px;
+  }
+}
+
+@media handheld {
+  .container {
+    width: 100%;
+  }
+
+  #contact-info span:not(:first-child) {
+    /* I regret nothing */
+    display: block;
+    margin-top: 3px;
   }
 }
 
