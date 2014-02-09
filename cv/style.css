@@ -7,26 +7,23 @@ h1, h2, h3, h4, h5, .date-range, #contact-info {
   font-family: "Liberation Sans", sans-serif;
 }
 
-/* mobiles */
-@media only handheld, (max-width: 639px) {
-  .container {
-    width: 100%;
-  }
-
-  #contact-info span:not(:first-child) {
-    /* I regret nothing */
-    display: block;
-    margin-top: 3px;
-  }
+/* mobile-specific stuff (should all be overridden in other media queries) */
+.container {
+  width: 100%;
 }
 
-/* 640-860px */
+#contact-info span:not(:first-child) {
+  /* I regret nothing */
+  display: block;
+  margin-top: 3px;
+}
+
+/* Two-column layout, for sufficiently large screens */
 @media screen and (min-width: 640px),
 @media print  and (min-width: 640px) {
   .container {
     margin-left: auto;
     margin-right: auto;
-    width: 100%;
   }
 
   .col-one {
@@ -49,14 +46,12 @@ h1, h2, h3, h4, h5, .date-range, #contact-info {
   }
 }
 
-/* 860px+ */
 @media screen and (min-width: 860px),
-@media print  and (min-width: 860px), {
+@media print  and (min-width: 860px) {
   .container {
     width: 860px;
   }
 }
-
 
 /* layout */
 header {
