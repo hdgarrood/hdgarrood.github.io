@@ -8,7 +8,7 @@ h1, h2, h3, h4, h5, .date-range, #contact-info {
 }
 
 /* mobiles */
-@media handheld, (max-width: 639px) {
+@media only handheld, (max-width: 639px) {
   .container {
     width: 100%;
   }
@@ -21,7 +21,8 @@ h1, h2, h3, h4, h5, .date-range, #contact-info {
 }
 
 /* 640-860px */
-@media (screen, print) and (min-width: 640px) {
+@media screen and (min-width: 640px),
+@media print  and (min-width: 640px) {
   .container {
     margin-left: auto;
     margin-right: auto;
@@ -41,7 +42,6 @@ h1, h2, h3, h4, h5, .date-range, #contact-info {
 
   #contact-info span:not(:first-child) {
     display: inline;
-    margin-top: 0px;
   }
 
   #contact-info span:not(:first-child):before {
@@ -50,7 +50,8 @@ h1, h2, h3, h4, h5, .date-range, #contact-info {
 }
 
 /* 860px+ */
-@media (screen, print) and (min-width: 860px) {
+@media screen and (min-width: 860px),
+@media print  and (min-width: 860px), {
   .container {
     width: 860px;
   }
