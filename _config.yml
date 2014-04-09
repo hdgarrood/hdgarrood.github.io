@@ -1,2 +1,3 @@
 ---
 permalink: /blog/:title
+markdown: kramdown
