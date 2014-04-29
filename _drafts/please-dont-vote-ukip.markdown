@@ -45,14 +45,15 @@ our society is severe:
   by police than white people,
 * in 2009, [just under 27%](http://www.prisonreformtrust.org.uk/ProjectsResearch/Race)
   of prisoners were from an ethnic minority group (the number would be half
-  that if it reflected the proportion in the overall population)
+  that if it reflected the proportion in the overall population),
 * diversity in the Civil Service still shows [pronounced bias against ethnic minorities](http://press.labour.org.uk/post/82083229415/michael-dugher-speech-to-the-ippr-why-britain-needs)
   despite efforts to the contrary.
 
-If UKIP were not a racist party as they are so keen to persuade us, surely they
-would be aware of this, and be working to distance themselves from it?
+If UKIP's claim that they are not a racist party&mdash;a claim that they so
+frequently and adamantly make to us&mdash;were true, surely they would be aware
+of this, and be working to distance themselves from it?
 
-Unfortunately not. Here's Farage's response:
+Unfortunately not. Here's Farage's response to Eastwood's routine:
 
 > This was a guy telling jokes about national stereotypes, not racial
 > stereotypes. We are heading down a road here where we would kill all humour
@@ -64,10 +65,10 @@ There is no meaningful distinction between 'national' and 'racial' stereotypes.
 
 Farage's reaction shows that he simply *does not care* about the safety and
 wellbeing of these groups. If he were a decent human being, he would have
-worked to distance himself and UKIP from this 'humour,' ensured that Paul
-Eastwood was never hired for any UKIP event again, and worked to reverse the
-damage his routine has caused (for example, by donating to an anti-racism
-charity).
+attempted to dissociate himself and UKIP from this 'humour,' reassured us that
+Paul Eastwood would never be hired for any UKIP event again, and worked to
+reverse the damage the routine has caused (for example, by donating to an
+anti-racism charity).
 
 ### Godfrey Bloom
 
