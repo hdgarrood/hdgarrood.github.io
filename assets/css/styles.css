@@ -79,6 +79,11 @@ p, li, hr {
     color: #444;
 }
 
+/* bigger on homepage */
+.hero p {
+    font-size: 200%;
+}
+
 h1, h2, h3, h4, h5 {
     font-family: "Bree Serif", "Georgia", serif;
     color: #444;
