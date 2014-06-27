@@ -24,8 +24,8 @@ Stuff I made
 * [klasma][]
 
     A program for composing chiptune music. Reads a text file containing a
-    description of a track in a domain specific language, and turns it into
-    music.
+    description of a track in a purpose-built domain specific language, and
+    turns it into music.
 
 * [Tank game][]
 
