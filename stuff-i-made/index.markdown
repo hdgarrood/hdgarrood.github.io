@@ -21,6 +21,12 @@ Stuff I made
     Competition in 2013. It is a zoom sequence of the Mandelbrot set, written
     in Haskell.
 
+* [klasma][]
+
+    A program for composing chiptune music. Reads a text file containing a
+    description of a track in a domain specific language, and turns it into
+    music.
+
 * [Tank game][]
 
     Just a little game I put together in JavaScript. It runs in the browser.
@@ -28,4 +34,5 @@ Stuff I made
 [Redmine release notes plugin]: https://github.com/hdgarrood/redmine_release_notes/
 [King of the Network]: http://gamedevsoc.eusa.ed.ac.uk/projects/king-of-the-network/
 [Down the Rabbit Hole]: https://github.com/hdgarrood/inf1-fp-competition/
+[klasma]: https://github.com/hdgarrood/klasma
 [Tank game]: ./tank-game/
