@@ -27,6 +27,3 @@ use was not issued in the last couple of days.
 GitHub has issued a [model
 example](https://github.com/blog/1818-security-heartbleed-vulnerability).
 That's the level of detail we should expect.
-
-If you disagree with this, please let me know on Twitter:
-[@hdgarrood](https://twitter.com/hdgarrood)
