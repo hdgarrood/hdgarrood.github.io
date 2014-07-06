@@ -96,7 +96,7 @@ To those who wonder if I have an answer: I am convinced that we must [regain
 control of our digital selves][]. The only way I see this happening is with
 free (as in speech), open source software. Pay close attention to and support
 initiatives like [ind.ie](https://ind.ie) (I plan to start contributing code
-when I can). Consider a free operating system for your next computer (I
+when I can). Consider a free, open operating system for your next computer (I
 recommend Ubuntu). Educate yourself about the issue: watch [Digital Feudalism
 and How to Avoid It][]. Consider deactivating Facebook or Google accounts.
 
