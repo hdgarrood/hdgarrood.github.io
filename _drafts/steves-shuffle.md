@@ -40,13 +40,30 @@ Let's start with this:
     type Deck = [Card]
 
     -- Create a deck with 'n' cards, where 1 is at the front.
-    deck :: Int -> Deck
-    deck n = map Card [1..n]
+    makeDeck :: Int -> Deck
+    makeDeck n = map Card [1..n]
 
 To make it easy for us, we should try to split the problem into small pieces
 first. Therefore the first job we have is to define a function, `step`, that
 performs steps 1 and 2 of our shuffling technique. What type should this
 function be? It needs to take a deck and a pile, and return a new deck and
 a new pile. So let's go with `(Deck, Deck) -> (Deck, Deck)`.
+
+**Task 1:** Implement `step` to satisfy these properties:
+
+    -- After performing n steps on a deck, we should end up with the same
+    -- number of cards as we started with
+    prop_sameLength :: Deck -> Int -> Bool
+    prop_sameLength deck n = sumLength (times n step (deck, [])) == length deck
+        where
+        times n f z = iterate f z !! n
+        sumLength (a, b) = length a + length b
+
+    -- After one step, we should have one fewer card in the deck (unless we
+    -- started with an empty deck)
+    prop_shouldHaveOneFewer :: Deck -> Bool
+    prop_shouldHaveOneFewer deck =
+        not (null deck) ==>
+            length (fst (step (deck, []))) == length deck - 1
 
 [nerd-sniped]: https://xkcd.com/356/
