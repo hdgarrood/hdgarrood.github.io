@@ -12,8 +12,8 @@ experimented on.
 It's worth noting that there are two subtly different definitions of the word
 *expect*: to expect something can be to consider it likely: "We expect to make
 a net gain from this event", but also to consider it reasonable; to seek
-something with some (often moral) justification: "Attendees are expected to
-abide by the code of conduct."
+it with some (often moral) justification: "Attendees are expected to abide by
+the code of conduct."
 
 I agree that we should not consider it likely for Facebook to behave ethically.
 However I think we *should* hold Facebook up to a high moral standard. If we
@@ -27,15 +27,15 @@ Now that that is out of the way:
 No&mdash;given Facebook's track record, it is clear that they do not care about
 their users. Facebook's history is full of episodes of neglecting to respect
 your privacy as a user: tracking you all over the web, [constant assault on
-your ability to keep your information private][], and mobile apps requiring an
-intrusive level of access to your phone (such as getting your contact list,
+your ability to keep your information private][], and mobile apps requiring a
+ridiculous level of access to your phone (such as getting your contact list,
 reading your SMS messages, or turning on your microphone or camera at any time
 without confirmation). There's also the fact that algorithms rather than people
 often decide whether users have broken the community standards and should be
-blocked (which, needless to say, are hopelessly inadequate), and a completely
-unbalanced approach to removing inappropriate content (breastfeeding pictures
-are deemed unacceptable, while hate groups dedicated to praising murderers are
-not).
+blocked (these algorithms, needless to say, are hopelessly inadequate), and a
+completely unbalanced approach to removing inappropriate content (breastfeeding
+pictures are deemed unacceptable, while hate groups dedicated to praising
+murderers are not).
 
 ### Does that make these revelations insignificant?
 
@@ -66,43 +66,70 @@ users to indicate to their friends that they have voted, in addition to showing
 users that have not yet voted where their nearest polling stations are, and
 that this feature, in the past, has increased turnout enough to sway an
 election. Suppose that Facebook had some interest in the outcome of an election.
-To what extent [could they manipulate it][]? To what extent might they?
+It seems very feasible for them to [manipulate it][].
 
 Suppose, now, that some government has done a number of things that have
 greatly upset their electorate. Large protests are being planned, which makes
-this government uncomfortable. Could Facebook identify people who are the most
-likely to persuade others to participate in protest action? If this government
-approached Facebook and demanded that they manipulate these people, would they?
-How could they do this? Might they boost posts that promote a sense of
-hopelessness? Might posts calling people to action be quietly tucked away by
-the mysterious and opaque news feed algorithm? Might accounts be banned based
-on spurious evidence?
+this government uncomfortable. It certainly seems plausible that Facebook could
+identify people who are the most likely to persuade others to participate in
+protest action. Suppose this government approached Facebook and demanded that
+they manipulate these people. How could they do this? Might they boost posts
+that promote a sense of hopelessness? Might posts calling people to action be
+quietly tucked away by the mysterious and opaque news feed algorithm?  Might
+accounts be banned based on spurious evidence?
 
-I hope my point is clear by this stage: regardless of whether Facebook might do
-these things, being in a position where it is possible for them to do so is not
-acceptable. We must not allow Facebook (or any other party) to have this level
-of control over our lives. Facebook is [too important][] to be owned by
+I think it's important to point out that regardless of whether Facebook *might*
+do these things, being in *a position where it is possible for them to do so*
+is not acceptable. We must not allow Facebook (or any other party) to have this
+level of control over our lives. Facebook is [too important][] to be owned by
 Facebook.
+
+Facebook (and all the other companies whose business model is corporate
+surveillance) tell us that we don't have to use their services; if we don't
+like the idea of having them mine our data, we can always use other options.
+Unfortunately this isn't really the case: having an email address is more or
+less mandatory for modern life, and deactivating a Facebook account will
+almost certainly mean you miss out on updates (that you are interested in) from
+your friends. It's true that you can always switch email providers: however all
+the well-known ones (Gmail, Outlook.com, Yahoo, iCloud) are all pretty much the
+same in this respect, and whenever you *send* an email to someone who uses one
+of these four, you remain a target of corporate surveillance. What proportion
+of your contacts do you think use one of these four services? 95%? 99%?
 
 ### Final thoughts
 
-To those who [patronisingly look down][] upon everyone who is bothered about
-this: please shut up. You are not helping. For the sake of self-indulgence, for
-the opportunity to feel superior to people for a few moments, you are
-reinforcing the status quo. If the situation deteriorates further, you will
-partly have enabled it.
+It all looks rather bleak. Thankfully there are some very capable people
+working on this problem:
 
-To those who wonder if I have an answer: I am convinced that we must [regain
-control of our digital selves][]. The only way I see this happening is with
-free (as in speech), open source software. Pay close attention to and support
-initiatives like [ind.ie](https://ind.ie) (I plan to start contributing code
-when I can). Consider a free, open operating system for your next computer (I
-recommend Ubuntu). Educate yourself about the issue: watch [Digital Feudalism
-and How to Avoid It][]. Consider deactivating Facebook or Google accounts.
+* [Indie Phone][]'s goal is to empower people to own their own data. This
+  necessitates a free (libre) and open source operating system for the phone,
+  in addition to a server in the cloud to store your data on.
+* [sovereign][] is an executable blueprint of a personal cloud server, with
+  email, file storage (like Dropbox), contacts and calendars sync, and more.
+  Unfortunately, it is only suitable for experienced Linux users at the moment.
+* [Cloud Fleet][] looks like a similar idea to sovereign; unfortunately the
+  website doesn't give much away.
 
-[patronisingly look down]: http://www.theguardian.com/technology/2014/jul/06/we-shouldnt-expect-facebook-to-behave-ethically
+In the meantime here are some suggestions:
+
+* Watch these talks: [Digital Feudalism and How To Avoid It][], and [Free is a
+  Lie][]
+* Read these blog posts: [Indie Data][], and [It's the End of the Web As We
+  Know
+  It][]
+* Switch to a free, open source operating system, like Ubuntu. I've been using
+  Ubuntu as my main operating system for the last three years and Linux on the
+  desktop is pretty solid nowadays.
+* Go through your Facebook privacy settings and lock it down, especially for
+  Platform and Ads. Better yet, deactivate your Facebook account.
+
 [constant assault on your ability to keep your information private]: https://www.eff.org/deeplinks/2010/04/handy-facebook-english-translator
-[could they manipulate it]: http://www.newrepublic.com/article/117878/information-fiduciary-solution-facebook-digital-gerrymandering
+[manipulate it]: http://www.newrepublic.com/article/117878/information-fiduciary-solution-facebook-digital-gerrymandering
 [too important]: http://blog.steveklabnik.com/posts/2011-07-24-twitter-is-to-important-to-be-owned-by-twitter
-[regain control of our digital selves]: http://aralbalkan.com/notes/indie-data/
+[Indie Phone]: https://ind.ie/phone/
+[sovereign]: https://github.com/al3x/sovereign
+[Cloud Fleet]: https://cloudfleet.io
 [Digital Feudalism and How to Avoid It]: https://www.youtube.com/watch?v=G1QCBzQ0aNc
+[Free is a Lie]: http://vimeo.com/93176515
+[Indie Data]: http://aralbalkan.com/notes/indie-data/
+[It's the End of the Web As We Know It]: http://adrianshort.org/2011/09/25/its-the-end-of-the-web-as-we-know-it/
