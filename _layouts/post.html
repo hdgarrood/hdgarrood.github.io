@@ -11,15 +11,12 @@ layout: default
 <h2 class=entry-title>{{ page.title }}</h2>
 {% endif %}
 
-<p class="byline author vcard instapaper_ignore entry-unrelated">
-  {% unless page.link %}
-  By <a href="/" rel=author class=fn>Harry Garrood</a>
-  {% endunless %}
+<p class="byline instapaper_ignore entry-unrelated">
   {% if page.updated %}
-  on <time class=published datetime="{{ page.date | date_to_xmlschema }}" pubdate>{{ page.date | date_to_string }}</time>
+  <time class=published datetime="{{ page.date | date_to_xmlschema }}" pubdate>{{ page.date | date_to_string }}</time>
   <time class=updated datetime="{{ page.updated }}"></time>
   {% else %}
-  on <time class=updated datetime="{{ page.date | date_to_xmlschema }}" pubdate>{{ page.date | date_to_string }}</time>
+  <time class=updated datetime="{{ page.date | date_to_xmlschema }}" pubdate>{{ page.date | date_to_string }}</time>
   {% endif %}
 </p>
 </header>
