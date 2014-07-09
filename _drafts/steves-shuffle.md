@@ -78,12 +78,12 @@ Next up is our `shuffle` function. To shuffle a deck, we want to repeatedly
 apply `step` until the initial deck is empty. Some functions that might come in
 handy:
 
-* `iterate :: (a -> a) -> a -> [a]`. `iterate` returns successive results of
-  applying a function to a value. That is, `iterate f x == [x, f x, f (f
-  x), f (f (f x))..]`
-* `dropWhile :: (a -> Bool) -> [a] -> [a]`. `dropWhile` drops elements from the
-  front of a list until they satisfy a predicate. For example, `dropWhile (< 5)
-  [1..10] == [5,6,7,8,9,10]`.
+* `iterate :: (a -> a) -> a -> [a]` returns successive results of applying a
+  function to a value. That is, `iterate f x == [x, f x, f (f x), f (f (f
+  x))..]`
+* `dropWhile :: (a -> Bool) -> [a] -> [a]` drops elements from the front of a
+  list until they satisfy a predicate. For example, `dropWhile (< 5) [1..10] ==
+  [5,6,7,8,9,10]`.
 
 **Task 2:** Implement `shuffle`, in terms of `step`.
 
