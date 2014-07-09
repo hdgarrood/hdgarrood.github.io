@@ -43,27 +43,60 @@ Let's start with this:
     makeDeck :: Int -> Deck
     makeDeck n = map Card [1..n]
 
+### Task 1: `step`
+
 To make it easy for us, we should try to split the problem into small pieces
 first. Therefore the first job we have is to define a function, `step`, that
 performs steps 1 and 2 of our shuffling technique. What type should this
 function be? It needs to take a deck and a pile, and return a new deck and
 a new pile. So let's go with `(Deck, Deck) -> (Deck, Deck)`.
 
-**Task 1:** Implement `step` to satisfy these properties:
+Make sure your implementation satisfies these properties:
 
     -- After performing n steps on a deck, we should end up with the same
     -- number of cards as we started with
-    prop_sameLength :: Deck -> Int -> Bool
-    prop_sameLength deck n = sumLength (times n step (deck, [])) == length deck
+    prop_step_sameLength :: Deck -> Int -> Bool
+    prop_step_sameLength deck n =
+        sumLength (times n step (deck, [])) == length deck
         where
         times n f z = iterate f z !! n
         sumLength (a, b) = length a + length b
 
     -- After one step, we should have one fewer card in the deck (unless we
-    -- started with an empty deck)
-    prop_shouldHaveOneFewer :: Deck -> Bool
-    prop_shouldHaveOneFewer deck =
-        not (null deck) ==>
-            length (fst (step (deck, []))) == length deck - 1
+    -- started with an empty deck, in which case we should still have an empty
+    -- deck)
+    prop_step_oneFewer :: Deck -> Bool
+    prop_step_oneFewer deck =
+        length (fst (step (deck, []))) == newLength deck
+        where
+        newLength [] = 0
+        newLength d = (length d) - 1
+
+### Task 2: `shuffle`
+
+Next up is our `shuffle` function. To shuffle a deck, we want to repeatedly
+apply `step` until the initial deck is empty. Some functions that might come in
+handy:
+
+* `iterate :: (a -> a) -> a -> [a]`. `iterate` returns successive results of
+  applying a function to a value. That is, `iterate f x == [x, f x, f (f
+  x), f (f (f x))..]`
+* `dropWhile :: (a -> Bool) -> [a] -> [a]`. `dropWhile` drops elements from the
+  front of a list until they satisfy a predicate. For example, `dropWhile (< 5)
+  [1..10] == [5,6,7,8,9,10]`.
+
+**Task 2:** Implement `shuffle`, in terms of `step`.
+
+More properties to satisfy:
+
+    -- Shuffling a deck should return another deck with the same number of
+    -- cards
+    prop_shuffle_sameLength :: Deck -> Bool
+    prop_shuffle_sameLength deck = length (shuffle deck) == length deck
+
+    -- Shuffling a deck should move the top card to the bottom
+    prop_shuffle_topToBottom :: Deck -> Bool
+    prop_shuffle_topToBottom [] = True
+    prop_shuffle_topToBottom deck@(topCard:_) = last (shuffle deck) == topCard
 
 [nerd-sniped]: https://xkcd.com/356/
