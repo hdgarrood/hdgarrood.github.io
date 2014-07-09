@@ -79,22 +79,22 @@ quietly tucked away by the mysterious and opaque news feed algorithm?  Might
 accounts be banned based on spurious evidence?
 
 I think it's important to point out that regardless of whether Facebook *might*
-do these things, being in *a position where it is possible for them to do so*
-is not acceptable. We must not allow Facebook (or any other party) to have this
-level of control over our lives. Facebook is [too important][] to be owned by
-Facebook.
+do these things, being in a position where it is possible for them to do so
+*and for nobody to have a clue it is happening* is not acceptable. We must not
+allow Facebook (or any other party) to have this level of control over our
+lives. Facebook is [too important][] to be owned by Facebook.
 
 Facebook (and all the other companies whose business model is corporate
 surveillance) tell us that we don't have to use their services; if we don't
 like the idea of having them mine our data, we can always use other options.
 Unfortunately this isn't really the case: having an email address is more or
 less mandatory for modern life, and deactivating a Facebook account will
-almost certainly mean you miss out on updates (that you are interested in) from
-your friends. It's true that you can always switch email providers: however all
-the well-known ones (Gmail, Outlook.com, Yahoo, iCloud) are all pretty much the
-same in this respect, and whenever you *send* an email to someone who uses one
-of these four, you remain a target of corporate surveillance. What proportion
-of your contacts do you think use one of these four services? 95%? 99%?
+limit your ability to keep in touch with your friends. It's true that you can
+always switch email providers: however all the well-known ones (Gmail,
+Outlook.com, Yahoo, iCloud) are all pretty much the same with respect to
+corporate surveillance, and whenever you *send* an email to someone who uses
+one of these four, your data is still captured and mined. What proportion of
+your contacts do you think use one of these four services? 95%?  99%?
 
 ### Final thoughts
 
