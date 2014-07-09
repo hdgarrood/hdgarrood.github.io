@@ -62,7 +62,13 @@ pre {
   margin: 2%;
   padding: 1em 2em; }
 
-p > code {
+p > code,
+h1 > code,
+h2 > code,
+h3 > code,
+h4 > code,
+h5 > code,
+li > code {
   -webkit-border-radius: 5px;
   -moz-border-radius: 5px;
   border-radius: 5px;
