@@ -91,14 +91,18 @@ h1 {
     padding: 1em 2em;
 }
 
+pre, code {
+    background-color: #444;
+    color: #dde;
+}
+
 pre {
     @include blocky;
 }
 
-pre, code {
+p > code {
     @include corners;
-    background-color: #444;
-    color: #dde;
+    line-height: 1.0;
     padding-right: 0.3em;
     padding-left: 0.3em;
 }
