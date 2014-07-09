@@ -74,8 +74,8 @@ h2 {
     font-size: 25px;
 }
 
-p, li, hr {
-    font-size: 18px;
+p, li, hr, code {
+    font-size: normal 100%;
     color: #444;
 }
 
@@ -112,7 +112,8 @@ p, li, address {
 }
 
 code {
-    font-family: "Ubuntu Mono", monospace;
+    font-family: "Monaco", "Ubuntu Mono", monospace;
+    line-height: 1.4;
 }
 
 blockquote {
