@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<style>
+text { color: green; }
+svg { background-color: #dde; }
+</style>
+<body>
+<script src="d3.js"></script>
+<script>
+
+function _step(decks) {
+    var deck = args[0]
+    var pile = args[1]
+    
+    if (deck.length == 0) {
+        return [deck, pile]
+    } else if (deck.length == 1) {
+        var x = deck[0]
+        return [deck.slice(1), pile.unshift(x)]
+    } else {
+        var x = deck[0]
+        var y = deck[1]
+        return [deck.push(y), pile.unshift(x)]
+    }
+}
+
+var width = 200,
+    height = 200,
+    deckX = 40,
+    deckY = 50,
+    holdingSpotX = 20,
+    holdingSpotY = 80,
+    cardHeight = 20
+
+var svg = d3.select("body")
+    .append("svg")
+        .attr("width", width)
+        .attr("height", height)
+
+var holding_spot = svg.append('g')
+        .attr('id', 'holding-spot')
+
+var deck1 = svg.append("g")
+        .attr('id', 'deck-1')
+
+function id(x) { return x }
+
+function update_deck1(data) {
+    var cards = deck1.selectAll("text")
+                    .data(data, id)
+
+
+    cards.enter().append("text").text(id)
+        .attr('x', holdingSpotX)
+        .attr('y', holdingSpotY)
+
+    cards.transition()
+        .attr("x", function(d, i) { return deckX; })
+        .attr("y", function(d, i) { return deckY + (i * cardHeight); })
+
+    cards.exit().transition()
+            .attr('x', holdingSpotX)
+            .attr('y', holdingSpotY)
+            .remove()
+}
+
+function update_holding_spot(data) {
+    var spot = holding_spot.selectAll("text")
+                    .data(data, id)
+    
+    spot.enter().append("text")
+        .text(id)
+    
+    spot.exit().remove()
+}
+
+var state = {
+    deck1: ['A', '2', '3', '4', '5'],
+    holding_spot: []
+}
+
+function step() {
+    var c = state.deck1.shift()
+    update_deck1(state.deck1)
+
+    state.holding_spot.push(c)
+    update_holding_spot(state.holding_spot)
+
+    setTimeout(function() {
+        var c = state.holding_spot.pop()
+        update_holding_spot(state.holding_spot)
+
+        state.deck1.push(c)
+        update_deck1(state.deck1)
+    }, 300)
+}
+
+update_deck1(state.deck1)
+setInterval(step, 1000)
+
+</script>

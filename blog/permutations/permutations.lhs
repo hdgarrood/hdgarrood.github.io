@@ -1,4 +1,3 @@
-
 A colleague of mine severely [nerd-sniped][] me at work recently with this
 rather innocuous-sounding challenge. I think it's a rather lovely little
 exercise and decided to write up my solution.
@@ -20,24 +19,63 @@ Given the following shuffling technique:
 
 For example, suppose we have a deck with 5 cards. The process looks like this:
 
-Original deck     Second pile
-    =============     ===========
-     [A 2 3 4 5]      [         ] Initial state
+$$\begin{pmatrix} A\\ 2\\ 3\\ 4\\ 5  \end{pmatrix}$$
 
-    Take Ace from the top and discard
+Step 1: discard the top card (the Ace):
 
-     [  2 3 4 5]      [        A]
+$$
+\begin{pmatrix} \\ 2\\ 3\\ 4\\ 5  \end{pmatrix}
+\begin{pmatrix} \\  \\  \\  \\ A  \end{pmatrix}
+$$
 
-    Take 2 and put it on the bottom of the deck
+Step 2: move the 2 to the bottom of the deck:
 
-     [  3 4 5 2]      [        A]
+$$
+\begin{pmatrix} \\ 3\\ 4\\ 5\\ 2  \end{pmatrix}
+\begin{pmatrix} \\  \\  \\  \\ A  \end{pmatrix}
+$$
 
-     [    4 5 2]      [      3 A] Take 3 from the top and discard
-     [    5 2 4]      [      3 A] Take 4 and put it on the bottom of the deck
-     [      2 4]      [    5 3 A] Take 5 and discard
-     [      4 2]      [    5 3 A] Take 2 and put it on the bottom of the deck
-     [        2]      [  4 5 3 A]
-     [         ]      [2 4 5 3 A]
+Repeat steps 1 and 2 a few times:
+
+$$
+\begin{pmatrix} \\  \\ 4\\ 5\\ 2  \end{pmatrix}
+\begin{pmatrix} \\  \\  \\ 3\\ A  \end{pmatrix}
+$$
+
+$$
+\begin{pmatrix} \\  \\ 5\\ 2\\ 4  \end{pmatrix}
+\begin{pmatrix} \\  \\  \\ 3\\ A  \end{pmatrix}
+$$
+
+$$
+\begin{pmatrix} \\  \\  \\ 2\\ 4  \end{pmatrix}
+\begin{pmatrix} \\  \\ 5\\ 3\\ A  \end{pmatrix}
+$$
+
+$$
+\begin{pmatrix} \\  \\  \\ 4\\ 2  \end{pmatrix}
+\begin{pmatrix} \\  \\ 5\\ 3\\ A  \end{pmatrix}
+$$
+
+$$
+\begin{pmatrix} \\  \\  \\  \\ 2  \end{pmatrix}
+\begin{pmatrix} \\ 4\\ 5\\ 3\\ A  \end{pmatrix}
+$$
+
+Since 2 is the only card left, moving it to the bottom of the deck has no
+effect:
+
+$$
+\begin{pmatrix} \\  \\  \\  \\ 2  \end{pmatrix}
+\begin{pmatrix} \\ 4\\ 5\\ 3\\ A  \end{pmatrix}
+$$
+
+And finally:
+
+$$
+\begin{pmatrix} \\  \\  \\  \\ 2  \end{pmatrix}
+\begin{pmatrix} \\ 4\\ 5\\ 3\\ A  \end{pmatrix}
+$$
 
 How many shuffles does it take until the deck is in the same order as when
 you started?
