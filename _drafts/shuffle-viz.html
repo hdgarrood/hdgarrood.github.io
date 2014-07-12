@@ -1,13 +1,15 @@
-<!DOCTYPE html>
-<meta charset="utf-8">
+---
+layout: post
+---
+
+<div id="shuffleviz"></div>
+
 <style>
 text { color: green; }
 svg { background-color: #dde; }
 </style>
-<body>
-<script src="d3.js"></script>
-<script>
 
+<script>
 function _step(decks) {
     var deck = args[0]
     var pile = args[1]
@@ -24,78 +26,137 @@ function _step(decks) {
     }
 }
 
+function deck(x, y, cards, cardHeight) {
+    return {
+        type: 'deck',
+        x: x,
+        y: y,
+        cards: cards,
+        cardHeight: cardHeight,
+
+        getTopCard: function() {
+            return this.cards[0]
+        },
+        discardTopCard: function() {
+            var clone = _.clone(this)
+            clone.cards = clone.cards.slice(1)
+            return clone
+        },
+        placeOnTop: function(card) {
+            var clone = _.clone(this)
+            clone.cards = [card].concat(clone.cards)
+            return clone
+        },
+        placeOnBottom: function(card) {
+            var clone = _.clone(this)
+            clone.cards = clone.cards.concat([card])
+            return clone
+        }
+    }
+}
+
+
+function initialState() {
+    return {
+        deck1: deck(40, 50, ['A', '2', '3', '4', '5'], 18),
+        deck2: deck(80, 50, [], 18),
+    }
+}
+
+function step1(state) {
+    var card = state.deck1.getTopCard()
+    return {
+        deck1: state.deck1.discardTopCard(),
+        deck2: state.deck2.placeOnTop(card)
+    }
+}
+
+function step2(state) {
+    var card = state.deck1.getTopCard(),
+        newDeck1 = state.deck1.discardTopCard()
+    return {
+        deck1: newDeck1.placeOnBottom(card),
+        deck2: state.deck2
+    }
+}
+
+function cardsWithPositions(deck) {
+    return deck.cards.map(function(c, i) {
+            return { card: c, x: deck.x, y: deck.y + (i * deck.cardHeight) }
+        })
+}
+
 var width = 200,
     height = 200,
-    deckX = 40,
-    deckY = 50,
     holdingSpotX = 20,
     holdingSpotY = 80,
-    cardHeight = 20
 
-var svg = d3.select("body")
+var svg = d3.select("#shuffleviz")
     .append("svg")
         .attr("width", width)
         .attr("height", height)
 
-var holding_spot = svg.append('g')
+var holdingSpot = svg.append('g')
         .attr('id', 'holding-spot')
 
 var deck1 = svg.append("g")
         .attr('id', 'deck-1')
 
+var deck2 = svg.append("g")
+        .attr('id', 'deck-2')
+
 function id(x) { return x }
 
-function update_deck1(data) {
-    var cards = deck1.selectAll("text")
-                    .data(data, id)
-
-
-    cards.enter().append("text").text(id)
-        .attr('x', holdingSpotX)
-        .attr('y', holdingSpotY)
-
-    cards.transition()
-        .attr("x", function(d, i) { return deckX; })
-        .attr("y", function(d, i) { return deckY + (i * cardHeight); })
-
-    cards.exit().transition()
-            .attr('x', holdingSpotX)
-            .attr('y', holdingSpotY)
-            .remove()
-}
-
-function update_holding_spot(data) {
-    var spot = holding_spot.selectAll("text")
-                    .data(data, id)
-    
-    spot.enter().append("text")
-        .text(id)
-    
-    spot.exit().remove()
-}
-
-var state = {
-    deck1: ['A', '2', '3', '4', '5'],
-    holding_spot: []
-}
-
-function step() {
-    var c = state.deck1.shift()
-    update_deck1(state.deck1)
-
-    state.holding_spot.push(c)
-    update_holding_spot(state.holding_spot)
-
-    setTimeout(function() {
-        var c = state.holding_spot.pop()
-        update_holding_spot(state.holding_spot)
-
-        state.deck1.push(c)
-        update_deck1(state.deck1)
-    }, 300)
-}
-
-update_deck1(state.deck1)
-setInterval(step, 1000)
-
+//var state = {
+//    deck1: ['A', '2', '3', '4', '5'],
+//    deck2: [],
+//    holding_spot: []
+//}
+//
+//function rotateDeck() {
+//    function update_deck1(data) {
+//        var cards = deck1.selectAll("text")
+//                        .data(data, id)
+//
+//
+//        cards.enter().append("text").text(id)
+//            .attr('x', holdingSpotX)
+//            .attr('y', holdingSpotY)
+//
+//        cards.transition()
+//            .attr("x", function(d, i) { return deck1X; })
+//            .attr("y", function(d, i) { return deck1Y + (i * cardHeight); })
+//
+//        cards.exit().transition()
+//                .attr('x', holdingSpotX)
+//                .attr('y', holdingSpotY)
+//                .remove()
+//    }
+//
+//    function update_holding_spot(data) {
+//        var spot = holding_spot.selectAll("text")
+//                        .data(data, id)
+//        
+//        spot.enter().append("text")
+//            .text(id)
+//        
+//        spot.exit().remove()
+//    }
+//
+//    var c = state.deck1.shift()
+//    update_deck1(state.deck1)
+//
+//    state.holding_spot.push(c)
+//    update_holding_spot(state.holding_spot)
+//
+//    setTimeout(function() {
+//        var c = state.holding_spot.pop()
+//        update_holding_spot(state.holding_spot)
+//
+//        state.deck1.push(c)
+//        update_deck1(state.deck1)
+//    }, 300)
+//}
+//
+//setInterval(do_step_2, 1000)
 </script>
