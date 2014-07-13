@@ -76,7 +76,7 @@ li > code {
   padding-right: 0.3em;
   padding-left: 0.3em; }
 
-blockquote {
+blockquote, svg {
   -webkit-border-radius: 5px;
   -moz-border-radius: 5px;
   border-radius: 5px;
