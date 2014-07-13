@@ -51,7 +51,7 @@ title: Permutations
 <span class="ot">&gt;</span> prop_step_sameLength deck n&#39; <span class="fu">=</span>
 <span class="ot">&gt;</span>     sumLength (times n step (deck, [])) <span class="fu">==</span> length deck
 <span class="ot">&gt;</span>     <span class="kw">where</span>
-<span class="ot">&gt;</span>     n <span class="fu">=</span> mod (length deck) abs n&#39;
+<span class="ot">&gt;</span>     n <span class="fu">=</span> (abs n&#39;) <span class="ot">`mod`</span> (length deck <span class="fu">+</span> <span class="dv">1</span>)
 <span class="ot">&gt;</span>     times m f z <span class="fu">=</span> iterate f z <span class="fu">!!</span> m
 <span class="ot">&gt;</span>     sumLength (a, b) <span class="fu">=</span> length a <span class="fu">+</span> length b</code></pre>
 <p>Here's another: after one step, we should have one fewer card in the deck (unless we started with an empty deck, in which case we should still have an empty deck)</p>
@@ -85,20 +85,89 @@ title: Permutations
 <p>For our first attempt at answering the question, we can use a naive solution, which is just to keep shuffling the deck until we get the same deck again. We've got all the building blocks now, and we just need to put them together.</p>
 <pre class="sourceCode literate literatehaskell"><code class="sourceCode literatehaskell"><span class="ot">&gt; f1 ::</span> <span class="dt">Int</span> <span class="ot">-&gt;</span> <span class="dt">Int</span>
 <span class="ot">&gt;</span> f1 <span class="fu">=</span> order shuffle <span class="fu">.</span> makeDeck</code></pre>
-<p>-- If we treat <code>shuffle</code> as a permutation in Sn, taking the initial position of -- a card in a deck size n to the position after one shuffle, we can hopefully -- glean the order more cleverly by decomposing to disjoint cycles. newtype Cycle = Cycle [Int] deriving (Eq, Ord)</p>
-<p>rotate :: [a] -&gt; [a] rotate (x:xs) = xs ++ [x] rotate [] = []</p>
-<p>-- Pass an infinte cycling list in; rotate until the smallest element is at -- the front; construct a Cycle. Smart constructor. makeCycle :: [Int] -&gt; Cycle makeCycle (x:xs) = let ys = x : takeWhile (/= x) xs h = minimum ys elems = first ((y:_) -&gt; y == h) (iterate rotate ys) in Cycle elems makeCycle [] = Cycle []</p>
-<p>instance Show Cycle where show (Cycle xs) = &quot;(&quot; ++ join &quot; &quot; (map show xs) ++ &quot;)&quot; where join glue (y:ys) = y ++ (concatMap (glue ++) ys) join _ [] = &quot;&quot;</p>
-<p>cycleLength :: Cycle -&gt; Int cycleLength (Cycle n) = length n</p>
-<p>-- Calculate the shuffle permutation for a deck of size n. perm :: Int -&gt; [(Int, Int)] perm n = let initial = makeDeck n result = shuffle initial initial' = unCardAll initial result' = unCardAll result in catMaybes $ map (-&gt; fmap (-&gt; (x, idx + 1)) $ elemIndex x result') initial'</p>
-<p>-- perm, but faster. perm' :: Int -&gt; [(Int, Int)] perm' n = go 0 (unCardAll . shuffle . makeDeck $ n) where go m (x:xs) = (x, m+1) : go (m+1) xs go _ [] = []</p>
-<p>prop_perm_perm'<em>identical :: Int -&gt; Bool prop</em>perm_perm'_identical x = sort (perm x) == sort (perm' x)</p>
-<p>-- Take a permutation as [(Int, Int)] and represent it as a product of disjoint -- cycles. decompose :: [(Int, Int)] -&gt; [Cycle] decompose xs = foldl f [] $ take (length xs) (iterate rotate xs) where f acc ys = let cyc = extractCycle ys in if cyc <code>elem</code> acc then acc else cyc : acc</p>
-<p>-- Extract a single cycle from a permutation [(Int, Int)]. extractCycle :: [(Int, Int)] -&gt; Cycle extractCycle xs@(h:_) = makeCycle $ go h xs where go (y, pos) ys = case lookup pos ys of Just z -&gt; y : go (pos, z) ys Nothing -&gt; cycle [y, pos] extractCycle [] = makeCycle []</p>
-<p>-- Find the lowest common multiple of a list. lcm' :: [Int] -&gt; Int lcm' = foldl lcm 1</p>
-<p>-- 2nd attempt. f2 :: Int -&gt; Int f2 = lcm' . map cycleLength . decompose . perm'</p>
-<p>prop_f1_f2_identical :: Int -&gt; Bool prop_f1_f2_identical x = f1 x == f2 x</p>
-<p>-- Shrink the size of arbitrary things. This stops the test cases from running -- too long. sensible :: Testable a =&gt; a -&gt; Property sensible = mapSize (floor . logBase (2 :: Double) . fromIntegral)</p>
+<pre class="sourceCode literate literatehaskell"><code class="sourceCode literatehaskell"><span class="ot">&gt;</span> <span class="co">-- If we treat `shuffle` as a permutation in Sn, taking the initial position of</span>
+<span class="ot">&gt;</span> <span class="co">-- a card in a deck size n to the position after one shuffle, we can hopefully</span>
+<span class="ot">&gt;</span> <span class="co">-- glean the order more cleverly by decomposing to disjoint cycles.</span>
+<span class="ot">&gt;</span> <span class="kw">newtype</span> <span class="dt">Cycle</span> <span class="fu">=</span> <span class="dt">Cycle</span> [<span class="dt">Int</span>]
+<span class="ot">&gt;</span>     <span class="kw">deriving</span> (<span class="dt">Eq</span>, <span class="dt">Ord</span>)
+<span class="ot">&gt;</span> 
+<span class="ot">&gt; rotate ::</span> [a] <span class="ot">-&gt;</span> [a]
+<span class="ot">&gt;</span> rotate (x<span class="fu">:</span>xs) <span class="fu">=</span> xs <span class="fu">++</span> [x]
+<span class="ot">&gt;</span> rotate [] <span class="fu">=</span> []
+<span class="ot">&gt;</span> 
+<span class="ot">&gt;</span> <span class="co">-- Pass an infinte cycling list in; rotate until the smallest element is at</span>
+<span class="ot">&gt;</span> <span class="co">-- the front; construct a Cycle. Smart constructor.</span>
+<span class="ot">&gt; makeCycle ::</span> [<span class="dt">Int</span>] <span class="ot">-&gt;</span> <span class="dt">Cycle</span>
+<span class="ot">&gt;</span> makeCycle (x<span class="fu">:</span>xs) <span class="fu">=</span>
+<span class="ot">&gt;</span>     <span class="kw">let</span> ys    <span class="fu">=</span> x <span class="fu">:</span> takeWhile (<span class="fu">/=</span> x) xs
+<span class="ot">&gt;</span>         h     <span class="fu">=</span> minimum ys
+<span class="ot">&gt;</span>         elems <span class="fu">=</span> first (\(y<span class="fu">:</span>_) <span class="ot">-&gt;</span> y <span class="fu">==</span> h) (iterate rotate ys)
+<span class="ot">&gt;</span>     <span class="kw">in</span>  <span class="dt">Cycle</span> elems
+<span class="ot">&gt;</span> makeCycle [] <span class="fu">=</span> <span class="dt">Cycle</span> []
+<span class="ot">&gt;</span> 
+<span class="ot">&gt;</span> <span class="kw">instance</span> <span class="dt">Show</span> <span class="dt">Cycle</span> <span class="kw">where</span>
+<span class="ot">&gt;</span>     show (<span class="dt">Cycle</span> xs) <span class="fu">=</span> <span class="st">&quot;(&quot;</span> <span class="fu">++</span> join <span class="st">&quot; &quot;</span> (map show xs) <span class="fu">++</span> <span class="st">&quot;)&quot;</span>
+<span class="ot">&gt;</span>         <span class="kw">where</span>
+<span class="ot">&gt;</span>         join glue (y<span class="fu">:</span>ys) <span class="fu">=</span> y <span class="fu">++</span> (concatMap (glue <span class="fu">++</span>) ys)
+<span class="ot">&gt;</span>         join _ [] <span class="fu">=</span> <span class="st">&quot;&quot;</span>
+<span class="ot">&gt;</span> 
+<span class="ot">&gt; cycleLength ::</span> <span class="dt">Cycle</span> <span class="ot">-&gt;</span> <span class="dt">Int</span>
+<span class="ot">&gt;</span> cycleLength (<span class="dt">Cycle</span> n) <span class="fu">=</span> length n
+<span class="ot">&gt;</span> 
+<span class="ot">&gt;</span> <span class="co">-- Calculate the shuffle permutation for a deck of size n.</span>
+<span class="ot">&gt; perm ::</span> <span class="dt">Int</span> <span class="ot">-&gt;</span> [(<span class="dt">Int</span>, <span class="dt">Int</span>)]
+<span class="ot">&gt;</span> perm n <span class="fu">=</span>
+<span class="ot">&gt;</span>     <span class="kw">let</span> initial <span class="fu">=</span> makeDeck n
+<span class="ot">&gt;</span>         result <span class="fu">=</span> shuffle initial
+<span class="ot">&gt;</span>         initial&#39; <span class="fu">=</span> unCardAll initial
+<span class="ot">&gt;</span>         result&#39; <span class="fu">=</span> unCardAll result
+<span class="ot">&gt;</span>     <span class="kw">in</span> catMaybes <span class="fu">$</span> map (\x <span class="ot">-&gt;</span>
+<span class="ot">&gt;</span>         fmap (\idx <span class="ot">-&gt;</span> (x, idx <span class="fu">+</span> <span class="dv">1</span>)) <span class="fu">$</span> elemIndex x result&#39;) initial&#39;
+<span class="ot">&gt;</span> 
+<span class="ot">&gt;</span> <span class="co">-- perm, but faster.</span>
+<span class="ot">&gt; perm&#39; ::</span> <span class="dt">Int</span> <span class="ot">-&gt;</span> [(<span class="dt">Int</span>, <span class="dt">Int</span>)]
+<span class="ot">&gt;</span> perm&#39; n <span class="fu">=</span> go <span class="dv">0</span> (unCardAll <span class="fu">.</span> shuffle <span class="fu">.</span> makeDeck <span class="fu">$</span> n)
+<span class="ot">&gt;</span>     <span class="kw">where</span> go m (x<span class="fu">:</span>xs) <span class="fu">=</span> (x, m<span class="fu">+</span><span class="dv">1</span>) <span class="fu">:</span> go (m<span class="fu">+</span><span class="dv">1</span>) xs
+<span class="ot">&gt;</span>           go _ [] <span class="fu">=</span> []
+<span class="ot">&gt;</span> 
+<span class="ot">&gt; prop_perm_perm&#39;_identical ::</span> <span class="dt">Int</span> <span class="ot">-&gt;</span> <span class="dt">Bool</span>
+<span class="ot">&gt;</span> prop_perm_perm&#39;_identical x <span class="fu">=</span> sort (perm x) <span class="fu">==</span> sort (perm&#39; x)
+<span class="ot">&gt;</span> 
+<span class="ot">&gt;</span> <span class="co">-- Take a permutation as [(Int, Int)] and represent it as a product of disjoint</span>
+<span class="ot">&gt;</span> <span class="co">-- cycles.</span>
+<span class="ot">&gt; decompose ::</span> [(<span class="dt">Int</span>, <span class="dt">Int</span>)] <span class="ot">-&gt;</span> [<span class="dt">Cycle</span>]
+<span class="ot">&gt;</span> decompose xs <span class="fu">=</span> foldl f [] <span class="fu">$</span> take (length xs) (iterate rotate xs)
+<span class="ot">&gt;</span>     <span class="kw">where</span>
+<span class="ot">&gt;</span>     f acc ys <span class="fu">=</span>
+<span class="ot">&gt;</span>         <span class="kw">let</span> cyc <span class="fu">=</span> extractCycle ys
+<span class="ot">&gt;</span>         <span class="kw">in</span> <span class="kw">if</span> cyc <span class="ot">`elem`</span> acc
+<span class="ot">&gt;</span>             <span class="kw">then</span> acc
+<span class="ot">&gt;</span>             <span class="kw">else</span> cyc <span class="fu">:</span> acc
+<span class="ot">&gt;</span> 
+<span class="ot">&gt;</span> <span class="co">-- Extract a single cycle from a permutation [(Int, Int)].</span>
+<span class="ot">&gt; extractCycle ::</span> [(<span class="dt">Int</span>, <span class="dt">Int</span>)] <span class="ot">-&gt;</span> <span class="dt">Cycle</span>
+<span class="ot">&gt;</span> extractCycle xs<span class="fu">@</span>(h<span class="fu">:</span>_) <span class="fu">=</span> makeCycle <span class="fu">$</span> go h xs
+<span class="ot">&gt;</span>     <span class="kw">where</span>
+<span class="ot">&gt;</span>     go (y, pos) ys <span class="fu">=</span> <span class="kw">case</span> lookup pos ys <span class="kw">of</span>
+<span class="ot">&gt;</span>         <span class="dt">Just</span> z <span class="ot">-&gt;</span> y <span class="fu">:</span> go (pos, z) ys
+<span class="ot">&gt;</span>         <span class="dt">Nothing</span> <span class="ot">-&gt;</span> cycle [y, pos]
+<span class="ot">&gt;</span> extractCycle [] <span class="fu">=</span> makeCycle []
+<span class="ot">&gt;</span> 
+<span class="ot">&gt;</span> <span class="co">-- Find the lowest common multiple of a list.</span>
+<span class="ot">&gt; lcm&#39; ::</span> [<span class="dt">Int</span>] <span class="ot">-&gt;</span> <span class="dt">Int</span>
+<span class="ot">&gt;</span> lcm&#39; <span class="fu">=</span> foldl lcm <span class="dv">1</span>
+<span class="ot">&gt;</span> 
+<span class="ot">&gt;</span> <span class="co">-- 2nd attempt.</span>
+<span class="ot">&gt; f2 ::</span> <span class="dt">Int</span> <span class="ot">-&gt;</span> <span class="dt">Int</span>
+<span class="ot">&gt;</span> f2 <span class="fu">=</span> lcm&#39; <span class="fu">.</span> map cycleLength <span class="fu">.</span> decompose <span class="fu">.</span> perm&#39;
+<span class="ot">&gt;</span> 
+<span class="ot">&gt; prop_f1_f2_identical ::</span> <span class="dt">Int</span> <span class="ot">-&gt;</span> <span class="dt">Bool</span>
+<span class="ot">&gt;</span> prop_f1_f2_identical x <span class="fu">=</span> f1 x <span class="fu">==</span> f2 x
+<span class="ot">&gt;</span> 
+<span class="ot">&gt;</span> <span class="co">-- Shrink the size of arbitrary things. This stops the test cases from running</span>
+<span class="ot">&gt;</span> <span class="co">-- too long.</span>
+<span class="ot">&gt; sensible ::</span> <span class="dt">Testable</span> a <span class="ot">=&gt;</span> a <span class="ot">-&gt;</span> <span class="dt">Property</span>
+<span class="ot">&gt;</span> sensible <span class="fu">=</span> mapSize (floor <span class="fu">.</span> logBase (<span class="dv">2</span><span class="ot"> ::</span> <span class="dt">Double</span>) <span class="fu">.</span> fromIntegral)</code></pre>
 <pre class="sourceCode literate literatehaskell"><code class="sourceCode literatehaskell"><span class="ot">&gt; main ::</span> <span class="dt">IO</span> ()
 <span class="ot">&gt;</span> main <span class="fu">=</span> <span class="kw">do</span>
 <span class="ot">&gt;</span>     args <span class="ot">&lt;-</span> getArgs
