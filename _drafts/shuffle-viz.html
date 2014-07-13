@@ -3,6 +3,8 @@ layout: post
 ---
 
 <div id="shuffleviz"></div>
+<a id="next" href="#">Next</a>
+<a id="prev" href="#">Prev</a>
 
 <style>
 text { color: green; }
@@ -10,22 +12,6 @@ svg { background-color: #dde; }
 </style>
 
 <script>
-function _step(decks) {
-    var deck = args[0]
-    var pile = args[1]
-    
-    if (deck.length == 0) {
-        return [deck, pile]
-    } else if (deck.length == 1) {
-        var x = deck[0]
-        return [deck.slice(1), pile.unshift(x)]
-    } else {
-        var x = deck[0]
-        var y = deck[1]
-        return [deck.push(y), pile.unshift(x)]
-    }
-}
-
 function deck(x, y, cards, cardHeight) {
     return {
         type: 'deck',
@@ -55,7 +41,6 @@ function deck(x, y, cards, cardHeight) {
     }
 }
 
-
 function initialState() {
     return {
         deck1: deck(40, 50, ['A', '2', '3', '4', '5'], 18),
@@ -80,83 +65,94 @@ function step2(state) {
     }
 }
 
+function getAllStates() {
+    var state    = initialState(),
+        nextStep = true,
+        result   = [state],
+        done     = function() {
+                    return state.deck2.cards.length == 5
+                   }
+
+    while (!done()) {
+        if (nextStep) {
+            state = step1(state)
+        } else {
+            state = step2(state)
+        }
+
+        nextStep = !nextStep
+        result.push(state)
+    }
+
+    return result
+}
+
 function cardsWithPositions(deck) {
     return deck.cards.map(function(c, i) {
             return { card: c, x: deck.x, y: deck.y + (i * deck.cardHeight) }
         })
 }
 
-var width = 200,
-    height = 200,
-    holdingSpotX = 20,
-    holdingSpotY = 80,
-
-var svg = d3.select("#shuffleviz")
-    .append("svg")
-        .attr("width", width)
-        .attr("height", height)
-
-var holdingSpot = svg.append('g')
-        .attr('id', 'holding-spot')
-
-var deck1 = svg.append("g")
-        .attr('id', 'deck-1')
-
-var deck2 = svg.append("g")
-        .attr('id', 'deck-2')
-
 function id(x) { return x }
+function by(attr) { return function(x) { return x[attr] } }
 
-//var state = {
-//    deck1: ['A', '2', '3', '4', '5'],
-//    deck2: [],
-//    holding_spot: []
-//}
-//
-//function rotateDeck() {
-//    function update_deck1(data) {
-//        var cards = deck1.selectAll("text")
-//                        .data(data, id)
-//
-//
-//        cards.enter().append("text").text(id)
-//            .attr('x', holdingSpotX)
-//            .attr('y', holdingSpotY)
-//
-//        cards.transition()
-//            .attr("x", function(d, i) { return deck1X; })
-//            .attr("y", function(d, i) { return deck1Y + (i * cardHeight); })
-//
-//        cards.exit().transition()
-//                .attr('x', holdingSpotX)
-//                .attr('y', holdingSpotY)
-//                .remove()
-//    }
-//
-//    function update_holding_spot(data) {
-//        var spot = holding_spot.selectAll("text")
-//                        .data(data, id)
-//        
-//        spot.enter().append("text")
-//            .text(id)
-//        
-//        spot.exit().remove()
-//    }
-//
-//    var c = state.deck1.shift()
-//    update_deck1(state.deck1)
-//
-//    state.holding_spot.push(c)
-//    update_holding_spot(state.holding_spot)
-//
-//    setTimeout(function() {
-//        var c = state.holding_spot.pop()
-//        update_holding_spot(state.holding_spot)
-//
-//        state.deck1.push(c)
-//        update_deck1(state.deck1)
-//    }, 300)
-//}
-//
-//setInterval(do_step_2, 1000)
+function update(svg, state) {
+    var allCards = cardsWithPositions(state.deck1)
+                    .concat(cardsWithPositions(state.deck2))
+    var cards = svg.selectAll("text")
+                    .data(allCards, by("card"))
+
+    cards.enter()
+        .append("text")
+        .text(by("card"))
+        .attr('x', by("x"))
+        .attr('y', by("y"))
+
+    cards.transition()
+        .attr('x', by("x"))
+        .attr('y', by("y"))
+
+    cards.exit().remove()
+}
+
+function hasIndex(arr, idx) {
+    return idx >= 0 && idx < arr.length
+}
+
+function start() {
+    var width        = 200,
+        height       = 200,
+        states       = getAllStates(),
+        currentIndex = 0
+
+    var svg = d3.select("#shuffleviz")
+                .append("svg")
+                    .attr("width", width)
+                    .attr("height", height)
+
+    function changeState(difference) {
+        if (hasIndex(states, currentIndex + difference)) {
+            currentIndex += difference
+            update(svg, states[currentIndex])
+        }
+    }
+
+    function next() {
+        changeState(1)
+    }
+
+    function prev() {
+        changeState(-1)
+    }
+
+    d3.select("#next")
+        .on("click", next)
+
+    d3.select("#prev")
+        .on("click", prev)
+
+    update(svg, states[currentIndex])
+}
+
+window.onload = start()
 </script>
