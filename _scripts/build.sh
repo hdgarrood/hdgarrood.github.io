@@ -9,14 +9,17 @@ pushd "$ROOT_DIR"
 sass assets/css/styles.scss >assets/css/styles.css
 
 # literate haskell
-echo -e "---\nlayout: post\n---\n" > index.html
+cat > _drafts/permutations.html <<END
+---
+layout: post
+title: Permutations
+---
+END
 
 "$PANDOC" \
     --from=markdown+lhs \
-    --to=html \
+    --to=html+lhs \
     blog/permutations/permutations.lhs \
-    >> blog/permutations/index.html
-
-jekyll build
+    >> _drafts/permutations.html
 
 popd
