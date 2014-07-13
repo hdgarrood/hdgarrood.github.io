@@ -12,13 +12,14 @@ svg { background-color: #dde; }
 </style>
 
 <script>
-function deck(x, y, cards, cardHeight) {
+function deck(x, y, cards, cardHeight, maxSize) {
     return {
         type: 'deck',
         x: x,
         y: y,
         cards: cards,
         cardHeight: cardHeight,
+        maxSize: maxSize,
 
         getTopCard: function() {
             return this.cards[0]
@@ -43,8 +44,8 @@ function deck(x, y, cards, cardHeight) {
 
 function initialState() {
     return {
-        deck1: deck(40, 50, ['A', '2', '3', '4', '5'], 18),
-        deck2: deck(80, 50, [], 18),
+        deck1: deck(40, 50, ['A', '2', '3', '4', '5'], 18, 5),
+        deck2: deck(80, 50, [], 18, 5),
     }
 }
 
@@ -87,10 +88,46 @@ function getAllStates() {
     return result
 }
 
+function countDownFrom(x) {
+    var y = x,
+        result = []
+
+    while (y > 0) {
+        result.push(y)
+        y--
+    }
+
+    return result
+}
+
+function takeWhile(arr, pred) {
+    var result = [],
+        i      = 0
+
+    while (i < arr.length && pred(arr[i])) {
+        result.push(arr[i])
+        i++
+    }
+
+    return result
+}
+
 function cardsWithPositions(deck) {
-    return deck.cards.map(function(c, i) {
-            return { card: c, x: deck.x, y: deck.y + (i * deck.cardHeight) }
-        })
+    var indices =
+            countDownFrom(deck.maxSize),
+        cardsWithIndices =
+            takeWhile(
+                _.zip(_.clone(deck.cards).reverse(), indices),
+                function(x) { return x[0] != null }
+            )
+
+    return _.map(cardsWithIndices, function(pair) {
+        return {
+            card: pair[0],
+            x: deck.x,
+            y: deck.y + (pair[1] * deck.cardHeight)
+        }
+    })
 }
 
 function id(x) { return x }
