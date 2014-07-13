@@ -59,7 +59,7 @@ pre {
   -moz-border-radius: 5px;
   border-radius: 5px;
   margin: 2%;
-  padding: 1em 2em; }
+  padding: 1em; }
 
 p > code,
 h1 > code,
@@ -80,8 +80,8 @@ blockquote, svg {
   -moz-border-radius: 5px;
   border-radius: 5px;
   margin: 2%;
-  padding: 1em 2em;
-  background: #ddd; }
+  padding: 1em;
+  background: #dde; }
 
 .entry-title {
   margin-bottom: 0.2em; }

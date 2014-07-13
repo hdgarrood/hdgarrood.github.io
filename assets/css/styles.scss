@@ -86,7 +86,7 @@ h1 {
 @mixin blocky {
     @include corners;
     margin: 2%;
-    padding: 1em 2em;
+    padding: 1em;
 }
 
 pre, code {
@@ -112,9 +112,8 @@ li > code {
 
 blockquote, svg {
     @include blocky;
-    background: #ddd;
+    background: #dde;
 }
-
 
 .entry-title {
     margin-bottom: 0.2em;
