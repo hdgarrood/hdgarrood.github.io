@@ -1,6 +1,6 @@
 <div id="shuffleviz"></div>
-<a id="prev" href="#">Prev</a> |
-<a id="next" href="#">Next</a>
+<button id="prev">Prev</button>
+<button id="next">Next</button>
 
 <style>
 svg text {
@@ -12,6 +12,7 @@ svg { background-color: #dde; }
 </style>
 
 <script>
+(function() {
 function deck(x, y, cards, cardHeight, maxSize) {
     return {
         type: 'deck',
@@ -199,6 +200,6 @@ function start() {
 
     update(svg, states[currentIndex])
 }
-
-window.onload = start()
+return start
+})()
 </script>

@@ -19,63 +19,7 @@ Given the following shuffling technique:
 
 For example, suppose we have a deck with 5 cards. The process looks like this:
 
-$$\begin{pmatrix} A\\ 2\\ 3\\ 4\\ 5  \end{pmatrix}$$
-
-Step 1: discard the top card (the Ace):
-
-$$
-\begin{pmatrix} \\ 2\\ 3\\ 4\\ 5  \end{pmatrix}
-\begin{pmatrix} \\  \\  \\  \\ A  \end{pmatrix}
-$$
-
-Step 2: move the 2 to the bottom of the deck:
-
-$$
-\begin{pmatrix} \\ 3\\ 4\\ 5\\ 2  \end{pmatrix}
-\begin{pmatrix} \\  \\  \\  \\ A  \end{pmatrix}
-$$
-
-Repeat steps 1 and 2 a few times:
-
-$$
-\begin{pmatrix} \\  \\ 4\\ 5\\ 2  \end{pmatrix}
-\begin{pmatrix} \\  \\  \\ 3\\ A  \end{pmatrix}
-$$
-
-$$
-\begin{pmatrix} \\  \\ 5\\ 2\\ 4  \end{pmatrix}
-\begin{pmatrix} \\  \\  \\ 3\\ A  \end{pmatrix}
-$$
-
-$$
-\begin{pmatrix} \\  \\  \\ 2\\ 4  \end{pmatrix}
-\begin{pmatrix} \\  \\ 5\\ 3\\ A  \end{pmatrix}
-$$
-
-$$
-\begin{pmatrix} \\  \\  \\ 4\\ 2  \end{pmatrix}
-\begin{pmatrix} \\  \\ 5\\ 3\\ A  \end{pmatrix}
-$$
-
-$$
-\begin{pmatrix} \\  \\  \\  \\ 2  \end{pmatrix}
-\begin{pmatrix} \\ 4\\ 5\\ 3\\ A  \end{pmatrix}
-$$
-
-Since 2 is the only card left, moving it to the bottom of the deck has no
-effect:
-
-$$
-\begin{pmatrix} \\  \\  \\  \\ 2  \end{pmatrix}
-\begin{pmatrix} \\ 4\\ 5\\ 3\\ A  \end{pmatrix}
-$$
-
-And finally:
-
-$$
-\begin{pmatrix} \\  \\  \\  \\ 2  \end{pmatrix}
-\begin{pmatrix} \\ 4\\ 5\\ 3\\ A  \end{pmatrix}
-$$
+{% include permutations/shuffle-viz.html %}
 
 How many shuffles does it take until the deck is in the same order as when
 you started?
@@ -83,8 +27,6 @@ you started?
 We're going to use Haskell, because this is all about *functions* (in the
 mathematical sense), and so Haskell, being a *functional programming language*,
 is especially well suited to the job.
-
-Let's start with this:
 
 > {-# OPTIONS_GHC -Wall #-}
 > {-# LANGUAGE GeneralizedNewtypeDeriving #-}
@@ -132,15 +74,15 @@ Deck)`, `(Deck, Deck)`.
 >     a:cs   -> (cs, a : pile)
 >     []     -> ([], pile)
 
--- After performing n steps on a deck, we should end up with the same
--- number of cards as we started with
-prop_step_sameLength :: Deck -> Int -> Bool
-prop_step_sameLength deck n' =
-    sumLength (times n step (deck, [])) == length deck
-    where
-    n = abs n'
-    times m f z = iterate f z !! m
-    sumLength (a, b) = length a + length b
+We can use QuickCheck to test our `step` function. After performing n steps on a deck, we should end up with the same number of cards as we started with:
+
+> prop_step_sameLength :: Deck -> Int -> Bool
+> prop_step_sameLength deck n' =
+>     sumLength (times n step (deck, [])) == length deck
+>     where
+>     n = abs n'
+>     times m f z = iterate f z !! m
+>     sumLength (a, b) = length a + length b
 
 -- After one step, we should have one fewer card in the deck (unless we
 -- started with an empty deck, in which case we should still have an empty
