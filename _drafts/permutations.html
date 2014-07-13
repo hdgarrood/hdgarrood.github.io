@@ -2,10 +2,10 @@
 layout: post
 title: Permutations
 ---
-<p>A colleague of mine severely [nerd-sniped][] me at work recently with this rather innocuous-sounding challenge. I think it's a rather lovely little exercise and decided to write up my solution.</p>
-<p>This post is designed to be read as a programming exercise. It will guide you along as it helps you break the problem into parts. If you want, you can skip to the end and read all the solutions—but that would be cheating.</p>
-<p>The problem is as follows:</p>
-<p>Given the following shuffling technique:</p>
+<p>A colleague of mine severely nerd-sniped me at work recently with this rather innocuous-sounding challenge. I think it's a rather lovely little exercise and decided to write up my solution.</p>
+<p>This post is designed to be read as a programming exercise. It will guide you along as it helps you break the problem into parts. If you want, you can skip to the end and read all the solutions (but that would be cheating).</p>
+<p>Download the <a href="permutations.lhs">literate haskell source file</a> first; you can just fill in the gaps and then compile it like any other haskell file.</p>
+<p>Consider the following shuffling technique:</p>
 <ol style="list-style-type: decimal">
 <li>Take one card from the top of the deck and discard it into a second pile.</li>
 <li>Take another card from the top of the deck, and put it at the bottom of the deck.</li>
@@ -13,7 +13,7 @@ title: Permutations
 </ol>
 <p>For example, suppose we have a deck with 5 cards. The process looks like this:</p>
 <p>{% include permutations/shuffle-viz.html %}</p>
-<p>How many shuffles does it take until the deck is in the same order as when you started?</p>
+<p>The problem is: how many shuffles does it take until a deck is in the same order as when you started, for a deck with an arbitrary number of cards?</p>
 <p>We're going to use Haskell, because this is all about <em>functions</em> (in the mathematical sense), and so Haskell, being a <em>functional programming language</em>, is especially well suited to the job.</p>
 <pre class="sourceCode literate literatehaskell"><code class="sourceCode literatehaskell"><span class="ot">&gt;</span> <span class="ot">{-# OPTIONS_GHC -Wall #-}</span>
 <span class="ot">&gt;</span> <span class="ot">{-# LANGUAGE GeneralizedNewtypeDeriving #-}</span>
@@ -40,30 +40,51 @@ title: Permutations
 <span class="ot">&gt;</span> 
 <span class="ot">&gt; makeDeck ::</span> <span class="dt">Int</span> <span class="ot">-&gt;</span> <span class="dt">Deck</span>
 <span class="ot">&gt;</span> makeDeck n <span class="fu">=</span> map <span class="dt">Card</span> [<span class="dv">1</span><span class="fu">..</span>n]</code></pre>
-<h3 id="task-1-step">Task 1: <code>step</code></h3>
-<p>To make this problem easier, we need to split it into smaller problems first. Therefore our first job is to define a function that only performs steps 1 and 2 of the shuffle. What type should this function be? It should take a deck and a new pile, and return an updated deck and pile, so let's go with <code>(Deck, Deck)</code>, <code>(Deck, Deck)</code>.</p>
+<p>Our first job is to define a function that only performs steps 1 and 2 of the shuffle. What type should this function be? It should take a deck and a new pile, and return an updated deck and pile, so let's go with <code>(Deck, Deck) -&gt; (Deck, Deck)</code>.</p>
 <pre class="sourceCode literate literatehaskell"><code class="sourceCode literatehaskell"><span class="ot">&gt; step ::</span> (<span class="dt">Deck</span>, <span class="dt">Deck</span>) <span class="ot">-&gt;</span> (<span class="dt">Deck</span>, <span class="dt">Deck</span>)
 <span class="ot">&gt;</span> step (deck, pile) <span class="fu">=</span> <span class="kw">case</span> deck <span class="kw">of</span>
 <span class="ot">&gt;</span>     a<span class="fu">:</span>b<span class="fu">:</span>cs <span class="ot">-&gt;</span> (cs <span class="fu">++</span> [b], a <span class="fu">:</span> pile)
 <span class="ot">&gt;</span>     a<span class="fu">:</span>cs   <span class="ot">-&gt;</span> (cs, a <span class="fu">:</span> pile)
 <span class="ot">&gt;</span>     []     <span class="ot">-&gt;</span> ([], pile)</code></pre>
-<p>We can use QuickCheck to test our <code>step</code> function. After performing n steps on a deck, we should end up with the same number of cards as we started with:</p>
+<p>Now, we should think about what properties our <code>step</code> function should satisfy, so that we can get QuickCheck to test them for us. Here's one: after performing <code>step</code> n times on a deck, we should end up with the same number of cards that we started with:</p>
 <pre class="sourceCode literate literatehaskell"><code class="sourceCode literatehaskell"><span class="ot">&gt; prop_step_sameLength ::</span> <span class="dt">Deck</span> <span class="ot">-&gt;</span> <span class="dt">Int</span> <span class="ot">-&gt;</span> <span class="dt">Bool</span>
 <span class="ot">&gt;</span> prop_step_sameLength deck n&#39; <span class="fu">=</span>
 <span class="ot">&gt;</span>     sumLength (times n step (deck, [])) <span class="fu">==</span> length deck
 <span class="ot">&gt;</span>     <span class="kw">where</span>
-<span class="ot">&gt;</span>     n <span class="fu">=</span> abs n&#39;
+<span class="ot">&gt;</span>     n <span class="fu">=</span> mod (length deck) abs n&#39;
 <span class="ot">&gt;</span>     times m f z <span class="fu">=</span> iterate f z <span class="fu">!!</span> m
 <span class="ot">&gt;</span>     sumLength (a, b) <span class="fu">=</span> length a <span class="fu">+</span> length b</code></pre>
-<p>-- After one step, we should have one fewer card in the deck (unless we -- started with an empty deck, in which case we should still have an empty -- deck) prop_step_oneFewer :: Deck -&gt; Bool prop_step_oneFewer deck = length (fst (step (deck, []))) == newLength deck where newLength [] = 0 newLength d = (length d) - 1</p>
-<p>-- Take the first element of a list that satisfies a predicate. first :: (a -&gt; Bool) -&gt; [a] -&gt; a first p = head . dropWhile (not . p)</p>
-<p>-- Perform the shuffle on a deck. shuffle :: Deck -&gt; Deck shuffle d = snd . first (null . fst) $ iterate step (d, [])</p>
-<p>-- Shuffling a deck should return another deck with the same number of -- cards prop_shuffle_sameLength :: Deck -&gt; Bool prop_shuffle_sameLength deck = length (shuffle deck) == length deck</p>
-<p>-- Shuffling a deck should move the top card to the bottom prop_shuffle_topToBottom :: Deck -&gt; Bool prop_shuffle_topToBottom [] = True prop_shuffle_topToBottom deck@(topCard:_) = last (shuffle deck) == topCard</p>
-<p>-- Get the number of times you have to apply f to z to get z again. order :: Eq a =&gt; (a -&gt; a) -&gt; a -&gt; Int order f z = (+1) . length . takeWhile (/= z) . drop 1 $ iterate f z</p>
-<p>-- Evaluate the graph of a function graph :: (a -&gt; b) -&gt; [a] -&gt; [(a, b)] graph f = map (-&gt; (x, f x))</p>
-<p>-- A naive first attempt at the target function. f1 :: Int -&gt; Int f1 = order shuffle . makeDeck</p>
-<p>-- Trace performing shuffles. trace :: Int -&gt; Int -&gt; IO () trace max' = mapM_ print . take max' . iterate shuffle . makeDeck</p>
+<p>Here's another: after one step, we should have one fewer card in the deck (unless we started with an empty deck, in which case we should still have an empty deck)</p>
+<pre class="sourceCode literate literatehaskell"><code class="sourceCode literatehaskell"><span class="ot">&gt; prop_step_oneFewer ::</span> <span class="dt">Deck</span> <span class="ot">-&gt;</span> <span class="dt">Bool</span>
+<span class="ot">&gt;</span> prop_step_oneFewer deck <span class="fu">=</span>
+<span class="ot">&gt;</span>     length (fst (step (deck, []))) <span class="fu">==</span> newLength deck
+<span class="ot">&gt;</span>     <span class="kw">where</span>
+<span class="ot">&gt;</span>     newLength [] <span class="fu">=</span> <span class="dv">0</span>
+<span class="ot">&gt;</span>     newLength d <span class="fu">=</span> (length d) <span class="fu">-</span> <span class="dv">1</span></code></pre>
+<p>Next we need to write a function that performs the shuffle on a deck. So we want <code>shuffle :: Deck -&gt; Deck</code>. Here are some Prelude functions that might come in handy:</p>
+<ul>
+<li><code>dropWhile :: (a -&gt; Bool) -&gt; [a] -&gt; [a]</code>: drops elements from the front of a list until it finds an element that satisfies a predicate.</li>
+<li><code>iterate :: (a -&gt; a) -&gt; a -&gt; [a]</code>: successively applies a function to a value, and returns all the intermediate values. So <code>iterate f x</code> is <code>[x, f x,   f (f x)...]</code></li>
+</ul>
+<pre class="sourceCode literate literatehaskell"><code class="sourceCode literatehaskell"><span class="ot">&gt; first ::</span> (a <span class="ot">-&gt;</span> <span class="dt">Bool</span>) <span class="ot">-&gt;</span> [a] <span class="ot">-&gt;</span> a
+<span class="ot">&gt;</span> first p <span class="fu">=</span> head <span class="fu">.</span> dropWhile (not <span class="fu">.</span> p)
+<span class="ot">&gt;</span> 
+<span class="ot">&gt; shuffle ::</span> <span class="dt">Deck</span> <span class="ot">-&gt;</span> <span class="dt">Deck</span>
+<span class="ot">&gt;</span> shuffle d <span class="fu">=</span> snd <span class="fu">.</span> first (null <span class="fu">.</span> fst) <span class="fu">$</span> iterate step (d, [])</code></pre>
+<p>More test properties: shuffling a deck should return another deck with the same number of cards:</p>
+<pre class="sourceCode literate literatehaskell"><code class="sourceCode literatehaskell"><span class="ot">&gt; prop_shuffle_sameLength ::</span> <span class="dt">Deck</span> <span class="ot">-&gt;</span> <span class="dt">Bool</span>
+<span class="ot">&gt;</span> prop_shuffle_sameLength deck <span class="fu">=</span> length (shuffle deck) <span class="fu">==</span> length deck</code></pre>
+<p>Shuffling a deck should move the top card to the bottom:</p>
+<pre class="sourceCode literate literatehaskell"><code class="sourceCode literatehaskell"><span class="ot">&gt; prop_shuffle_topToBottom ::</span> <span class="dt">Deck</span> <span class="ot">-&gt;</span> <span class="dt">Bool</span>
+<span class="ot">&gt;</span> prop_shuffle_topToBottom [] <span class="fu">=</span> <span class="dt">True</span>
+<span class="ot">&gt;</span> prop_shuffle_topToBottom deck<span class="fu">@</span>(topCard<span class="fu">:</span>_) <span class="fu">=</span>
+<span class="ot">&gt;</span>     last (shuffle deck) <span class="fu">==</span> topCard</code></pre>
+<p>Next up is a function <code>order</code> which, given a function, gives us the number of times we have to apply it to a given value to get that value again.</p>
+<pre class="sourceCode literate literatehaskell"><code class="sourceCode literatehaskell"><span class="ot">&gt; order ::</span> <span class="dt">Eq</span> a <span class="ot">=&gt;</span> (a <span class="ot">-&gt;</span> a) <span class="ot">-&gt;</span> a <span class="ot">-&gt;</span> <span class="dt">Int</span>
+<span class="ot">&gt;</span> order f z <span class="fu">=</span> (<span class="fu">+</span><span class="dv">1</span>) <span class="fu">.</span> length <span class="fu">.</span> takeWhile (<span class="fu">/=</span> z) <span class="fu">.</span> drop <span class="dv">1</span> <span class="fu">$</span> iterate f z</code></pre>
+<p>For our first attempt at answering the question, we can use a naive solution, which is just to keep shuffling the deck until we get the same deck again. We've got all the building blocks now, and we just need to put them together.</p>
+<pre class="sourceCode literate literatehaskell"><code class="sourceCode literatehaskell"><span class="ot">&gt; f1 ::</span> <span class="dt">Int</span> <span class="ot">-&gt;</span> <span class="dt">Int</span>
+<span class="ot">&gt;</span> f1 <span class="fu">=</span> order shuffle <span class="fu">.</span> makeDeck</code></pre>
 <p>-- If we treat <code>shuffle</code> as a permutation in Sn, taking the initial position of -- a card in a deck size n to the position after one shuffle, we can hopefully -- glean the order more cleverly by decomposing to disjoint cycles. newtype Cycle = Cycle [Int] deriving (Eq, Ord)</p>
 <p>rotate :: [a] -&gt; [a] rotate (x:xs) = xs ++ [x] rotate [] = []</p>
 <p>-- Pass an infinte cycling list in; rotate until the smallest element is at -- the front; construct a Cycle. Smart constructor. makeCycle :: [Int] -&gt; Cycle makeCycle (x:xs) = let ys = x : takeWhile (/= x) xs h = minimum ys elems = first ((y:_) -&gt; y == h) (iterate rotate ys) in Cycle elems makeCycle [] = Cycle []</p>
@@ -78,4 +99,20 @@ title: Permutations
 <p>-- 2nd attempt. f2 :: Int -&gt; Int f2 = lcm' . map cycleLength . decompose . perm'</p>
 <p>prop_f1_f2_identical :: Int -&gt; Bool prop_f1_f2_identical x = f1 x == f2 x</p>
 <p>-- Shrink the size of arbitrary things. This stops the test cases from running -- too long. sensible :: Testable a =&gt; a -&gt; Property sensible = mapSize (floor . logBase (2 :: Double) . fromIntegral)</p>
-<p>main :: IO () main = do args &lt;- getArgs case args of x:_ -&gt; do print . f2 . read $ x _ -&gt; do -- check all of our properties, while shrinking the sizes let qc :: Testable a =&gt; a -&gt; String -&gt; IO () qc prop msg = putStrLn (&quot;Testing: &quot; ++ msg) &gt;&gt; quickCheck (sensible prop) qc prop_step_sameLength &quot;prop_step_sameLength&quot; qc prop_step_oneFewer &quot;prop_step_oneFewer&quot; qc prop_shuffle_sameLength &quot;prop_shuffle_sameLength&quot; qc prop_shuffle_topToBottom &quot;prop_shuffle_topToBottom&quot; qc prop_perm_perm'<em>identical &quot;prop</em>perm_perm'<em>identical&quot; qc prop</em>f1_f2_identical &quot;prop_f1_f2_identical&quot;</p>
+<pre class="sourceCode literate literatehaskell"><code class="sourceCode literatehaskell"><span class="ot">&gt; main ::</span> <span class="dt">IO</span> ()
+<span class="ot">&gt;</span> main <span class="fu">=</span> <span class="kw">do</span>
+<span class="ot">&gt;</span>     args <span class="ot">&lt;-</span> getArgs
+<span class="ot">&gt;</span>     <span class="kw">case</span> args <span class="kw">of</span>
+<span class="ot">&gt;</span>         x<span class="fu">:</span>_ <span class="ot">-&gt;</span> <span class="kw">do</span>
+<span class="ot">&gt;</span>             print <span class="fu">.</span> f2 <span class="fu">.</span> read <span class="fu">$</span> x
+<span class="ot">&gt;</span>         _   <span class="ot">-&gt;</span> <span class="kw">do</span>
+<span class="ot">&gt;</span>             <span class="co">-- check all of our properties, while shrinking the sizes</span>
+<span class="ot">&gt;</span>             <span class="kw">let</span><span class="ot"> qc ::</span> <span class="dt">Testable</span> a <span class="ot">=&gt;</span> a <span class="ot">-&gt;</span> <span class="dt">String</span> <span class="ot">-&gt;</span> <span class="dt">IO</span> ()
+<span class="ot">&gt;</span>                 qc prop msg <span class="fu">=</span>
+<span class="ot">&gt;</span>                     putStrLn (<span class="st">&quot;Testing: &quot;</span> <span class="fu">++</span> msg) <span class="fu">&gt;&gt;</span> quickCheck (sensible prop)
+<span class="ot">&gt;</span>             qc prop_step_sameLength <span class="st">&quot;prop_step_sameLength&quot;</span>
+<span class="ot">&gt;</span>             qc prop_step_oneFewer <span class="st">&quot;prop_step_oneFewer&quot;</span>
+<span class="ot">&gt;</span>             qc prop_shuffle_sameLength <span class="st">&quot;prop_shuffle_sameLength&quot;</span>
+<span class="ot">&gt;</span>             qc prop_shuffle_topToBottom <span class="st">&quot;prop_shuffle_topToBottom&quot;</span>
+<span class="ot">&gt;</span>             qc prop_perm_perm&#39;_identical <span class="st">&quot;prop_perm_perm&#39;_identical&quot;</span>
+<span class="ot">&gt;</span>             qc prop_f1_f2_identical <span class="st">&quot;prop_f1_f2_identical&quot;</span></code></pre>
