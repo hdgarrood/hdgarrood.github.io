@@ -1,13 +1,13 @@
----
-layout: post
----
-
 <div id="shuffleviz"></div>
+<a id="prev" href="#">Prev</a> |
 <a id="next" href="#">Next</a>
-<a id="prev" href="#">Prev</a>
 
 <style>
-text { color: green; }
+svg text {
+    font-size: 25px;
+    font-weight: bold;
+    color: green;
+}
 svg { background-color: #dde; }
 </style>
 
@@ -43,9 +43,11 @@ function deck(x, y, cards, cardHeight, maxSize) {
 }
 
 function initialState() {
+    var cardHeight = 22,
+        maxCards = 5
     return {
-        deck1: deck(40, 50, ['A', '2', '3', '4', '5'], 18, 5),
-        deck2: deck(80, 50, [], 18, 5),
+        deck1: deck(0, 0, ['A', '2', '3', '4', '5'], cardHeight, maxCards),
+        deck2: deck(40, 0, [], cardHeight, maxCards),
     }
 }
 
@@ -64,6 +66,12 @@ function step2(state) {
         deck1: newDeck1.placeOnBottom(card),
         deck2: state.deck2
     }
+}
+
+function removeAt(arr, idx) {
+    return arr
+        .slice(0, idx)
+        .concat(arr.slice(idx + 1))
 }
 
 function getAllStates() {
@@ -85,7 +93,8 @@ function getAllStates() {
         result.push(state)
     }
 
-    return result
+    // hack: the 2nd last and 3rd last states will be identical, so remove one
+    return removeAt(result, result.length - 2)
 }
 
 function countDownFrom(x) {
@@ -157,8 +166,8 @@ function hasIndex(arr, idx) {
 }
 
 function start() {
-    var width        = 200,
-        height       = 200,
+    var width        = 60,
+        height       = 110,
         states       = getAllStates(),
         currentIndex = 0
 
