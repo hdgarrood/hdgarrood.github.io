@@ -4,7 +4,7 @@ title: Permutations
 ---
 <p>A colleague of mine severely nerd-sniped me at work recently with this rather innocuous-sounding challenge. I think it's a rather lovely little exercise and decided to write up my solution.</p>
 <p>This post is designed to be read as a programming exercise. It will guide you along as it helps you break the problem into parts. If you want, you can skip to the end and read all the solutions (but that would be cheating).</p>
-<p>Download the <a href="permutations.lhs">literate haskell source file</a> first; you can just fill in the gaps and then compile it like any other haskell file.</p>
+<p>Download the <a href="permutations.lhs">literate haskell source file</a> first; you can fill in the gaps and then compile it or load it into GHCi (with <code>:l permutations.lhs</code>, like any other haskell file.</p>
 <p>Consider the following shuffling technique:</p>
 <ol style="list-style-type: decimal">
 <li>Take one card from the top of the deck and discard it into a second pile.</li>
@@ -23,7 +23,7 @@ title: Permutations
 <span class="ot">&gt;</span> <span class="kw">import </span><span class="dt">Data.Maybe</span> (catMaybes)
 <span class="ot">&gt;</span> <span class="kw">import </span><span class="dt">System.Environment</span> (getArgs)
 <span class="ot">&gt;</span> <span class="kw">import </span><span class="dt">Test.QuickCheck</span></code></pre>
-<p>A <code>Card</code> is just an <code>Int</code>, except that the type checker should ensure that we don't put a <code>Card</code> where an <code>Int</code> should go, or vice versa.</p>
+<p>A <code>Card</code> is represented as an <code>Int</code>, except that the type checker should ensure that we don't put a <code>Card</code> where an <code>Int</code> should go, or vice versa.</p>
 <pre class="sourceCode literate literatehaskell"><code class="sourceCode literatehaskell"><span class="ot">&gt;</span> <span class="kw">newtype</span> <span class="dt">Card</span> <span class="fu">=</span> <span class="dt">Card</span> <span class="dt">Int</span>
 <span class="ot">&gt;</span>     <span class="kw">deriving</span> (<span class="dt">Eq</span>, <span class="dt">Ord</span>, <span class="dt">Arbitrary</span>)
 <span class="ot">&gt;</span> 
@@ -32,7 +32,7 @@ title: Permutations
 <span class="ot">&gt;</span> 
 <span class="ot">&gt;</span> <span class="kw">instance</span> <span class="dt">Show</span> <span class="dt">Card</span> <span class="kw">where</span>
 <span class="ot">&gt;</span>     show <span class="fu">=</span> show <span class="fu">.</span> unCard</code></pre>
-<p>We will represent a deck of cards just as a list. The head of the list will represent the top of the deck.</p>
+<p>We will represent a deck of cards as a list. The head of the list will represent the top of the deck.</p>
 <pre class="sourceCode literate literatehaskell"><code class="sourceCode literatehaskell"><span class="ot">&gt;</span> <span class="kw">type</span> <span class="dt">Deck</span> <span class="fu">=</span> [<span class="dt">Card</span>]
 <span class="ot">&gt;</span> 
 <span class="ot">&gt; unCardAll ::</span> <span class="dt">Deck</span> <span class="ot">-&gt;</span> [<span class="dt">Int</span>]
@@ -61,7 +61,8 @@ title: Permutations
 <span class="ot">&gt;</span>     <span class="kw">where</span>
 <span class="ot">&gt;</span>     newLength [] <span class="fu">=</span> <span class="dv">0</span>
 <span class="ot">&gt;</span>     newLength d <span class="fu">=</span> (length d) <span class="fu">-</span> <span class="dv">1</span></code></pre>
-<p>Next we need to write a function that performs the shuffle on a deck. So we want <code>shuffle :: Deck -&gt; Deck</code>. Here are some Prelude functions that might come in handy:</p>
+<p>Write <code>step</code> and make sure it satisfies these properties before continuing! You can run the tests by typing <code>runhaskell permutations.lhs</code>, or by loading it into GHCi and typing <code>main</code>.</p>
+<p>Next we need to write a function, <code>shuffle</code>, that performs the shuffle on a deck. So its type should be <code>Deck -&gt; Deck</code>. Here are some Prelude functions that might come in handy:</p>
 <ul>
 <li><code>dropWhile :: (a -&gt; Bool) -&gt; [a] -&gt; [a]</code>: drops elements from the front of a list until it finds an element that satisfies a predicate.</li>
 <li><code>iterate :: (a -&gt; a) -&gt; a -&gt; [a]</code>: successively applies a function to a value, and returns all the intermediate values. So <code>iterate f x</code> is <code>[x, f x,   f (f x)...]</code></li>
@@ -79,43 +80,90 @@ title: Permutations
 <span class="ot">&gt;</span> prop_shuffle_topToBottom [] <span class="fu">=</span> <span class="dt">True</span>
 <span class="ot">&gt;</span> prop_shuffle_topToBottom deck<span class="fu">@</span>(topCard<span class="fu">:</span>_) <span class="fu">=</span>
 <span class="ot">&gt;</span>     last (shuffle deck) <span class="fu">==</span> topCard</code></pre>
-<p>Next up is a function <code>order</code> which, given a function, gives us the number of times we have to apply it to a given value to get that value again.</p>
+<p>Next up is a function <code>order</code> which, given a function, gives us the number of times we have to apply it to a given value to get that value again. So its type should be <code>Eq a =&gt; (a -&gt; a) -&gt; a -&gt; Int</code>. We need the <code>Eq</code> constraint so that we can test values to see if they're the same as the first one.</p>
 <pre class="sourceCode literate literatehaskell"><code class="sourceCode literatehaskell"><span class="ot">&gt; order ::</span> <span class="dt">Eq</span> a <span class="ot">=&gt;</span> (a <span class="ot">-&gt;</span> a) <span class="ot">-&gt;</span> a <span class="ot">-&gt;</span> <span class="dt">Int</span>
 <span class="ot">&gt;</span> order f z <span class="fu">=</span> (<span class="fu">+</span><span class="dv">1</span>) <span class="fu">.</span> length <span class="fu">.</span> takeWhile (<span class="fu">/=</span> z) <span class="fu">.</span> drop <span class="dv">1</span> <span class="fu">$</span> iterate f z</code></pre>
-<p>For our first attempt at answering the question, we can use a naive solution, which is just to keep shuffling the deck until we get the same deck again. We've got all the building blocks now, and we just need to put them together.</p>
+<p>For our first attempt at answering the question, we can use a naive solution, which is just to keep shuffling the deck until we get the same deck again. We've got all the building blocks now, and all that remains is to put them together.</p>
 <pre class="sourceCode literate literatehaskell"><code class="sourceCode literatehaskell"><span class="ot">&gt; f1 ::</span> <span class="dt">Int</span> <span class="ot">-&gt;</span> <span class="dt">Int</span>
 <span class="ot">&gt;</span> f1 <span class="fu">=</span> order shuffle <span class="fu">.</span> makeDeck</code></pre>
-<pre class="sourceCode literate literatehaskell"><code class="sourceCode literatehaskell"><span class="ot">&gt;</span> <span class="co">-- If we treat `shuffle` as a permutation in Sn, taking the initial position of</span>
-<span class="ot">&gt;</span> <span class="co">-- a card in a deck size n to the position after one shuffle, we can hopefully</span>
-<span class="ot">&gt;</span> <span class="co">-- glean the order more cleverly by decomposing to disjoint cycles.</span>
-<span class="ot">&gt;</span> <span class="kw">newtype</span> <span class="dt">Cycle</span> <span class="fu">=</span> <span class="dt">Cycle</span> [<span class="dt">Int</span>]
+<p>Test it out in GHCi. Here are some examples:</p>
+<pre><code>f1 4 == 2
+f1 5 == 5
+f1 52 == 510
+f1 53 == 53
+f1 100 == 120
+f1 200 == 8460</code></pre>
+<p>Notice how long it takes to compute <code>f1 200</code>. We can do much better than this, but in order to improve our implementation, we need to do some maths.</p>
+<p><code>shuffle</code> is a function of type <code>Deck -&gt; Deck</code>, but we can imagine it like a function <code>S -&gt; S</code>, where <code>S = {1,2,3,4..n}</code>. Let's call it <code>g</code>. <code>g</code> takes the initial position of a card in the deck, and gives you the position after shuffling the deck once. So in the case where n = 5, we have:</p>
+<pre><code>type S = Int -- let&#39;s just pretend that the only values in
+             -- this type are 1, 2, 3, 4, 5
+g :: S -&gt; S
+g x = case x of
+    1 -&gt; 5 -- The card on top goes to the bottom
+    2 -&gt; 1 -- The card second from the top goes to the top
+    3 -&gt; 4 -- and so on
+    4 -&gt; 2
+    5 -&gt; 3</code></pre>
+<p>What do we know about this function?</p>
+<p>Firstly, we know that this function must be <em>injective</em>, that is, each output corresponds to exactly one input. This is true because we can't end up with two cards in the same position after shuffling.</p>
+<p>We also know that it must be <em>surjective</em>, which means that for every position in the deck (ie every number from 1 up to n), after a shuffle, there must be one card that ends up at that position. If we have a deck of 5 cards, and we shuffle it, we must always end up with a deck where there is a card in the 1st position, and a card in the 2nd, 3rd, 4th, and 5th.</p>
+<p>Another thing we know about this function is that it its <em>domain</em> (the set of values that it accepts as input) and its <em>range</em> (the set of values that its output is in) are the same. In our case <code>g</code> has <code>S</code> as its domain and its range.</p>
+<p>A function that is both injective and surjective is called a <em>bijective function</em>, and a bijective function whose domain and range are the same is called a <em>permutation</em>. Permutations have some really nice properties, and knowing about these will help us write a correct and efficient program.</p>
+<p>Here's another way of writing <code>g</code>:</p>
+<pre><code>g = (1 5 3 4 2)</code></pre>
+<p>This is called <em>cycle notation</em>, and is a useful way of writing permutations. It says that <code>g</code> takes 1 to 5, 5 to 3, 3 to 4, 4 to 2, and 2 back to 1.</p>
+<p>We can tell from this notation that <code>g</code> has an order of 5, because the cycle has 5 numbers in it. Each time we apply <code>g</code>, we move the cycle around by 1 step; therefore moving the cycle around 5 times gets us back to where we started.</p>
+<p>What about the permutation for a deck of 8 cards? In Haskell, it would look like this:</p>
+<pre><code>g :: S -&gt; S
+g x = case x of
+    1 -&gt; 8
+    2 -&gt; 4
+    3 -&gt; 7
+    4 -&gt; 2
+    5 -&gt; 6
+    6 -&gt; 3
+    7 -&gt; 5
+    8 -&gt; 1</code></pre>
+<p>In this case, <code>g</code> takes 1 to 8, and 8... back to 1. What can we do when the cycle doesn't have all of the numbers in it?</p>
+<p>The answer is to take the next number that isn't in any of our cycles and make a new one. So given that one of the cycles in <code>g</code> is <code>(1 8)</code>, we can start with 2, to get another cycle: <code>(2 4)</code>. We are still missing 3, so start with 3 to get another cycle: <code>(3 7 5 6)</code>. Now we're done; we have 3 cycles which when put together give us the whole function:</p>
+<pre><code>g = (1 8)(2 4)(3 7 5 6)</code></pre>
+<p>Since no number appears in more than one of these cycles (another way of saying this is that they are <em>disjoint</em>), we can consider each of them individually.</p>
+<p>The first cycle has two elements, so it must have an order of 2. Does that mean <code>g</code> has an order of two? No, because applying <code>g</code> twice to 3 gives us 5.</p>
+<p>We know that <code>(1 8)</code> on its own has an order of 2, and so does <code>(2 4)</code>. However, <code>(3 7 5 6)</code> has an order of 4. What's the minimum number of times we have to apply <code>g</code> to get all of these back to where they started?</p>
+<p>The answer is the least common multiple of all of the cycle lengths. So in this case, it's 4.</p>
+<p>So now we have a new way of calculating the order of the shuffle for a given deck size: do the shuffle once, use the resulting deck to represent the shuffle as a set of disjoint cycles, and then get the least common multiple of the cycle lengths.</p>
+<p>First we need a way of representing a cycle in Haskell. Let's go with this:</p>
+<pre class="sourceCode literate literatehaskell"><code class="sourceCode literatehaskell"><span class="ot">&gt;</span> <span class="kw">newtype</span> <span class="dt">Cycle</span> <span class="fu">=</span> <span class="dt">Cycle</span> [<span class="dt">Int</span>]
 <span class="ot">&gt;</span>     <span class="kw">deriving</span> (<span class="dt">Eq</span>, <span class="dt">Ord</span>)
 <span class="ot">&gt;</span> 
-<span class="ot">&gt; rotate ::</span> [a] <span class="ot">-&gt;</span> [a]
+<span class="ot">&gt;</span> <span class="kw">instance</span> <span class="dt">Show</span> <span class="dt">Cycle</span> <span class="kw">where</span>
+<span class="ot">&gt;</span>     show (<span class="dt">Cycle</span> xs) <span class="fu">=</span> <span class="st">&quot;(&quot;</span> <span class="fu">++</span> join <span class="st">&quot; &quot;</span> (map show xs) <span class="fu">++</span> <span class="st">&quot;)&quot;</span>
+<span class="ot">&gt;</span>         <span class="kw">where</span>
+<span class="ot">&gt;</span>         join glue (y<span class="fu">:</span>ys) <span class="fu">=</span> y <span class="fu">++</span> (concatMap (glue <span class="fu">++</span>) ys)
+<span class="ot">&gt;</span>         join _ [] <span class="fu">=</span> <span class="st">&quot;&quot;</span></code></pre>
+<p>So a <code>Cycle</code> is just a list of Ints. So the cycle for <code>g</code> when n = 5 would be:</p>
+<pre><code>g = Cycle [1,5,3,4,2]</code></pre>
+<p>There's a small problem here: suppose we make another <code>Cycle</code> from the list <code>[5,3,4,2,1]</code>. This <code>Cycle</code> still takes 1 to 5, 5 to 3, and so on, like <code>g</code>. So we should consider them to be the same. However, Haskell will look at the inner list to decide whether two cycles are equal. Because the lists are different, Haskell will think that the cycles are different.</p>
+<p>We can get around this issue by saying that a Cycle should always start with its smallest element. So the second representation of <code>g</code> above would be invalid.</p>
+<p>A good way of implementing this in Haskell is to define a <em>smart constructor</em>: a function like <code>Cycle</code> whose type is <code>[Int] -&gt; Cycle</code>, but which makes sure our statement above holds. Then, as long as we remember to use our smart constructor rather than <code>Cycle</code>, we'll be ok.</p>
+<p>If we were writing a proper program, we would probably define <code>Cycle</code> and its smart constructor in a separate module and then only export the smart constructor, to ensure that we don't make this mistake. Here it's probably not worth the effort.</p>
+<p>The next task is to write this smart constructor function. Let's call it <code>makeCycle</code>. It should take an infinite list of cycling values, cut it off at the first instance where a value is repeated, and then return a <code>Cycle</code> where the smallest value comes first.</p>
+<p>You might find it useful to write a function called <code>rotate</code> that takes a list and moves the element at the front to the back.</p>
+<pre class="sourceCode literate literatehaskell"><code class="sourceCode literatehaskell"><span class="ot">&gt; rotate ::</span> [a] <span class="ot">-&gt;</span> [a]
 <span class="ot">&gt;</span> rotate (x<span class="fu">:</span>xs) <span class="fu">=</span> xs <span class="fu">++</span> [x]
 <span class="ot">&gt;</span> rotate [] <span class="fu">=</span> []
 <span class="ot">&gt;</span> 
-<span class="ot">&gt;</span> <span class="co">-- Pass an infinte cycling list in; rotate until the smallest element is at</span>
-<span class="ot">&gt;</span> <span class="co">-- the front; construct a Cycle. Smart constructor.</span>
 <span class="ot">&gt; makeCycle ::</span> [<span class="dt">Int</span>] <span class="ot">-&gt;</span> <span class="dt">Cycle</span>
 <span class="ot">&gt;</span> makeCycle (x<span class="fu">:</span>xs) <span class="fu">=</span>
 <span class="ot">&gt;</span>     <span class="kw">let</span> ys    <span class="fu">=</span> x <span class="fu">:</span> takeWhile (<span class="fu">/=</span> x) xs
 <span class="ot">&gt;</span>         h     <span class="fu">=</span> minimum ys
 <span class="ot">&gt;</span>         elems <span class="fu">=</span> first (\(y<span class="fu">:</span>_) <span class="ot">-&gt;</span> y <span class="fu">==</span> h) (iterate rotate ys)
 <span class="ot">&gt;</span>     <span class="kw">in</span>  <span class="dt">Cycle</span> elems
-<span class="ot">&gt;</span> makeCycle [] <span class="fu">=</span> <span class="dt">Cycle</span> []
-<span class="ot">&gt;</span> 
-<span class="ot">&gt;</span> <span class="kw">instance</span> <span class="dt">Show</span> <span class="dt">Cycle</span> <span class="kw">where</span>
-<span class="ot">&gt;</span>     show (<span class="dt">Cycle</span> xs) <span class="fu">=</span> <span class="st">&quot;(&quot;</span> <span class="fu">++</span> join <span class="st">&quot; &quot;</span> (map show xs) <span class="fu">++</span> <span class="st">&quot;)&quot;</span>
-<span class="ot">&gt;</span>         <span class="kw">where</span>
-<span class="ot">&gt;</span>         join glue (y<span class="fu">:</span>ys) <span class="fu">=</span> y <span class="fu">++</span> (concatMap (glue <span class="fu">++</span>) ys)
-<span class="ot">&gt;</span>         join _ [] <span class="fu">=</span> <span class="st">&quot;&quot;</span>
-<span class="ot">&gt;</span> 
-<span class="ot">&gt; cycleLength ::</span> <span class="dt">Cycle</span> <span class="ot">-&gt;</span> <span class="dt">Int</span>
-<span class="ot">&gt;</span> cycleLength (<span class="dt">Cycle</span> n) <span class="fu">=</span> length n
-<span class="ot">&gt;</span> 
-<span class="ot">&gt;</span> <span class="co">-- Calculate the shuffle permutation for a deck of size n.</span>
-<span class="ot">&gt; perm ::</span> <span class="dt">Int</span> <span class="ot">-&gt;</span> [(<span class="dt">Int</span>, <span class="dt">Int</span>)]
+<span class="ot">&gt;</span> makeCycle [] <span class="fu">=</span> <span class="dt">Cycle</span> []</code></pre>
+<p>Next: write a function that takes a <code>Cycle</code> and returns its length.</p>
+<pre class="sourceCode literate literatehaskell"><code class="sourceCode literatehaskell"><span class="ot">&gt; cycleLength ::</span> <span class="dt">Cycle</span> <span class="ot">-&gt;</span> <span class="dt">Int</span>
+<span class="ot">&gt;</span> cycleLength (<span class="dt">Cycle</span> n) <span class="fu">=</span> length n</code></pre>
+<pre class="sourceCode literate literatehaskell"><code class="sourceCode literatehaskell"><span class="ot">&gt; perm ::</span> <span class="dt">Int</span> <span class="ot">-&gt;</span> [(<span class="dt">Int</span>, <span class="dt">Int</span>)]
 <span class="ot">&gt;</span> perm n <span class="fu">=</span>
 <span class="ot">&gt;</span>     <span class="kw">let</span> initial <span class="fu">=</span> makeDeck n
 <span class="ot">&gt;</span>         result <span class="fu">=</span> shuffle initial
