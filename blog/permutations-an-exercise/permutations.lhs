@@ -25,8 +25,8 @@ For example, suppose we have a deck with 5 cards. The process looks like this:
 
 The problem is: how many shuffles does it take until a deck is in the same
 order as when you started, for a deck with an arbitrary number of cards? Write
-a function, `f :: Int -> Int`, such that `f n` is the minimum number of
-shuffles required to do this.
+a function, `f :: Int -> Int`, such that, for a deck with n cards, `f n` is the
+minimum number of shuffles required to return it to its original order.
 
 We're going to use Haskell, because this is all about *functions* (in the
 mathematical sense), and so Haskell, being a *functional programming language*,
