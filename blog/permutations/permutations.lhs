@@ -24,7 +24,9 @@ For example, suppose we have a deck with 5 cards. The process looks like this:
 {% include permutations/shuffle-viz.html %}
 
 The problem is: how many shuffles does it take until a deck is in the same
-order as when you started, for a deck with an arbitrary number of cards?
+order as when you started, for a deck with an arbitrary number of cards? Write
+a function, `f :: Int -> Int`, such that `f n` is the minimum number of
+shuffles required to do this.
 
 We're going to use Haskell, because this is all about *functions* (in the
 mathematical sense), and so Haskell, being a *functional programming language*,
@@ -34,8 +36,6 @@ is especially well suited to the job.
 > {-# LANGUAGE GeneralizedNewtypeDeriving #-}
 > module Main where
 >
-> import Data.List (sort, elemIndex)
-> import Data.Maybe (catMaybes)
 > import System.Environment (getArgs)
 > import Test.QuickCheck
 
@@ -160,14 +160,13 @@ f1 200 == 8460
 Notice how long it takes to compute `f1 200`. We can do much better than this,
 but in order to improve our implementation, we need to do some maths.
 
-`shuffle` is a function of type `Deck -> Deck`, but we can imagine it like a
-function `S -> S`, where `S = {1,2,3,4..n}`. Let's call it `g`. `g` takes the
-initial position of a card in the deck, and gives you the position after
-shuffling the deck once.  So in the case where n = 5, we have:
+`shuffle` is a function of type `Deck -> Deck`, but we can also imagine it like
+a function `S -> S`, where `S` is the set of natural numbers from 1 up to n.
+Let's call it `g`. `g` takes the initial position of a card in the deck, and
+gives you the position after shuffling the deck once.  So in the case where n =
+5, we have:
 
 ```
-type S = Int -- let's just pretend that the only values in
-             -- this type are 1, 2, 3, 4, 5
 g :: S -> S
 g x = case x of
     1 -> 5 -- The card on top goes to the bottom
@@ -235,8 +234,8 @@ cycle doesn't have all of the numbers in it?
 The answer is to take the next number that isn't in any of our cycles and make
 a new one. So given that one of the cycles in `g` is `(1 8)`, we can start with
 2, to get another cycle: `(2 4)`. We are still missing 3, so start with 3 to
-get another cycle: `(3 7 5 6)`. Now we're done; we have 3 cycles which when put
-together give us the whole function:
+get another cycle: `(3 7 5 6)`. Now we're done; we have 3 cycles which, when
+put together, tell us what happens to each of the numbers 1 to 8:
 
 ```
 g = (1 8)(2 4)(3 7 5 6)
@@ -256,9 +255,9 @@ The answer is the least common multiple of all of the cycle lengths. So in this
 case, it's 4.
 
 So now we have a new way of calculating the order of the shuffle for a given
-deck size: do the shuffle once, use the resulting deck to represent the shuffle
-as a set of disjoint cycles, and then get the least common multiple of the
-cycle lengths.
+deck size: do the shuffle once, use the resulting deck to work out how to
+represent the shuffle as a set of disjoint cycles, and then get the least
+common multiple of the cycle lengths.
 
 First we need a way of representing a cycle in Haskell. Let's go with this:
 
@@ -322,28 +321,47 @@ Next: write a function that takes a `Cycle` and returns its length.
 > cycleLength :: Cycle -> Int
 > cycleLength (Cycle n) = length n
 
+Now write a function that takes a deck size, n, and returns the *graph* of
+the permutation for shuffling the deck with n cards, as a list of pairs mapping
+inputs to outputs. So for each input from 1 up to n there should be one pair
+in the result containing the input and the corresponding output. The order
+doesn't matter. For example:
 
+```
+permutation 5 == [(2,1),(4,2),(5,3),(3,4),(1,5)]
+```
 
-> perm :: Int -> [(Int, Int)]
-> perm n =
->     let initial = makeDeck n
->         result = shuffle initial
->         initial' = unCardAll initial
->         result' = unCardAll result
->     in catMaybes $ map (\x ->
->         fmap (\idx -> (x, idx + 1)) $ elemIndex x result') initial'
->
-> -- perm, but faster.
-> perm' :: Int -> [(Int, Int)]
-> perm' n = go 0 (unCardAll . shuffle . makeDeck $ n)
+since 2 goes to 1, 4 goes to 2, and so on.
+
+> permutation :: Int -> [(Int, Int)]
+> permutation n = go 0 (unCardAll . shuffle . makeDeck $ n)
 >     where go m (x:xs) = (x, m+1) : go (m+1) xs
 >           go _ [] = []
->
-> prop_perm_perm'_identical :: Int -> Bool
-> prop_perm_perm'_identical x = sort (perm x) == sort (perm' x)
->
-> -- Take a permutation as [(Int, Int)] and represent it as a product of
-> -- disjoint cycles.
+
+Now we need to implement the algorithm I described earlier for decomposing a
+permutation into a product of disjoint cycles. First we should write a function
+that takes a permutation in the form above (that is, `[(Int, Int)]`, a list of
+pairs of `Int`), starts with the element at the front of the list, makes an
+infinite list of the values we get when applying the permutation to it, and
+turns that list into a `Cycle`.
+
+The infinite list should repeat periodically with all the values in a cycle;
+that is, the kind of value that `makeCycle` is expecting to get. So we've
+already done the last step of implementing this function; we just need to apply
+`makeCycle` to that infinite list.
+
+> extractCycle :: [(Int, Int)] -> Cycle
+> extractCycle xs@(h:_) = makeCycle $ go h xs
+>     where
+>     go (y, pos) ys = case lookup pos ys of
+>         Just z -> y : go (pos, z) ys
+>         Nothing -> cycle [y, pos]
+> extractCycle [] = makeCycle []
+
+Next up is a function that can extract all the cycles from a permutation
+represented as a list of pairs of `Int`. Your implementation should use
+`extractCycle` repeatedly to get all of the cycles out of the list.
+
 > decompose :: [(Int, Int)] -> [Cycle]
 > decompose xs = foldl f [] $ take (length xs) (iterate rotate xs)
 >     where
@@ -352,31 +370,33 @@ Next: write a function that takes a `Cycle` and returns its length.
 >         in if cyc `elem` acc
 >             then acc
 >             else cyc : acc
->
-> -- Extract a single cycle from a permutation [(Int, Int)].
-> extractCycle :: [(Int, Int)] -> Cycle
-> extractCycle xs@(h:_) = makeCycle $ go h xs
->     where
->     go (y, pos) ys = case lookup pos ys of
->         Just z -> y : go (pos, z) ys
->         Nothing -> cycle [y, pos]
-> extractCycle [] = makeCycle []
->
-> -- Find the lowest common multiple of a list.
+
+Once we have decomposed a permutation into a product of disjoint cycles we only
+need to find the least common multiple of their lengths. Write a function that
+takes a list of `Int`, and returns the least common multiple of all of them.
+The Prelude gives us `lcm` already, which works on two numbers; you might find
+it helpful.
+
 > lcm' :: [Int] -> Int
 > lcm' = foldl lcm 1
->
-> -- 2nd attempt.
+
+We have all the building blocks now: write another implementation of `f` using
+`permutation`, `decompose`, `cycleLength`, and `lcm'`.
+
 > f2 :: Int -> Int
-> f2 = lcm' . map cycleLength . decompose . perm'
->
+> f2 = lcm' . map cycleLength . decompose . permutation
+
+Now that we have two different implementations of `f`, we can test to see
+whether we got them both right by seeing if they are equal. Because their
+implementations are quite different this will probably be quite a good
+indication of whether we got it right.
+
 > prop_f1_f2_identical :: Int -> Bool
 > prop_f1_f2_identical x = f1 x == f2 x
->
-> -- Shrink the size of arbitrary things. This stops the test cases from running
-> -- too long.
-> sensible :: Testable a => a -> Property
-> sensible = mapSize (floor . logBase (2 :: Double) . fromIntegral)
+
+This is the definition of the program. You don't need to worry about this bit.
+It says that if we get a number as an argument, calculate `f2` for that
+number. Otherwise run the tests.
 
 > main :: IO ()
 > main = do
@@ -385,7 +405,6 @@ Next: write a function that takes a `Cycle` and returns its length.
 >         x:_ -> do
 >             print . f2 . read $ x
 >         _   -> do
->             -- check all of our properties, while shrinking the sizes
 >             let qc :: Testable a => a -> String -> IO ()
 >                 qc prop msg =
 >                     putStrLn ("Testing: " ++ msg) >>
@@ -394,5 +413,7 @@ Next: write a function that takes a `Cycle` and returns its length.
 >             qc prop_step_oneFewer "prop_step_oneFewer"
 >             qc prop_shuffle_sameLength "prop_shuffle_sameLength"
 >             qc prop_shuffle_topToBottom "prop_shuffle_topToBottom"
->             qc prop_perm_perm'_identical "prop_perm_perm'_identical"
 >             qc prop_f1_f2_identical "prop_f1_f2_identical"
+>     where
+>     sensible :: Testable a => a -> Property
+>     sensible = mapSize (floor . logBase (2 :: Double) . fromIntegral)
