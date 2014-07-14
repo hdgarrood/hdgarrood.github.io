@@ -36,8 +36,14 @@ is especially well suited to the job.
 > {-# LANGUAGE GeneralizedNewtypeDeriving #-}
 > module Main where
 >
+> import Control.Monad (forM_)
+> import Data.Maybe (catMaybes)
+> import Data.List (nub, sort)
 > import System.Environment (getArgs)
-> import Test.QuickCheck
+> import Test.QuickCheck hiding (infiniteList)
+>
+> todo :: a
+> todo = error "todo"
 
 A `Card` is represented as an `Int`, except that the type checker should ensure
 that we don't put a `Card` where an `Int` should go, or vice versa.
@@ -138,6 +144,16 @@ we can test values to see if they're the same as the first one.
 > order :: Eq a => (a -> a) -> a -> Int
 > order f z = (+1) . length . takeWhile (/= z) . drop 1 $ iterate f z
 
+To test `order`: if we have a function that subtracts 1 from positive numbers
+and returns n otherwise, the number of times we have to apply it to `n` to get `n` again should be `n + 1`:
+
+> prop_order_subtractOne :: Int -> Bool
+> prop_order_subtractOne n' = order f n == n + 1
+>     where
+>     n = abs n' + 1 -- ensure that n >= 1
+>     f x | x > 0     = x - 1
+>         | otherwise = n
+
 For our first attempt at answering the question, we can use a naive solution,
 which is just to keep shuffling the deck until we get the same deck again.
 We've got all the building blocks now, and all that remains is to put them
@@ -146,19 +162,23 @@ together.
 > f1 :: Int -> Int
 > f1 = order shuffle . makeDeck
 
-Test it out in GHCi. Here are some examples:
+`f1` is easier to test by looking at particular cases. This code gives a few
+inputs and expected outputs for `f`.  If you run the tests (with `runhaskell
+permutations.lhs`, as before) it will check that your `f1` works for all of
+these values.
 
-```
-f1 4 == 2
-f1 5 == 5
-f1 52 == 510
-f1 53 == 53
-f1 100 == 120
-f1 200 == 8460
-```
+> examples_f :: [(Int, Int)]
+> examples_f =
+>     [ (4, 2)
+>     , (5, 5)
+>     , (52, 510)
+>     , (53, 53)
+>     , (100, 120)
+>     ]
 
-Notice how long it takes to compute `f1 200`. We can do much better than this,
-but in order to improve our implementation, we need to do some maths.
+Now try doing `f1 200`, which should give you 8460. Notice how long it takes to
+compute. We can do much better than this, but in order to improve our
+implementation, we need to do some maths.
 
 `shuffle` is a function of type `Deck -> Deck`, but we can also imagine it like
 a function `S -> S`, where `S` is the set of natural numbers from 1 up to n.
@@ -301,13 +321,13 @@ The next task is to write this smart constructor function. Let's call it
 the first instance where a value is repeated, and then return a `Cycle` where
 the smallest value comes first.
 
-You might find it useful to write a function called `rotate` that takes a
-list and moves the element at the front to the back.
+You might find this function, `rotate`, useful. It takes a list and moves the
+element from the front to the back.
 
 > rotate :: [a] -> [a]
 > rotate (x:xs) = xs ++ [x]
 > rotate [] = []
->
+
 > makeCycle :: [Int] -> Cycle
 > makeCycle (x:xs) =
 >     let ys    = x : takeWhile (/= x) xs
@@ -315,6 +335,18 @@ list and moves the element at the front to the back.
 >         elems = first (\(y:_) -> y == h) (iterate rotate ys)
 >     in  Cycle elems
 > makeCycle [] = Cycle []
+
+To test `makeCycle`: if we take an infinite periodically cycling list, drop
+some arbitrary number of elements from the front, and call `makeCycle` on it,
+we should get the same result as if we hadn't dropped any.
+
+> prop_makeCycle_drop :: [Int] -> Int -> Bool
+> prop_makeCycle_drop list' n' =
+>     makeCycle infiniteList == makeCycle (drop n infiniteList)
+>     where
+>     n = abs n' + 1   -- ensure n >= 1
+>     list = 1 : list' -- ensure list is nonempty
+>     infiniteList = cycle . nub $ list
 
 Next: write a function that takes a `Cycle` and returns its length.
 
@@ -325,32 +357,44 @@ Now write a function that takes a deck size, n, and returns the *graph* of
 the permutation for shuffling the deck with n cards, as a list of pairs mapping
 inputs to outputs. So for each input from 1 up to n there should be one pair
 in the result containing the input and the corresponding output. The order
-doesn't matter. For example:
+doesn't matter.
 
-```
-permutation 5 == [(2,1),(4,2),(5,3),(3,4),(1,5)]
-```
-
-since 2 goes to 1, 4 goes to 2, and so on.
-
-> permutation :: Int -> [(Int, Int)]
+> type PermutationGraph = [(Int, Int)]
+>
+> permutation :: Int -> PermutationGraph
 > permutation n = go 0 (unCardAll . shuffle . makeDeck $ n)
 >     where go m (x:xs) = (x, m+1) : go (m+1) xs
 >           go _ [] = []
 
+Here are some example inputs and outputs. (I've used `sort` so that the order
+doesn't matter). This says that, for example, the permutation graph for 4
+should be `[(4,1),(2,2),(3,3),(1,4)]`. Again, these examples are included in
+the tests.
+
+> examples_permutation :: [(Int, PermutationGraph)]
+> examples_permutation =
+>     [ (4, sort [(4,1),(2,2),(3,3),(1,4)])
+>     , (5, sort [(2,1),(4,2),(5,3),(3,4),(1,5)])
+>     , (8, sort [(8,1),(4,2),(6,3),(2,4),(7,5),(5,6),(3,7),(1,8)])
+>     ]
+
 Now we need to implement the algorithm I described earlier for decomposing a
 permutation into a product of disjoint cycles. First we should write a function
-that takes a permutation in the form above (that is, `[(Int, Int)]`, a list of
-pairs of `Int`), starts with the element at the front of the list, makes an
-infinite list of the values we get when applying the permutation to it, and
-turns that list into a `Cycle`.
+that extracts one `Cycle` from a `PermutationGraph`. It should:
+
+* take a `PermutationGraph`,
+* look at the first input in the graph, and see what it maps to,
+* find where that output occurs as an input in the graph, and see where
+  *that* maps to,
+* keep going, producing an infinite cycling list of all of these values, and
+* turn that list into a `Cycle`.
 
 The infinite list should repeat periodically with all the values in a cycle;
 that is, the kind of value that `makeCycle` is expecting to get. So we've
 already done the last step of implementing this function; we just need to apply
 `makeCycle` to that infinite list.
 
-> extractCycle :: [(Int, Int)] -> Cycle
+> extractCycle :: PermutationGraph -> Cycle
 > extractCycle xs@(h:_) = makeCycle $ go h xs
 >     where
 >     go (y, pos) ys = case lookup pos ys of
@@ -358,11 +402,11 @@ already done the last step of implementing this function; we just need to apply
 >         Nothing -> cycle [y, pos]
 > extractCycle [] = makeCycle []
 
-Next up is a function that can extract all the cycles from a permutation
-represented as a list of pairs of `Int`. Your implementation should use
-`extractCycle` repeatedly to get all of the cycles out of the list.
+Next up is a function that can extract all the cycles from a permutation graph.
+Your implementation should use `extractCycle` repeatedly to get all of the
+cycles out of the list.
 
-> decompose :: [(Int, Int)] -> [Cycle]
+> decompose :: PermutationGraph -> [Cycle]
 > decompose xs = foldl f [] $ take (length xs) (iterate rotate xs)
 >     where
 >     f acc ys =
@@ -370,6 +414,15 @@ represented as a list of pairs of `Int`. Your implementation should use
 >         in if cyc `elem` acc
 >             then acc
 >             else cyc : acc
+
+Another QuickCheck property: The sum of cycle lengths after decomposing the
+permutation graph for a given integer n should equal n:
+
+> prop_decompose_sumCycleLengths :: Int -> Bool
+> prop_decompose_sumCycleLengths n' = sumCycleLengths == n
+>     where
+>     n = abs n' + 1
+>     sumCycleLengths = sum . map cycleLength . decompose . permutation $ n
 
 Once we have decomposed a permutation into a product of disjoint cycles we only
 need to find the least common multiple of their lengths. Write a function that
@@ -394,9 +447,39 @@ indication of whether we got it right.
 > prop_f1_f2_identical :: Int -> Bool
 > prop_f1_f2_identical x = f1 x == f2 x
 
-This is the definition of the program. You don't need to worry about this bit.
-It says that if we get a number as an argument, calculate `f2` for that
-number. Otherwise run the tests.
+You did it! See how much faster `f2` is? My answers are [here](answers.lhs) if
+you want to compare them.
+
+Below here is code that you don't need to worry about. This is a function that
+takes a set of test inputs and expected outputs, a function mapping inputs to
+outputs, and returns an action that checks whether the expected outputs are the
+same as the actual outputs, and prints messages to the console if they are not.
+
+> testByExamples :: (Show a, Show b, Eq b) => [(a, b)] -> (a -> b) -> IO ()
+> testByExamples examples f =
+>     let fails = catMaybes $ map runExample examples
+>     in if null fails
+>         then putStrLn "+++ OK, passed all examples."
+>         else forM_ fails printFailure
+>     where
+>     runExample (input, expected) =
+>         let actual = f input
+>         in if expected == actual
+>             then Nothing
+>             else Just $ (input, expected, actual)
+>     printFailure (input, expected, actual) =
+>         putStrLn $ concat
+>             [ "failed on input "
+>             , show input
+>             , ": expected <"
+>             , show expected
+>             , ">, got <"
+>             , show actual
+>             , ">."
+>             ]
+
+This is the definition of the program. It says that if we get a number as an
+argument, calculate `f2` for that number. Otherwise run the tests.
 
 > main :: IO ()
 > main = do
@@ -409,10 +492,21 @@ number. Otherwise run the tests.
 >                 qc prop msg =
 >                     putStrLn ("Testing: " ++ msg) >>
 >                         quickCheck (sensible prop)
+>             let te exs f msg =
+>                     putStrLn ("Testing: " ++ msg) >>
+>                         testByExamples exs f
 >             qc prop_step_sameLength "prop_step_sameLength"
 >             qc prop_step_oneFewer "prop_step_oneFewer"
 >             qc prop_shuffle_sameLength "prop_shuffle_sameLength"
 >             qc prop_shuffle_topToBottom "prop_shuffle_topToBottom"
+>             qc prop_order_subtractOne "prop_order_subtractOne"
+>             te examples_f f1 "examples for f1"
+>             qc prop_makeCycle_drop "prop_makeCycle_drop"
+>             te examples_permutation
+>                   (sort . permutation) "examples for permutation"
+>             qc prop_decompose_sumCycleLengths
+>                   "prop_decompose_sumCycleLengths"
+>             te examples_f f2 "examples for f2"
 >             qc prop_f1_f2_identical "prop_f1_f2_identical"
 >     where
 >     sensible :: Testable a => a -> Property
