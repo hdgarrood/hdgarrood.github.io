@@ -12,8 +12,8 @@ title: "Permutations: an exercise"
 <li>Repeat these two steps, putting all discarded cards from step 1 into the same pile, until the original deck is all gone and the second pile has all the cards in it.</li>
 </ol>
 <p>For example, suppose we have a deck with 5 cards. The process looks like this:</p>
-<p>{% include permutations/shuffle-viz.html %}</p>
-<p>The problem is: how many shuffles does it take until a deck is in the same order as when you started, for a deck with an arbitrary number of cards? Write a function, <code>f :: Int -&gt; Int</code>, such that <code>f n</code> is the minimum number of shuffles required to do this.</p>
+<p>{% include permutations-an-exercise/shuffle-viz.html %}</p>
+<p>The problem is: how many shuffles does it take until a deck is in the same order as when you started, for a deck with an arbitrary number of cards? Write a function, <code>f :: Int -&gt; Int</code>, such that, for a deck with n cards, <code>f n</code> is the minimum number of shuffles required to return it to its original order.</p>
 <p>We're going to use Haskell, because this is all about <em>functions</em> (in the mathematical sense), and so Haskell, being a <em>functional programming language</em>, is especially well suited to the job.</p>
 <pre class="sourceCode literate literatehaskell"><code class="sourceCode literatehaskell"><span class="ot">&gt;</span> <span class="ot">{-# OPTIONS_GHC -Wall #-}</span>
 <span class="ot">&gt;</span> <span class="ot">{-# LANGUAGE GeneralizedNewtypeDeriving #-}</span>
@@ -132,10 +132,11 @@ g x = case x of
 <p>In this case, <code>g</code> takes 1 to 8, and 8... back to 1. What can we do when the cycle doesn't have all of the numbers in it?</p>
 <p>The answer is to take the next number that isn't in any of our cycles and make a new one. So given that one of the cycles in <code>g</code> is <code>(1 8)</code>, we can start with 2, to get another cycle: <code>(2 4)</code>. We are still missing 3, so start with 3 to get another cycle: <code>(3 7 5 6)</code>. Now we're done; we have 3 cycles which, when put together, tell us what happens to each of the numbers 1 to 8:</p>
 <pre><code>g = (1 8)(2 4)(3 7 5 6)</code></pre>
-<p>Since no number appears in more than one of these cycles (another way of saying this is that they are <em>disjoint</em>), we can consider each of them individually.</p>
+<p>Since no number appears in more than one of these cycles (another way of saying this is that they are <em>disjoint</em>), when trying to determine the order, we can consider each of them individually.</p>
 <p>The first cycle has two elements, so it must have an order of 2. Does that mean <code>g</code> has an order of two? No, because applying <code>g</code> twice to 3 gives us 5.</p>
 <p>We know that <code>(1 8)</code> on its own has an order of 2, and so does <code>(2 4)</code>. However, <code>(3 7 5 6)</code> has an order of 4. What's the minimum number of times we have to apply <code>g</code> to get all of these back to where they started?</p>
 <p>The answer is the least common multiple of all of the cycle lengths. So in this case, it's 4.</p>
+<p>{% include permutations-an-exercise/cycle-order-viz.html %}</p>
 <p>So now we have a new way of calculating the order of the shuffle for a given deck size: do the shuffle once, use the resulting deck to work out how to represent the shuffle as a set of disjoint cycles, and then get the least common multiple of the cycle lengths.</p>
 <p>First we need a way of representing a cycle in Haskell. Let's go with this:</p>
 <pre class="sourceCode literate literatehaskell"><code class="sourceCode literatehaskell"><span class="ot">&gt;</span> <span class="kw">newtype</span> <span class="dt">Cycle</span> <span class="fu">=</span> <span class="dt">Cycle</span> [<span class="dt">Int</span>]

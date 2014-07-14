@@ -21,7 +21,7 @@ Consider the following shuffling technique:
 
 For example, suppose we have a deck with 5 cards. The process looks like this:
 
-{% include permutations/shuffle-viz.html %}
+{% include permutations-an-exercise/shuffle-viz.html %}
 
 The problem is: how many shuffles does it take until a deck is in the same
 order as when you started, for a deck with an arbitrary number of cards? Write
@@ -256,7 +256,8 @@ g = (1 8)(2 4)(3 7 5 6)
 ```
 
 Since no number appears in more than one of these cycles (another way of saying
-this is that they are *disjoint*), we can consider each of them individually.
+this is that they are *disjoint*), when trying to determine the order, we can
+consider each of them individually.
 
 The first cycle has two elements, so it must have an order of 2. Does that mean
 `g` has an order of two? No, because applying `g` twice to 3 gives us 5.
@@ -267,6 +268,8 @@ have to apply `g` to get all of these back to where they started?
 
 The answer is the least common multiple of all of the cycle lengths. So in this
 case, it's 4.
+
+{% include permutations-an-exercise/cycle-order-viz.html %}
 
 So now we have a new way of calculating the order of the shuffle for a given
 deck size: do the shuffle once, use the resulting deck to work out how to
