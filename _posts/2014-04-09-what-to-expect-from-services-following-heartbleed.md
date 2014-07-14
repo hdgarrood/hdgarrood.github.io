@@ -1,6 +1,6 @@
 ---
 layout: post
-title: What to Expect from Services Following Heartbleed
+title: What to expect from services following Heartbleed
 ---
 
 Any web service you use that uses HTTPS could have been vulnerable to the OpenSSL [Heartbleed](http://heartbleed.com) vulnerability. It's been a couple of days now since the vulnerability was made public, so I think it's reasonable to expect any service to have issued some kind of statement.
