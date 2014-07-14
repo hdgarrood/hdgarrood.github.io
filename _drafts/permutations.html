@@ -46,10 +46,7 @@ title: Permutations
 <span class="ot">&gt;</span> makeDeck n <span class="fu">=</span> map <span class="dt">Card</span> [<span class="dv">1</span><span class="fu">..</span>n]</code></pre>
 <p>Our first job is to define a function that only performs steps 1 and 2 of the shuffle. What type should this function be? It should take a deck and a new pile, and return an updated deck and pile, so let's go with <code>(Deck, Deck) -&gt; (Deck, Deck)</code>.</p>
 <pre class="sourceCode literate literatehaskell"><code class="sourceCode literatehaskell"><span class="ot">&gt; step ::</span> (<span class="dt">Deck</span>, <span class="dt">Deck</span>) <span class="ot">-&gt;</span> (<span class="dt">Deck</span>, <span class="dt">Deck</span>)
-<span class="ot">&gt;</span> step (deck, pile) <span class="fu">=</span> <span class="kw">case</span> deck <span class="kw">of</span>
-<span class="ot">&gt;</span>     a<span class="fu">:</span>b<span class="fu">:</span>cs <span class="ot">-&gt;</span> (cs <span class="fu">++</span> [b], a <span class="fu">:</span> pile)
-<span class="ot">&gt;</span>     a<span class="fu">:</span>cs   <span class="ot">-&gt;</span> (cs, a <span class="fu">:</span> pile)
-<span class="ot">&gt;</span>     []     <span class="ot">-&gt;</span> ([], pile)</code></pre>
+<span class="ot">&gt;</span> step <span class="fu">=</span> todo</code></pre>
 <p>Now, we should think about what properties our <code>step</code> function should satisfy, so that we can get QuickCheck to test them for us. Here's one: after performing <code>step</code> n times on a deck, we should end up with the same number of cards that we started with:</p>
 <pre class="sourceCode literate literatehaskell"><code class="sourceCode literatehaskell"><span class="ot">&gt; prop_step_sameLength ::</span> <span class="dt">Deck</span> <span class="ot">-&gt;</span> <span class="dt">Int</span> <span class="ot">-&gt;</span> <span class="dt">Bool</span>
 <span class="ot">&gt;</span> prop_step_sameLength deck n&#39; <span class="fu">=</span>
@@ -71,11 +68,8 @@ title: Permutations
 <li><code>dropWhile :: (a -&gt; Bool) -&gt; [a] -&gt; [a]</code>: drops elements from the front of a list until it finds an element that satisfies a predicate.</li>
 <li><code>iterate :: (a -&gt; a) -&gt; a -&gt; [a]</code>: successively applies a function to a value, and returns all the intermediate values. So <code>iterate f x</code> is <code>[x, f x,   f (f x)...]</code></li>
 </ul>
-<pre class="sourceCode literate literatehaskell"><code class="sourceCode literatehaskell"><span class="ot">&gt; first ::</span> (a <span class="ot">-&gt;</span> <span class="dt">Bool</span>) <span class="ot">-&gt;</span> [a] <span class="ot">-&gt;</span> a
-<span class="ot">&gt;</span> first p <span class="fu">=</span> head <span class="fu">.</span> dropWhile (not <span class="fu">.</span> p)
-<span class="ot">&gt;</span> 
-<span class="ot">&gt; shuffle ::</span> <span class="dt">Deck</span> <span class="ot">-&gt;</span> <span class="dt">Deck</span>
-<span class="ot">&gt;</span> shuffle d <span class="fu">=</span> snd <span class="fu">.</span> first (null <span class="fu">.</span> fst) <span class="fu">$</span> iterate step (d, [])</code></pre>
+<pre class="sourceCode literate literatehaskell"><code class="sourceCode literatehaskell"><span class="ot">&gt; shuffle ::</span> <span class="dt">Deck</span> <span class="ot">-&gt;</span> <span class="dt">Deck</span>
+<span class="ot">&gt;</span> shuffle <span class="fu">=</span> todo</code></pre>
 <p>More test properties: shuffling a deck should return another deck with the same number of cards:</p>
 <pre class="sourceCode literate literatehaskell"><code class="sourceCode literatehaskell"><span class="ot">&gt; prop_shuffle_sameLength ::</span> <span class="dt">Deck</span> <span class="ot">-&gt;</span> <span class="dt">Bool</span>
 <span class="ot">&gt;</span> prop_shuffle_sameLength deck <span class="fu">=</span> length (shuffle deck) <span class="fu">==</span> length deck</code></pre>
@@ -86,7 +80,7 @@ title: Permutations
 <span class="ot">&gt;</span>     last (shuffle deck) <span class="fu">==</span> topCard</code></pre>
 <p>Next up is a function <code>order</code> which, given a function, gives us the number of times we have to apply it to a given value to get that value again. So its type should be <code>Eq a =&gt; (a -&gt; a) -&gt; a -&gt; Int</code>. We need the <code>Eq</code> constraint so that we can test values to see if they're the same as the first one.</p>
 <pre class="sourceCode literate literatehaskell"><code class="sourceCode literatehaskell"><span class="ot">&gt; order ::</span> <span class="dt">Eq</span> a <span class="ot">=&gt;</span> (a <span class="ot">-&gt;</span> a) <span class="ot">-&gt;</span> a <span class="ot">-&gt;</span> <span class="dt">Int</span>
-<span class="ot">&gt;</span> order f z <span class="fu">=</span> (<span class="fu">+</span><span class="dv">1</span>) <span class="fu">.</span> length <span class="fu">.</span> takeWhile (<span class="fu">/=</span> z) <span class="fu">.</span> drop <span class="dv">1</span> <span class="fu">$</span> iterate f z</code></pre>
+<span class="ot">&gt;</span> order <span class="fu">=</span> todo</code></pre>
 <p>To test <code>order</code>: if we have a function that subtracts 1 from positive numbers and returns n otherwise, the number of times we have to apply it to <code>n</code> to get <code>n</code> again should be <code>n + 1</code>:</p>
 <pre class="sourceCode literate literatehaskell"><code class="sourceCode literatehaskell"><span class="ot">&gt; prop_order_subtractOne ::</span> <span class="dt">Int</span> <span class="ot">-&gt;</span> <span class="dt">Bool</span>
 <span class="ot">&gt;</span> prop_order_subtractOne n&#39; <span class="fu">=</span> order f n <span class="fu">==</span> n <span class="fu">+</span> <span class="dv">1</span>
@@ -96,7 +90,7 @@ title: Permutations
 <span class="ot">&gt;</span>         <span class="fu">|</span> otherwise <span class="fu">=</span> n</code></pre>
 <p>For our first attempt at answering the question, we can use a naive solution, which is just to keep shuffling the deck until we get the same deck again. We've got all the building blocks now, and all that remains is to put them together.</p>
 <pre class="sourceCode literate literatehaskell"><code class="sourceCode literatehaskell"><span class="ot">&gt; f1 ::</span> <span class="dt">Int</span> <span class="ot">-&gt;</span> <span class="dt">Int</span>
-<span class="ot">&gt;</span> f1 <span class="fu">=</span> order shuffle <span class="fu">.</span> makeDeck</code></pre>
+<span class="ot">&gt;</span> f1 <span class="fu">=</span> todo</code></pre>
 <p><code>f1</code> is easier to test by looking at particular cases. This code gives a few inputs and expected outputs for <code>f</code>. If you run the tests (with <code>runhaskell permutations.lhs</code>, as before) it will check that your <code>f1</code> works for all of these values.</p>
 <pre class="sourceCode literate literatehaskell"><code class="sourceCode literatehaskell"><span class="ot">&gt; examples_f ::</span> [(<span class="dt">Int</span>, <span class="dt">Int</span>)]
 <span class="ot">&gt;</span> examples_f <span class="fu">=</span>
@@ -161,15 +155,9 @@ g x = case x of
 <p>The next task is to write this smart constructor function. Let's call it <code>makeCycle</code>. It should take an infinite list of cycling values, cut it off at the first instance where a value is repeated, and then return a <code>Cycle</code> where the smallest value comes first.</p>
 <p>You might find it useful to define a function, <code>rotate</code>, which takes a list and moves one element from the front to the back.</p>
 <pre class="sourceCode literate literatehaskell"><code class="sourceCode literatehaskell"><span class="ot">&gt; rotate ::</span> [a] <span class="ot">-&gt;</span> [a]
-<span class="ot">&gt;</span> rotate (x<span class="fu">:</span>xs) <span class="fu">=</span> xs <span class="fu">++</span> [x]
-<span class="ot">&gt;</span> rotate [] <span class="fu">=</span> []</code></pre>
+<span class="ot">&gt;</span> rotate <span class="fu">=</span> todo</code></pre>
 <pre class="sourceCode literate literatehaskell"><code class="sourceCode literatehaskell"><span class="ot">&gt; makeCycle ::</span> [<span class="dt">Int</span>] <span class="ot">-&gt;</span> <span class="dt">Cycle</span>
-<span class="ot">&gt;</span> makeCycle (x<span class="fu">:</span>xs) <span class="fu">=</span>
-<span class="ot">&gt;</span>     <span class="kw">let</span> ys    <span class="fu">=</span> x <span class="fu">:</span> takeWhile (<span class="fu">/=</span> x) xs
-<span class="ot">&gt;</span>         h     <span class="fu">=</span> minimum ys
-<span class="ot">&gt;</span>         elems <span class="fu">=</span> first (\(y<span class="fu">:</span>_) <span class="ot">-&gt;</span> y <span class="fu">==</span> h) (iterate rotate ys)
-<span class="ot">&gt;</span>     <span class="kw">in</span>  <span class="dt">Cycle</span> elems
-<span class="ot">&gt;</span> makeCycle [] <span class="fu">=</span> <span class="dt">Cycle</span> []</code></pre>
+<span class="ot">&gt;</span> makeCycle <span class="fu">=</span> todo</code></pre>
 <p>To test <code>makeCycle</code>: if we take an infinite periodically cycling list, drop some arbitrary number of elements from the front, and call <code>makeCycle</code> on it, we should get the same cycle as if we hadn't dropped any.</p>
 <pre class="sourceCode literate literatehaskell"><code class="sourceCode literatehaskell"><span class="ot">&gt; prop_makeCycle_drop ::</span> [<span class="dt">Int</span>] <span class="ot">-&gt;</span> <span class="dt">Int</span> <span class="ot">-&gt;</span> <span class="dt">Bool</span>
 <span class="ot">&gt;</span> prop_makeCycle_drop list&#39; n&#39; <span class="fu">=</span>
@@ -180,14 +168,12 @@ g x = case x of
 <span class="ot">&gt;</span>     infiniteList <span class="fu">=</span> cycle <span class="fu">.</span> nub <span class="fu">$</span> list</code></pre>
 <p>Next: write a function that takes a <code>Cycle</code> and returns its length.</p>
 <pre class="sourceCode literate literatehaskell"><code class="sourceCode literatehaskell"><span class="ot">&gt; cycleLength ::</span> <span class="dt">Cycle</span> <span class="ot">-&gt;</span> <span class="dt">Int</span>
-<span class="ot">&gt;</span> cycleLength (<span class="dt">Cycle</span> n) <span class="fu">=</span> length n</code></pre>
+<span class="ot">&gt;</span> cycleLength <span class="fu">=</span> todo</code></pre>
 <p>Now write a function that takes a deck size, n, and returns the <em>graph</em> of the permutation for shuffling the deck with n cards, as a list of pairs mapping inputs to outputs. So for each input from 1 up to n there should be one pair in the result containing the input and the corresponding output. The order doesn't matter.</p>
 <pre class="sourceCode literate literatehaskell"><code class="sourceCode literatehaskell"><span class="ot">&gt;</span> <span class="kw">type</span> <span class="dt">PermutationGraph</span> <span class="fu">=</span> [(<span class="dt">Int</span>, <span class="dt">Int</span>)]
 <span class="ot">&gt;</span> 
 <span class="ot">&gt; permutation ::</span> <span class="dt">Int</span> <span class="ot">-&gt;</span> <span class="dt">PermutationGraph</span>
-<span class="ot">&gt;</span> permutation n <span class="fu">=</span> go <span class="dv">0</span> (unCardAll <span class="fu">.</span> shuffle <span class="fu">.</span> makeDeck <span class="fu">$</span> n)
-<span class="ot">&gt;</span>     <span class="kw">where</span> go m (x<span class="fu">:</span>xs) <span class="fu">=</span> (x, m<span class="fu">+</span><span class="dv">1</span>) <span class="fu">:</span> go (m<span class="fu">+</span><span class="dv">1</span>) xs
-<span class="ot">&gt;</span>           go _ [] <span class="fu">=</span> []</code></pre>
+<span class="ot">&gt;</span> permutation <span class="fu">=</span> todo</code></pre>
 <p>Here are some example inputs and outputs. (I've used <code>sort</code> so that the order doesn't matter). This says that, for example, the permutation graph for 4 should be <code>[(4,1),(2,2),(3,3),(1,4)]</code>. Again, these examples are included in the tests.</p>
 <pre class="sourceCode literate literatehaskell"><code class="sourceCode literatehaskell"><span class="ot">&gt; examples_permutation ::</span> [(<span class="dt">Int</span>, <span class="dt">PermutationGraph</span>)]
 <span class="ot">&gt;</span> examples_permutation <span class="fu">=</span>
@@ -205,33 +191,22 @@ g x = case x of
 </ul>
 <p>The infinite list should repeat periodically with all the values in a cycle; that is, the kind of value that <code>makeCycle</code> is expecting to get. So we've already done the last step of implementing this function; we just need to apply <code>makeCycle</code> to that infinite list.</p>
 <pre class="sourceCode literate literatehaskell"><code class="sourceCode literatehaskell"><span class="ot">&gt; extractCycle ::</span> <span class="dt">PermutationGraph</span> <span class="ot">-&gt;</span> <span class="dt">Cycle</span>
-<span class="ot">&gt;</span> extractCycle xs<span class="fu">@</span>(h<span class="fu">:</span>_) <span class="fu">=</span> makeCycle <span class="fu">$</span> go h xs
-<span class="ot">&gt;</span>     <span class="kw">where</span>
-<span class="ot">&gt;</span>     go (y, pos) ys <span class="fu">=</span> <span class="kw">case</span> lookup pos ys <span class="kw">of</span>
-<span class="ot">&gt;</span>         <span class="dt">Just</span> z <span class="ot">-&gt;</span> y <span class="fu">:</span> go (pos, z) ys
-<span class="ot">&gt;</span>         <span class="dt">Nothing</span> <span class="ot">-&gt;</span> cycle [y, pos]
-<span class="ot">&gt;</span> extractCycle [] <span class="fu">=</span> makeCycle []</code></pre>
+<span class="ot">&gt;</span> extractCycle <span class="fu">=</span> todo</code></pre>
 <p>Next up is a function that can extract <em>all</em> the cycles from a permutation graph. Your implementation should use <code>extractCycle</code> repeatedly to get all of the cycles out of the list.</p>
 <pre class="sourceCode literate literatehaskell"><code class="sourceCode literatehaskell"><span class="ot">&gt; decompose ::</span> <span class="dt">PermutationGraph</span> <span class="ot">-&gt;</span> [<span class="dt">Cycle</span>]
-<span class="ot">&gt;</span> decompose xs <span class="fu">=</span> foldl f [] <span class="fu">$</span> take (length xs) (iterate rotate xs)
-<span class="ot">&gt;</span>     <span class="kw">where</span>
-<span class="ot">&gt;</span>     f acc ys <span class="fu">=</span>
-<span class="ot">&gt;</span>         <span class="kw">let</span> cyc <span class="fu">=</span> extractCycle ys
-<span class="ot">&gt;</span>         <span class="kw">in</span> <span class="kw">if</span> cyc <span class="ot">`elem`</span> acc
-<span class="ot">&gt;</span>             <span class="kw">then</span> acc
-<span class="ot">&gt;</span>             <span class="kw">else</span> cyc <span class="fu">:</span> acc</code></pre>
+<span class="ot">&gt;</span> decompose <span class="fu">=</span> todo</code></pre>
 <p>Another QuickCheck property: The sum of cycle lengths after decomposing the permutation graph for a given integer n should equal n:</p>
 <pre class="sourceCode literate literatehaskell"><code class="sourceCode literatehaskell"><span class="ot">&gt; prop_decompose_sumCycleLengths ::</span> <span class="dt">Int</span> <span class="ot">-&gt;</span> <span class="dt">Bool</span>
 <span class="ot">&gt;</span> prop_decompose_sumCycleLengths n&#39; <span class="fu">=</span> sumCycleLengths n <span class="fu">==</span> n
 <span class="ot">&gt;</span>     <span class="kw">where</span>
 <span class="ot">&gt;</span>     n <span class="fu">=</span> abs n&#39; <span class="fu">+</span> <span class="dv">1</span>
 <span class="ot">&gt;</span>     sumCycleLengths <span class="fu">=</span> sum <span class="fu">.</span> map cycleLength <span class="fu">.</span> decompose <span class="fu">.</span> permutation</code></pre>
-<p>Once we have decomposed a permutation into a product of disjoint cycles we only need to find the least common multiple of their lengths. Write a function that takes a list of <code>Int</code>, and returns the least common multiple of all of them. The Prelude gives us <code>lcm</code> already, which works on two numbers; you might find it helpful.</p>
+<p>Once we have decomposed a permutation into a product of disjoint cycles, the final step is finding the least common multiple of their lengths. Write a function that takes a list of <code>Int</code>, and returns the least common multiple of all of them. The Prelude gives us <code>lcm</code>, but it works on two numbers. You might find it helpful here.</p>
 <pre class="sourceCode literate literatehaskell"><code class="sourceCode literatehaskell"><span class="ot">&gt; lcm&#39; ::</span> [<span class="dt">Int</span>] <span class="ot">-&gt;</span> <span class="dt">Int</span>
-<span class="ot">&gt;</span> lcm&#39; <span class="fu">=</span> foldl lcm <span class="dv">1</span></code></pre>
+<span class="ot">&gt;</span> lcm&#39; <span class="fu">=</span> todo</code></pre>
 <p>We have all the building blocks now: write another implementation of <code>f</code> using <code>permutation</code>, <code>decompose</code>, <code>cycleLength</code>, and <code>lcm'</code>.</p>
 <pre class="sourceCode literate literatehaskell"><code class="sourceCode literatehaskell"><span class="ot">&gt; f2 ::</span> <span class="dt">Int</span> <span class="ot">-&gt;</span> <span class="dt">Int</span>
-<span class="ot">&gt;</span> f2 <span class="fu">=</span> lcm&#39; <span class="fu">.</span> map cycleLength <span class="fu">.</span> decompose <span class="fu">.</span> permutation</code></pre>
+<span class="ot">&gt;</span> f2 <span class="fu">=</span> todo</code></pre>
 <p>Now that we have two different implementations of <code>f</code>, we can test to see whether we got them both right by seeing if they are equal. Because their implementations are quite different this will probably be quite a good indication of whether we got it right.</p>
 <pre class="sourceCode literate literatehaskell"><code class="sourceCode literatehaskell"><span class="ot">&gt; prop_f1_f2_identical ::</span> <span class="dt">Int</span> <span class="ot">-&gt;</span> <span class="dt">Bool</span>
 <span class="ot">&gt;</span> prop_f1_f2_identical x <span class="fu">=</span> f1 x <span class="fu">==</span> f2 x</code></pre>
