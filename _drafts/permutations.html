@@ -181,8 +181,8 @@ g x = case x of
 <span class="ot">&gt; prop_perm_perm&#39;_identical ::</span> <span class="dt">Int</span> <span class="ot">-&gt;</span> <span class="dt">Bool</span>
 <span class="ot">&gt;</span> prop_perm_perm&#39;_identical x <span class="fu">=</span> sort (perm x) <span class="fu">==</span> sort (perm&#39; x)
 <span class="ot">&gt;</span> 
-<span class="ot">&gt;</span> <span class="co">-- Take a permutation as [(Int, Int)] and represent it as a product of disjoint</span>
-<span class="ot">&gt;</span> <span class="co">-- cycles.</span>
+<span class="ot">&gt;</span> <span class="co">-- Take a permutation as [(Int, Int)] and represent it as a product of</span>
+<span class="ot">&gt;</span> <span class="co">-- disjoint cycles.</span>
 <span class="ot">&gt; decompose ::</span> [(<span class="dt">Int</span>, <span class="dt">Int</span>)] <span class="ot">-&gt;</span> [<span class="dt">Cycle</span>]
 <span class="ot">&gt;</span> decompose xs <span class="fu">=</span> foldl f [] <span class="fu">$</span> take (length xs) (iterate rotate xs)
 <span class="ot">&gt;</span>     <span class="kw">where</span>
@@ -226,7 +226,8 @@ g x = case x of
 <span class="ot">&gt;</span>             <span class="co">-- check all of our properties, while shrinking the sizes</span>
 <span class="ot">&gt;</span>             <span class="kw">let</span><span class="ot"> qc ::</span> <span class="dt">Testable</span> a <span class="ot">=&gt;</span> a <span class="ot">-&gt;</span> <span class="dt">String</span> <span class="ot">-&gt;</span> <span class="dt">IO</span> ()
 <span class="ot">&gt;</span>                 qc prop msg <span class="fu">=</span>
-<span class="ot">&gt;</span>                     putStrLn (<span class="st">&quot;Testing: &quot;</span> <span class="fu">++</span> msg) <span class="fu">&gt;&gt;</span> quickCheck (sensible prop)
+<span class="ot">&gt;</span>                     putStrLn (<span class="st">&quot;Testing: &quot;</span> <span class="fu">++</span> msg) <span class="fu">&gt;&gt;</span>
+<span class="ot">&gt;</span>                         quickCheck (sensible prop)
 <span class="ot">&gt;</span>             qc prop_step_sameLength <span class="st">&quot;prop_step_sameLength&quot;</span>
 <span class="ot">&gt;</span>             qc prop_step_oneFewer <span class="st">&quot;prop_step_oneFewer&quot;</span>
 <span class="ot">&gt;</span>             qc prop_shuffle_sameLength <span class="st">&quot;prop_shuffle_sameLength&quot;</span>

@@ -213,7 +213,8 @@ has 5 numbers in it. Each time we apply `g`, we move the cycle around by 1
 step; therefore moving the cycle around 5 times gets us back to where we
 started.
 
-What about the permutation for a deck of 8 cards? In Haskell, it would look like this:
+What about the permutation for a deck of 8 cards? In Haskell, it would look
+like this:
 
 ```
 g :: S -> S
@@ -232,7 +233,10 @@ In this case, `g` takes 1 to 8, and 8... back to 1. What can we do when the
 cycle doesn't have all of the numbers in it?
 
 The answer is to take the next number that isn't in any of our cycles and make
-a new one. So given that one of the cycles in `g` is `(1 8)`, we can start with 2, to get another cycle: `(2 4)`. We are still missing 3, so start with 3 to get another cycle: `(3 7 5 6)`. Now we're done; we have 3 cycles which when put together give us the whole function:
+a new one. So given that one of the cycles in `g` is `(1 8)`, we can start with
+2, to get another cycle: `(2 4)`. We are still missing 3, so start with 3 to
+get another cycle: `(3 7 5 6)`. Now we're done; we have 3 cycles which when put
+together give us the whole function:
 
 ```
 g = (1 8)(2 4)(3 7 5 6)
@@ -337,8 +341,8 @@ Next: write a function that takes a `Cycle` and returns its length.
 > prop_perm_perm'_identical :: Int -> Bool
 > prop_perm_perm'_identical x = sort (perm x) == sort (perm' x)
 >
-> -- Take a permutation as [(Int, Int)] and represent it as a product of disjoint
-> -- cycles.
+> -- Take a permutation as [(Int, Int)] and represent it as a product of
+> -- disjoint cycles.
 > decompose :: [(Int, Int)] -> [Cycle]
 > decompose xs = foldl f [] $ take (length xs) (iterate rotate xs)
 >     where
@@ -383,7 +387,8 @@ Next: write a function that takes a `Cycle` and returns its length.
 >             -- check all of our properties, while shrinking the sizes
 >             let qc :: Testable a => a -> String -> IO ()
 >                 qc prop msg =
->                     putStrLn ("Testing: " ++ msg) >> quickCheck (sensible prop)
+>                     putStrLn ("Testing: " ++ msg) >>
+>                         quickCheck (sensible prop)
 >             qc prop_step_sameLength "prop_step_sameLength"
 >             qc prop_step_oneFewer "prop_step_oneFewer"
 >             qc prop_shuffle_sameLength "prop_shuffle_sameLength"
