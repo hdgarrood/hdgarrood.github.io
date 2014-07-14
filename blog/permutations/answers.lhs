@@ -74,7 +74,10 @@ pile, and return an updated deck and pile, so let's go with `(Deck, Deck) ->
 (Deck, Deck)`.
 
 > step :: (Deck, Deck) -> (Deck, Deck)
-> step = todo
+> step (deck, pile) = case deck of
+>     a:b:cs -> (cs ++ [b], a : pile)
+>     a:cs   -> (cs, a : pile)
+>     []     -> ([], pile)
 
 Now, we should think about what properties our `step` function should satisfy,
 so that we can get QuickCheck to test them for us. Here's one: after performing
@@ -114,8 +117,11 @@ that might come in handy:
   value, and returns all the intermediate values. So `iterate f x` is `[x, f x,
   f (f x)...]`
 
+> first :: (a -> Bool) -> [a] -> a
+> first p = head . dropWhile (not . p)
+>
 > shuffle :: Deck -> Deck
-> shuffle = todo
+> shuffle d = snd . first (null . fst) $ iterate step (d, [])
 
 More test properties: shuffling a deck should return another deck with the same
 number of cards:
@@ -136,7 +142,7 @@ should be `Eq a => (a -> a) -> a -> Int`. We need the `Eq` constraint so that
 we can test values to see if they're the same as the first one.
 
 > order :: Eq a => (a -> a) -> a -> Int
-> order = todo
+> order f z = (+1) . length . takeWhile (/= z) . drop 1 $ iterate f z
 
 To test `order`: if we have a function that subtracts 1 from positive numbers
 and returns n otherwise, the number of times we have to apply it to `n` to get `n` again should be `n + 1`:
@@ -154,7 +160,7 @@ We've got all the building blocks now, and all that remains is to put them
 together.
 
 > f1 :: Int -> Int
-> f1 = todo
+> f1 = order shuffle . makeDeck
 
 `f1` is easier to test by looking at particular cases. This code gives a few
 inputs and expected outputs for `f`.  If you run the tests (with `runhaskell
@@ -319,10 +325,16 @@ You might find it useful to define a function, `rotate`, which takes a list and
 moves one element from the front to the back.
 
 > rotate :: [a] -> [a]
-> rotate = todo
+> rotate (x:xs) = xs ++ [x]
+> rotate [] = []
 
 > makeCycle :: [Int] -> Cycle
-> makeCycle = todo
+> makeCycle (x:xs) =
+>     let ys    = x : takeWhile (/= x) xs
+>         h     = minimum ys
+>         elems = first (\(y:_) -> y == h) (iterate rotate ys)
+>     in  Cycle elems
+> makeCycle [] = Cycle []
 
 To test `makeCycle`: if we take an infinite periodically cycling list, drop
 some arbitrary number of elements from the front, and call `makeCycle` on it,
@@ -339,7 +351,7 @@ we should get the same cycle as if we hadn't dropped any.
 Next: write a function that takes a `Cycle` and returns its length.
 
 > cycleLength :: Cycle -> Int
-> cycleLength = todo
+> cycleLength (Cycle n) = length n
 
 Now write a function that takes a deck size, n, and returns the *graph* of
 the permutation for shuffling the deck with n cards, as a list of pairs mapping
@@ -350,7 +362,9 @@ doesn't matter.
 > type PermutationGraph = [(Int, Int)]
 >
 > permutation :: Int -> PermutationGraph
-> permutation = todo
+> permutation n = go 0 (unCardAll . shuffle . makeDeck $ n)
+>     where go m (x:xs) = (x, m+1) : go (m+1) xs
+>           go _ [] = []
 
 Here are some example inputs and outputs. (I've used `sort` so that the order
 doesn't matter). This says that, for example, the permutation graph for 4
@@ -381,14 +395,25 @@ already done the last step of implementing this function; we just need to apply
 `makeCycle` to that infinite list.
 
 > extractCycle :: PermutationGraph -> Cycle
-> extractCycle = todo
+> extractCycle xs@(h:_) = makeCycle $ go h xs
+>     where
+>     go (y, pos) ys = case lookup pos ys of
+>         Just z -> y : go (pos, z) ys
+>         Nothing -> cycle [y, pos]
+> extractCycle [] = makeCycle []
 
 Next up is a function that can extract *all* the cycles from a permutation
 graph.  Your implementation should use `extractCycle` repeatedly to get all of
 the cycles out of the list.
 
 > decompose :: PermutationGraph -> [Cycle]
-> decompose = todo
+> decompose xs = foldl f [] $ take (length xs) (iterate rotate xs)
+>     where
+>     f acc ys =
+>         let cyc = extractCycle ys
+>         in if cyc `elem` acc
+>             then acc
+>             else cyc : acc
 
 Another QuickCheck property: The sum of cycle lengths after decomposing the
 permutation graph for a given integer n should equal n:
@@ -406,13 +431,13 @@ all of them.  The Prelude gives us `lcm`, but it works on two numbers. You
 might find it helpful here.
 
 > lcm' :: [Int] -> Int
-> lcm' = todo
+> lcm' = foldl lcm 1
 
 We have all the building blocks now: write another implementation of `f` using
 `permutation`, `decompose`, `cycleLength`, and `lcm'`.
 
 > f2 :: Int -> Int
-> f2 = todo
+> f2 = lcm' . map cycleLength . decompose . permutation
 
 Now that we have two different implementations of `f`, we can test to see
 whether we got them both right by seeing if they are equal. Because their
