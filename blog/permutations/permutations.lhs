@@ -182,9 +182,9 @@ implementation, we need to do some maths.
 
 `shuffle` is a function of type `Deck -> Deck`, but we can also imagine it like
 a function `S -> S`, where `S` is the set of natural numbers from 1 up to n.
-Let's call it `g`. `g` takes the initial position of a card in the deck, and
-gives you the position after shuffling the deck once.  So in the case where n =
-5, we have:
+Let's call this new function `g`. `g` takes the initial position of a card in
+the deck, and gives you the position after shuffling the deck once.  So in the
+case where n = 5, we have:
 
 ```
 g :: S -> S
@@ -321,8 +321,8 @@ The next task is to write this smart constructor function. Let's call it
 the first instance where a value is repeated, and then return a `Cycle` where
 the smallest value comes first.
 
-You might find this function, `rotate`, useful. It takes a list and moves the
-element from the front to the back.
+You might find it useful to define a function, `rotate`, which takes a list and
+moves one element from the front to the back.
 
 > rotate :: [a] -> [a]
 > rotate (x:xs) = xs ++ [x]
@@ -338,7 +338,7 @@ element from the front to the back.
 
 To test `makeCycle`: if we take an infinite periodically cycling list, drop
 some arbitrary number of elements from the front, and call `makeCycle` on it,
-we should get the same result as if we hadn't dropped any.
+we should get the same cycle as if we hadn't dropped any.
 
 > prop_makeCycle_drop :: [Int] -> Int -> Bool
 > prop_makeCycle_drop list' n' =
@@ -402,9 +402,9 @@ already done the last step of implementing this function; we just need to apply
 >         Nothing -> cycle [y, pos]
 > extractCycle [] = makeCycle []
 
-Next up is a function that can extract all the cycles from a permutation graph.
-Your implementation should use `extractCycle` repeatedly to get all of the
-cycles out of the list.
+Next up is a function that can extract *all* the cycles from a permutation
+graph.  Your implementation should use `extractCycle` repeatedly to get all of
+the cycles out of the list.
 
 > decompose :: PermutationGraph -> [Cycle]
 > decompose xs = foldl f [] $ take (length xs) (iterate rotate xs)
@@ -419,16 +419,16 @@ Another QuickCheck property: The sum of cycle lengths after decomposing the
 permutation graph for a given integer n should equal n:
 
 > prop_decompose_sumCycleLengths :: Int -> Bool
-> prop_decompose_sumCycleLengths n' = sumCycleLengths == n
+> prop_decompose_sumCycleLengths n' = sumCycleLengths n == n
 >     where
 >     n = abs n' + 1
->     sumCycleLengths = sum . map cycleLength . decompose . permutation $ n
+>     sumCycleLengths = sum . map cycleLength . decompose . permutation
 
-Once we have decomposed a permutation into a product of disjoint cycles we only
-need to find the least common multiple of their lengths. Write a function that
-takes a list of `Int`, and returns the least common multiple of all of them.
-The Prelude gives us `lcm` already, which works on two numbers; you might find
-it helpful.
+Once we have decomposed a permutation into a product of disjoint cycles, the
+final step is finding the least common multiple of their lengths. Write a
+function that takes a list of `Int`, and returns the least common multiple of
+all of them.  The Prelude gives us `lcm`, but it works on two numbers. You
+might find it helpful here.
 
 > lcm' :: [Int] -> Int
 > lcm' = foldl lcm 1
