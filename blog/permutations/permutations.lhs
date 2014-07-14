@@ -280,7 +280,8 @@ g = Cycle [1,5,3,4,2]
 There's a small problem here: suppose we make another `Cycle` from the list
 `[5,3,4,2,1]`. This `Cycle` still takes 1 to 5, 5 to 3, and so on, like `g`.
 So we should consider them to be the same. However, Haskell will look at the
-inner list to decide whether two cycles are equal. Because the lists are different, Haskell will think that the cycles are different.
+inner list to decide whether two cycles are equal. Because the lists are
+different, Haskell will think that the cycles are different.
 
 We can get around this issue by saying that a Cycle should always start with
 its smallest element. So the second representation of `g` above would be
