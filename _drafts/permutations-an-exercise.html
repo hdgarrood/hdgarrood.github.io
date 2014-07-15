@@ -4,7 +4,7 @@ title: "Permutations: an exercise"
 ---
 <p>A colleague of mine severely nerd-sniped me at work recently with this rather innocuous-sounding challenge. I think it's a rather lovely little exercise and decided to write up my solution.</p>
 <p>This post is designed to be read as a programming exercise. It will guide you along as it helps you break the problem into parts. If you want, you can skip to the end and read all the solutions (but that would be cheating).</p>
-<p>Download the <a href="permutations.lhs">literate haskell source file</a> first; you can fill in the gaps and then compile it or load it into GHCi (with <code>:l permutations.lhs</code>, like any other haskell file.</p>
+<p>Download the <a href="permutations.lhs">literate haskell source file</a> first; you can fill in the gaps and then compile it with <code>ghc permutations.lhs</code> or load it into GHCi with <code>:l permutations.lhs</code>, like any other haskell file.</p>
 <p>Consider the following shuffling technique:</p>
 <ol style="list-style-type: decimal">
 <li>Take one card from the top of the deck and discard it into a second pile.</li>
@@ -118,25 +118,31 @@ g x = case x of
 <pre><code>g = (1 5 3 4 2)</code></pre>
 <p>This is called <em>cycle notation</em>, and is a useful way of writing permutations. It says that <code>g</code> takes 1 to 5, 5 to 3, 3 to 4, 4 to 2, and 2 back to 1.</p>
 <p>We can tell from this notation that <code>g</code> has an order of 5, because the cycle has 5 numbers in it. Each time we apply <code>g</code>, we move the cycle around by 1 step; therefore moving the cycle around 5 times gets us back to where we started.</p>
-<p>What about the permutation for a deck of 8 cards? In Haskell, it would look like this:</p>
+<p>What about the permutation for a deck of 13 cards? In Haskell, it would look like this:</p>
 <pre><code>g :: S -&gt; S
 g x = case x of
-    1 -&gt; 8
-    2 -&gt; 4
-    3 -&gt; 7
-    4 -&gt; 2
-    5 -&gt; 6
+    1 -&gt; 13
+    2 -&gt; 2
+    3 -&gt; 12
+    4 -&gt; 6
+    5 -&gt; 11
     6 -&gt; 3
-    7 -&gt; 5
-    8 -&gt; 1</code></pre>
-<p>In this case, <code>g</code> takes 1 to 8, and 8... back to 1. What can we do when the cycle doesn't have all of the numbers in it?</p>
-<p>The answer is to take the next number that isn't in any of our cycles and make a new one. So given that one of the cycles in <code>g</code> is <code>(1 8)</code>, we can start with 2, to get another cycle: <code>(2 4)</code>. We are still missing 3, so start with 3 to get another cycle: <code>(3 7 5 6)</code>. Now we're done; we have 3 cycles which, when put together, tell us what happens to each of the numbers 1 to 8:</p>
-<pre><code>g = (1 8)(2 4)(3 7 5 6)</code></pre>
+    7 -&gt; 10
+    8 -&gt; 5
+    9 -&gt; 9
+    10 -&gt; 1
+    11 -&gt; 8
+    12 -&gt; 4
+    13 -&gt; 7</code></pre>
+<p>In this case, <code>g</code> takes 1 to 13, 13 to 7, 7 to 10, and 10... back to 1. What can we do when the cycle doesn't have all of the numbers in it?</p>
+<p>The answer is to take the next number that isn't in any of our cycles and make a new one. So given that one of the cycles in <code>g</code> is <code>(1 13 7 10)</code>, we can start with 2, to get another cycle: <code>(2)</code>. We are still missing 3, so start with 3 to get another cycle: <code>(3 12 4 6)</code>. Repeat this until all of the numbers occur in at least one cycle:</p>
+<pre><code>g = (1 13 7 10)(3 12 4 6)(5 11 8)</code></pre>
+<p>We usually leave out one-cycles (eg: <code>(2)</code>, <code>(9)</code>) because they don't change the meaning of the function.</p>
 <p>Since no number appears in more than one of these cycles (another way of saying this is that they are <em>disjoint</em>), when trying to determine the order, we can consider each of them individually.</p>
-<p>The first cycle has two elements, so it must have an order of 2. Does that mean <code>g</code> has an order of two? No, because applying <code>g</code> twice to 3 gives us 5.</p>
-<p>We know that <code>(1 8)</code> on its own has an order of 2, and so does <code>(2 4)</code>. However, <code>(3 7 5 6)</code> has an order of 4. What's the minimum number of times we have to apply <code>g</code> to get all of these back to where they started?</p>
-<p>The answer is the least common multiple of all of the cycle lengths. So in this case, it's 4.</p>
+<p>The first cycle has 4 elements, so on its own, it must have an order of 4. Does that mean <code>g</code> has an order of 4? No, because applying <code>g</code> four times to 5 gives us 11.</p>
+<p>We know that <code>(1 13 7 10)</code> on its own has an order of 4, and so does <code>(3 12 4 6)</code>. However, <code>(5 11 8)</code> has an order of 3. What's the minimum number of times we have to apply <code>g</code> to get all of these back to where they started?</p>
 <p>{% include permutations-an-exercise/cycle-order-viz.html %}</p>
+<p>The answer, which hopefully is demonstrated by the visualisation, is the least common multiple of all of the cycle lengths. So in this case, it's 12.</p>
 <p>So now we have a new way of calculating the order of the shuffle for a given deck size: do the shuffle once, use the resulting deck to work out how to represent the shuffle as a set of disjoint cycles, and then get the least common multiple of the cycle lengths.</p>
 <p>First we need a way of representing a cycle in Haskell. Let's go with this:</p>
 <pre class="sourceCode literate literatehaskell"><code class="sourceCode literatehaskell"><span class="ot">&gt;</span> <span class="kw">newtype</span> <span class="dt">Cycle</span> <span class="fu">=</span> <span class="dt">Cycle</span> [<span class="dt">Int</span>]

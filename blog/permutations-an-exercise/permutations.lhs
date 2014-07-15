@@ -7,8 +7,8 @@ along as it helps you break the problem into parts. If you want, you can skip
 to the end and read all the solutions (but that would be cheating).
 
 Download the [literate haskell source file](permutations.lhs) first; you can
-fill in the gaps and then compile it or load it into GHCi (with `:l
-permutations.lhs`, like any other haskell file.
+fill in the gaps and then compile it with `ghc permutations.lhs` or load it
+into GHCi with `:l permutations.lhs`, like any other haskell file.
 
 Consider the following shuffling technique:
 
@@ -226,50 +226,59 @@ has 5 numbers in it. Each time we apply `g`, we move the cycle around by 1
 step; therefore moving the cycle around 5 times gets us back to where we
 started.
 
-What about the permutation for a deck of 8 cards? In Haskell, it would look
+What about the permutation for a deck of 13 cards? In Haskell, it would look
 like this:
 
 ```
 g :: S -> S
 g x = case x of
-    1 -> 8
-    2 -> 4
-    3 -> 7
-    4 -> 2
-    5 -> 6
+    1 -> 13
+    2 -> 2
+    3 -> 12
+    4 -> 6
+    5 -> 11
     6 -> 3
-    7 -> 5
-    8 -> 1
+    7 -> 10
+    8 -> 5
+    9 -> 9
+    10 -> 1
+    11 -> 8
+    12 -> 4
+    13 -> 7
 ```
 
-In this case, `g` takes 1 to 8, and 8... back to 1. What can we do when the
-cycle doesn't have all of the numbers in it?
+In this case, `g` takes 1 to 13, 13 to 7, 7 to 10, and 10... back to 1. What
+can we do when the cycle doesn't have all of the numbers in it?
 
 The answer is to take the next number that isn't in any of our cycles and make
-a new one. So given that one of the cycles in `g` is `(1 8)`, we can start with
-2, to get another cycle: `(2 4)`. We are still missing 3, so start with 3 to
-get another cycle: `(3 7 5 6)`. Now we're done; we have 3 cycles which, when
-put together, tell us what happens to each of the numbers 1 to 8:
+a new one. So given that one of the cycles in `g` is `(1 13 7 10)`, we can
+start with 2, to get another cycle: `(2)`. We are still missing 3, so start
+with 3 to get another cycle: `(3 12 4 6)`. Repeat this until all of the numbers
+occur in at least one cycle:
 
 ```
-g = (1 8)(2 4)(3 7 5 6)
+g = (1 13 7 10)(3 12 4 6)(5 11 8)
 ```
+
+We usually leave out one-cycles (eg: `(2)`, `(9)`) because they don't change
+the meaning of the function.
 
 Since no number appears in more than one of these cycles (another way of saying
 this is that they are *disjoint*), when trying to determine the order, we can
 consider each of them individually.
 
-The first cycle has two elements, so it must have an order of 2. Does that mean
-`g` has an order of two? No, because applying `g` twice to 3 gives us 5.
+The first cycle has 4 elements, so on its own, it must have an order of 4. Does
+that mean `g` has an order of 4? No, because applying `g` four times to 5 gives
+us 11.
 
-We know that `(1 8)` on its own has an order of 2, and so does `(2 4)`.
-However, `(3 7 5 6)` has an order of 4. What's the minimum number of times we
-have to apply `g` to get all of these back to where they started?
-
-The answer is the least common multiple of all of the cycle lengths. So in this
-case, it's 4.
+We know that `(1 13 7 10)` on its own has an order of 4, and so does `(3 12 4
+6)`.  However, `(5 11 8)` has an order of 3. What's the minimum number of times
+we have to apply `g` to get all of these back to where they started?
 
 {% include permutations-an-exercise/cycle-order-viz.html %}
+
+The answer, which hopefully is demonstrated by the visualisation, is the least
+common multiple of all of the cycle lengths. So in this case, it's 12.
 
 So now we have a new way of calculating the order of the shuffle for a given
 deck size: do the shuffle once, use the resulting deck to work out how to

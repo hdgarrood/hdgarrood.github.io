@@ -1,0 +1,144 @@
+<div id="cycle-order-viz">
+<div id="cycle-order-viz-svg-container"></div>
+<button id="prev">Prev</button>
+<button id="next">Next</button>
+</div>
+
+<style>
+#cycle-order-viz {
+    margin-left: auto;
+    margin-right: auto;
+    width: 100%;
+    text-align: center;
+}
+
+.line {
+  fill: none;
+  stroke: #999;
+  stroke-width: 1.5px;
+}
+
+
+</style>
+<script type="text/javascript">
+(function() {
+function initialState() {
+    return [
+        [1, 13, 7, 10],
+        [3, 12, 4, 6],
+        [5, 11, 8],
+    ]
+}
+
+function nextState(state) {
+    return state.map(cycle)
+}
+
+function cycle(arr) {
+    var first = arr[0]
+    return arr.slice(1).concat([first])
+}
+
+function getAllStates() {
+    var numStates = 4,
+        state = initialState(),
+        states = [state],
+        i = 1
+
+    while (i < numStates) {
+        state = nextState(state)
+        states.push(state)
+        i++
+    }
+
+    return states
+}
+
+function by(attr) {
+    return function(x) {
+        return x[attr]
+    }
+}
+
+function upTo(n) {
+    var result = [],
+        i = 0
+
+    while (i <= n) {
+        result.push(i)
+        i++
+    }
+
+    return result
+}
+
+// give the points of a polygon with given number of sides and radius.
+function polygon(n, radius) {
+    return _.map(upTo(n - 1), function(x) {
+            var theta = 2 * Math.PI * x / n
+            return [radius * Math.cos(theta), radius * Math.sin(theta)]
+        })
+}
+
+function drawCycle(svg, cycle, radius) {
+    var line = d3.svg.line()
+        .interpolate('cardinal-closed')
+
+    var g = svg.append('g')
+    var points = polygon(cycle.length, radius)
+
+    var path = g.append('path')
+        .datum(points)
+        .attr('class', 'line')
+        .attr('d', line)
+
+
+    var inputs = g.selectAll('text')
+        .data(_.zip(cycle, points))
+
+    inputs.enter()
+            .append('circle')
+            .attr('cx', function(d) { return d[1][0] })
+            .attr('cy', function(d) { return d[1][1] })
+            .attr('r', 20)
+            .attr('fill', '#eee')
+
+    inputs.enter()
+            .append('text')
+            .attr('x', function(d) { return d[1][0] })
+            .attr('y', function(d) { return d[1][1] })
+            .text(function(d) { return d[0] })
+            .attr('text-anchor', 'middle')
+            .attr('dominant-baseline', 'central')
+
+    return g
+}
+
+function drawCycles(svg, state, radius) {
+    var translateInitial = 100,
+        translateGap = 200
+
+    _.map([0,1,2], function(n) {
+        var x = translateInitial + (n * translateGap)
+        drawCycle(svg, state[n], radius)
+            .attr('transform', 'translate(' + x + ', 80)')
+    })
+}
+
+function start() {
+    var width        = 600,
+        height       = 300,
+        cycleRadius  = 40,
+        states       = getAllStates(),
+        currentIndex = 0
+
+    var svg = d3.select("#cycle-order-viz-svg-container")
+                .append("svg")
+                    .attr("width", width)
+                    .attr("height", height)
+
+    drawCycles(svg, states[0], cycleRadius)
+}
+start()
+})()
+</script>
