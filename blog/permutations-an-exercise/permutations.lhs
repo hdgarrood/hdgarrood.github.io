@@ -297,7 +297,7 @@ First we need a way of representing a cycle in Haskell. Let's go with this:
 >         join glue (y:ys) = y ++ (concatMap (glue ++) ys)
 >         join _ [] = ""
 
-So a `Cycle` is just a list of Ints. So the cycle for `g` when n = 5 would be:
+So the cycle for `g` when n = 5 would be:
 
 ```
 g = Cycle [1,5,3,4,2]

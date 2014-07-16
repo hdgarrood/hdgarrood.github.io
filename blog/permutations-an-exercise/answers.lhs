@@ -7,8 +7,8 @@ along as it helps you break the problem into parts. If you want, you can skip
 to the end and read all the solutions (but that would be cheating).
 
 Download the [literate haskell source file](permutations.lhs) first; you can
-fill in the gaps and then compile it or load it into GHCi (with `:l
-permutations.lhs`, like any other haskell file.
+fill in the gaps and then compile it with `ghc permutations.lhs` or load it
+into GHCi with `:l permutations.lhs`, like any other haskell file.
 
 Consider the following shuffling technique:
 
@@ -21,7 +21,7 @@ Consider the following shuffling technique:
 
 For example, suppose we have a deck with 5 cards. The process looks like this:
 
-{% include permutations/shuffle-viz.html %}
+{% include permutations-an-exercise/shuffle-viz.html %}
 
 The problem is: how many shuffles does it take until a deck is in the same
 order as when you started, for a deck with an arbitrary number of cards? Write
@@ -75,14 +75,14 @@ pile, and return an updated deck and pile, so let's go with `(Deck, Deck) ->
 
 > step :: (Deck, Deck) -> (Deck, Deck)
 > step (deck, pile) = case deck of
->     a:b:cs -> (cs ++ [b], a : pile)
->     a:cs   -> (cs, a : pile)
->     []     -> ([], pile)
+>       a:b:cs -> (cs ++ [b], a : pile)
+>       [a]    -> ([], a : pile)
+>       []     -> ([], pile)
 
 Now, we should think about what properties our `step` function should satisfy,
 so that we can get QuickCheck to test them for us. Here's one: after performing
-`step` n times on a deck, we should end up with the same number of cards that
-we started with:
+`step` some arbitrary number of times on a deck, we should end up with the same
+number of cards that we started with:
 
 > prop_step_sameLength :: Deck -> Int -> Bool
 > prop_step_sameLength deck n' =
@@ -121,10 +121,12 @@ that might come in handy:
 > first p = head . dropWhile (not . p)
 >
 > shuffle :: Deck -> Deck
-> shuffle d = snd . first (null . fst) $ iterate step (d, [])
+> shuffle = snd . first (null . fst) . steps . (\d -> (d, []))
+>   where
+>   steps = iterate step
 
-More test properties: shuffling a deck should return another deck with the same
-number of cards:
+Test properties for `shuffle`: shuffling a deck should return another deck with
+the same number of cards:
 
 > prop_shuffle_sameLength :: Deck -> Bool
 > prop_shuffle_sameLength deck = length (shuffle deck) == length deck
@@ -142,10 +144,11 @@ should be `Eq a => (a -> a) -> a -> Int`. We need the `Eq` constraint so that
 we can test values to see if they're the same as the first one.
 
 > order :: Eq a => (a -> a) -> a -> Int
-> order f z = (+1) . length . takeWhile (/= z) . drop 1 $ iterate f z
+> order f z = fst . first ((== z) . snd) . drop 1 . zip [0..] . iterate f $ z
 
-To test `order`: if we have a function that subtracts 1 from positive numbers
-and returns n otherwise, the number of times we have to apply it to `n` to get `n` again should be `n + 1`:
+To test `order`: Suppose we have a function f, and some arbitrary number n.
+Define f such that `f x` is x - 1 for positive x, and n otherwise.  Then, the
+number of times we have to apply f to n to get n again should be n + 1:
 
 > prop_order_subtractOne :: Int -> Bool
 > prop_order_subtractOne n' = order f n == n + 1
@@ -232,47 +235,59 @@ has 5 numbers in it. Each time we apply `g`, we move the cycle around by 1
 step; therefore moving the cycle around 5 times gets us back to where we
 started.
 
-What about the permutation for a deck of 8 cards? In Haskell, it would look
+What about the permutation for a deck of 13 cards? In Haskell, it would look
 like this:
 
 ```
 g :: S -> S
 g x = case x of
-    1 -> 8
-    2 -> 4
-    3 -> 7
-    4 -> 2
-    5 -> 6
+    1 -> 13
+    2 -> 2
+    3 -> 12
+    4 -> 6
+    5 -> 11
     6 -> 3
-    7 -> 5
-    8 -> 1
+    7 -> 10
+    8 -> 5
+    9 -> 9
+    10 -> 1
+    11 -> 8
+    12 -> 4
+    13 -> 7
 ```
 
-In this case, `g` takes 1 to 8, and 8... back to 1. What can we do when the
-cycle doesn't have all of the numbers in it?
+In this case, `g` takes 1 to 13, 13 to 7, 7 to 10, and 10... back to 1. What
+can we do when the cycle doesn't have all of the numbers in it?
 
 The answer is to take the next number that isn't in any of our cycles and make
-a new one. So given that one of the cycles in `g` is `(1 8)`, we can start with
-2, to get another cycle: `(2 4)`. We are still missing 3, so start with 3 to
-get another cycle: `(3 7 5 6)`. Now we're done; we have 3 cycles which, when
-put together, tell us what happens to each of the numbers 1 to 8:
+a new one. So given that one of the cycles in `g` is `(1 13 7 10)`, we can
+start with 2, to get another cycle: `(2)`. We are still missing 3, so start
+with 3 to get another cycle: `(3 12 4 6)`. Repeat this until all of the numbers
+occur in at least one cycle:
 
 ```
-g = (1 8)(2 4)(3 7 5 6)
+g = (1 13 7 10)(3 12 4 6)(5 11 8)
 ```
+
+We usually leave out one-cycles (eg: `(2)`, `(9)`) because they don't change
+the meaning of the function.
 
 Since no number appears in more than one of these cycles (another way of saying
-this is that they are *disjoint*), we can consider each of them individually.
+this is that they are *disjoint*), when trying to determine the order, we can
+consider each of them individually.
 
-The first cycle has two elements, so it must have an order of 2. Does that mean
-`g` has an order of two? No, because applying `g` twice to 3 gives us 5.
+The first cycle has 4 elements, so on its own, it must have an order of 4. Does
+that mean `g` has an order of 4? No, because applying `g` four times to 5 gives
+us 11.
 
-We know that `(1 8)` on its own has an order of 2, and so does `(2 4)`.
-However, `(3 7 5 6)` has an order of 4. What's the minimum number of times we
-have to apply `g` to get all of these back to where they started?
+We know that `(1 13 7 10)` on its own has an order of 4, and so does `(3 12 4
+6)`.  However, `(5 11 8)` has an order of 3. What's the minimum number of times
+we have to apply `g` to get all of these back to where they started?
 
-The answer is the least common multiple of all of the cycle lengths. So in this
-case, it's 4.
+{% include permutations-an-exercise/cycle-order-viz.html %}
+
+The answer, which hopefully is demonstrated by the visualisation, is the least
+common multiple of all of the cycle lengths. So in this case, it's 12.
 
 So now we have a new way of calculating the order of the shuffle for a given
 deck size: do the shuffle once, use the resulting deck to work out how to
@@ -290,7 +305,7 @@ First we need a way of representing a cycle in Haskell. Let's go with this:
 >         join glue (y:ys) = y ++ (concatMap (glue ++) ys)
 >         join _ [] = ""
 
-So a `Cycle` is just a list of Ints. So the cycle for `g` when n = 5 would be:
+So the cycle for `g` when n = 5 would be:
 
 ```
 g = Cycle [1,5,3,4,2]
@@ -321,19 +336,19 @@ The next task is to write this smart constructor function. Let's call it
 the first instance where a value is repeated, and then return a `Cycle` where
 the smallest value comes first.
 
-You might find it useful to define a function, `rotate`, which takes a list and
-moves one element from the front to the back.
+While implementing `makeCycle`, you might find it useful to define a function,
+`rotate`, which takes a list, takes one element from the front of the list, and
+puts it at the back. So, for example, `rotate [1..5] == [2,3,4,5,1]`.
 
 > rotate :: [a] -> [a]
 > rotate (x:xs) = xs ++ [x]
-> rotate [] = []
+> rotate []     = []
 
 > makeCycle :: [Int] -> Cycle
 > makeCycle (x:xs) =
->     let ys    = x : takeWhile (/= x) xs
->         h     = minimum ys
->         elems = first (\(y:_) -> y == h) (iterate rotate ys)
->     in  Cycle elems
+>     let ys = x : takeWhile (/= x) xs
+>         cs = take (length ys) $ iterate rotate ys
+>     in Cycle (minimum cs)
 > makeCycle [] = Cycle []
 
 To test `makeCycle`: if we take an infinite periodically cycling list, drop
@@ -351,20 +366,27 @@ we should get the same cycle as if we hadn't dropped any.
 Next: write a function that takes a `Cycle` and returns its length.
 
 > cycleLength :: Cycle -> Int
-> cycleLength (Cycle n) = length n
+> cycleLength (Cycle xs) = length xs
 
-Now write a function that takes a deck size, n, and returns the *graph* of
-the permutation for shuffling the deck with n cards, as a list of pairs mapping
-inputs to outputs. So for each input from 1 up to n there should be one pair
-in the result containing the input and the corresponding output. The order
-doesn't matter.
+Now we need to take a shuffle for an arbitrary sized deck and work out how to
+turn it into a list of disjoint cycles. The function `g :: S -> S` that came up
+earlier can help here. We will start by computing the *graph* of `g`.
+We can represent it with a list of pairs, `(Int, Int)`, mapping inputs to
+outputs.
 
 > type PermutationGraph = [(Int, Int)]
->
+
+Write a function that takes a shuffling function and a deck size, n, and
+returns the graph of the permutation for doing that shuffle on a deck with n
+cards. So for each input from 1 up to n there should be one pair in the result
+containing the input and the corresponding output. The order doesn't matter.
+
 > permutation :: (Deck -> Deck) -> Int -> PermutationGraph
-> permutation n = go 0 (unCardAll . shuffle . makeDeck $ n)
->     where go m (x:xs) = (x, m+1) : go (m+1) xs
->           go _ [] = []
+> permutation f n = go 1 xs
+>     where
+>     xs = unCardAll . f . makeDeck $ n
+>     go m (y:ys) = (y, m) : go (m+1) ys
+>     go _ []     = []
 
 Here are some example inputs and outputs. (I've used `sort` so that the order
 doesn't matter). This says that, for example, the permutation graph for 4
@@ -395,11 +417,11 @@ already done the last step of implementing this function; we just need to apply
 `makeCycle` to that infinite list.
 
 > extractCycle :: PermutationGraph -> Cycle
-> extractCycle xs@(h:_) = makeCycle $ go h xs
+> extractCycle (p:ps) = makeCycle $ go p ps
 >     where
->     go (y, pos) ys = case lookup pos ys of
->         Just z -> y : go (pos, z) ys
->         Nothing -> cycle [y, pos]
+>     go (x, y) graph = case lookup y graph of
+>               Just z -> x : go (y, z) graph
+>               Nothing -> cycle [x, y]
 > extractCycle [] = makeCycle []
 
 Next up is a function that can extract *all* the cycles from a permutation
@@ -407,13 +429,10 @@ graph.  Your implementation should use `extractCycle` repeatedly to get all of
 the cycles out of the list.
 
 > decompose :: PermutationGraph -> [Cycle]
-> decompose xs = foldl f [] $ take (length xs) (iterate rotate xs)
+> decompose g = nub allCycles
 >     where
->     f acc ys =
->         let cyc = extractCycle ys
->         in if cyc `elem` acc
->             then acc
->             else cyc : acc
+>     rotations = take (length g) (iterate rotate g)
+>     allCycles = map extractCycle rotations
 
 Another QuickCheck property: The sum of cycle lengths after decomposing the
 permutation graph for a given integer n should equal n:
@@ -422,11 +441,12 @@ permutation graph for a given integer n should equal n:
 > prop_decompose_sumCycleLengths n' = sumCycleLengths n == n
 >     where
 >     n = abs n' + 1
->     sumCycleLengths = sum . map cycleLength . decompose . permutation
+>     sumCycleLengths =
+>           sum . map cycleLength . decompose . permutation shuffle
 
 Once we have decomposed a permutation into a product of disjoint cycles, the
 final step is finding the least common multiple of their lengths. Write a
-function that takes a list of `Int`, and returns the least common multiple of
+function that takes a list of Ints, and returns the least common multiple of
 all of them.  The Prelude gives us `lcm`, but it works on two numbers. You
 might find it helpful here.
 
@@ -434,10 +454,10 @@ might find it helpful here.
 > lcm' = foldl lcm 1
 
 We have all the building blocks now: write another implementation of `f` using
-`permutation`, `decompose`, `cycleLength`, and `lcm'`.
+`shuffle`, `permutation`, `decompose`, `cycleLength`, and `lcm'`.
 
 > f2 :: Int -> Int
-> f2 = lcm' . map cycleLength . decompose . permutation
+> f2 = lcm' . map cycleLength . decompose . permutation shuffle
 
 Now that we have two different implementations of `f`, we can test to see
 whether we got them both right by seeing if they are equal. Because their
@@ -448,12 +468,15 @@ indication of whether we got it right.
 > prop_f1_f2_identical x = f1 x == f2 x
 
 You did it! See how much faster `f2` is? My answers are [here](answers.lhs) if
-you want to compare them.
+you want to compare them. For extra credit, get QuickCheck to test that the
+[Faro shuffle][] will return a deck to its original order after 8 shuffles.
 
-Below here is code that you don't need to worry about. This is a function that
-takes a set of test inputs and expected outputs, a function mapping inputs to
-outputs, and returns an action that checks whether the expected outputs are the
-same as the actual outputs, and prints messages to the console if they are not.
+Below here is code that you don't need to worry about.
+
+This code tests a function based on a set of example inputs and outputs. It
+takes a list of test inputs and expected outputs and a function mapping inputs
+to outputs, and returns an action that checks whether the expected outputs are
+the same as the actual outputs. If they are all ok, it prints a message saying so; otherwise, it prints details of all the examples that failed.
 
 > testByExamples :: (Show a, Show b, Eq b) => [(a, b)] -> (a -> b) -> IO ()
 > testByExamples examples f =
@@ -478,8 +501,9 @@ same as the actual outputs, and prints messages to the console if they are not.
 >             , ">."
 >             ]
 
-This is the definition of the program. It says that if we get a number as an
-argument, calculate `f2` for that number. Otherwise run the tests.
+This is what gets run when you type `runhaskell permutations.lhs`. It says that
+if we get a number as an argument, calculate `f2` for that number and print it.
+Otherwise, run the tests.
 
 > main :: IO ()
 > main = do
@@ -503,7 +527,7 @@ argument, calculate `f2` for that number. Otherwise run the tests.
 >             te examples_f f1 "examples for f1"
 >             qc prop_makeCycle_drop "prop_makeCycle_drop"
 >             te examples_permutation
->                   (sort . permutation) "examples for permutation"
+>                   (sort . permutation shuffle) "examples for permutation"
 >             qc prop_decompose_sumCycleLengths
 >                   "prop_decompose_sumCycleLengths"
 >             te examples_f f2 "examples for f2"
@@ -511,3 +535,5 @@ argument, calculate `f2` for that number. Otherwise run the tests.
 >     where
 >     sensible :: Testable a => a -> Property
 >     sensible = mapSize (floor . logBase (2 :: Double) . fromIntegral)
+
+[Faro shuffle]: http://en.wikipedia.org/Faro_Shuffle
