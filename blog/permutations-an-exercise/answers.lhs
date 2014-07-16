@@ -361,7 +361,7 @@ doesn't matter.
 
 > type PermutationGraph = [(Int, Int)]
 >
-> permutation :: Int -> PermutationGraph
+> permutation :: (Deck -> Deck) -> Int -> PermutationGraph
 > permutation n = go 0 (unCardAll . shuffle . makeDeck $ n)
 >     where go m (x:xs) = (x, m+1) : go (m+1) xs
 >           go _ [] = []

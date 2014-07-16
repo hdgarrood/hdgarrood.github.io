@@ -47,7 +47,7 @@ title: "Permutations: an exercise"
 <p>Our first job is to define a function that only performs steps 1 and 2 of the shuffle. What type should this function be? It should take a deck and a new pile, and return an updated deck and pile, so let's go with <code>(Deck, Deck) -&gt; (Deck, Deck)</code>.</p>
 <pre class="sourceCode literate literatehaskell"><code class="sourceCode literatehaskell"><span class="ot">&gt; step ::</span> (<span class="dt">Deck</span>, <span class="dt">Deck</span>) <span class="ot">-&gt;</span> (<span class="dt">Deck</span>, <span class="dt">Deck</span>)
 <span class="ot">&gt;</span> step <span class="fu">=</span> todo</code></pre>
-<p>Now, we should think about what properties our <code>step</code> function should satisfy, so that we can get QuickCheck to test them for us. Here's one: after performing <code>step</code> n times on a deck, we should end up with the same number of cards that we started with:</p>
+<p>Now, we should think about what properties our <code>step</code> function should satisfy, so that we can get QuickCheck to test them for us. Here's one: after performing <code>step</code> some arbitrary number of times on a deck, we should end up with the same number of cards that we started with:</p>
 <pre class="sourceCode literate literatehaskell"><code class="sourceCode literatehaskell"><span class="ot">&gt; prop_step_sameLength ::</span> <span class="dt">Deck</span> <span class="ot">-&gt;</span> <span class="dt">Int</span> <span class="ot">-&gt;</span> <span class="dt">Bool</span>
 <span class="ot">&gt;</span> prop_step_sameLength deck n&#39; <span class="fu">=</span>
 <span class="ot">&gt;</span>     sumLength (times n step (deck, [])) <span class="fu">==</span> length deck
@@ -70,7 +70,7 @@ title: "Permutations: an exercise"
 </ul>
 <pre class="sourceCode literate literatehaskell"><code class="sourceCode literatehaskell"><span class="ot">&gt; shuffle ::</span> <span class="dt">Deck</span> <span class="ot">-&gt;</span> <span class="dt">Deck</span>
 <span class="ot">&gt;</span> shuffle <span class="fu">=</span> todo</code></pre>
-<p>More test properties: shuffling a deck should return another deck with the same number of cards:</p>
+<p>Test properties for <code>shuffle</code>: shuffling a deck should return another deck with the same number of cards:</p>
 <pre class="sourceCode literate literatehaskell"><code class="sourceCode literatehaskell"><span class="ot">&gt; prop_shuffle_sameLength ::</span> <span class="dt">Deck</span> <span class="ot">-&gt;</span> <span class="dt">Bool</span>
 <span class="ot">&gt;</span> prop_shuffle_sameLength deck <span class="fu">=</span> length (shuffle deck) <span class="fu">==</span> length deck</code></pre>
 <p>Shuffling a deck should move the top card to the bottom:</p>
@@ -81,7 +81,7 @@ title: "Permutations: an exercise"
 <p>Next up is a function <code>order</code> which, given a function, gives us the number of times we have to apply it to a given value to get that value again. So its type should be <code>Eq a =&gt; (a -&gt; a) -&gt; a -&gt; Int</code>. We need the <code>Eq</code> constraint so that we can test values to see if they're the same as the first one.</p>
 <pre class="sourceCode literate literatehaskell"><code class="sourceCode literatehaskell"><span class="ot">&gt; order ::</span> <span class="dt">Eq</span> a <span class="ot">=&gt;</span> (a <span class="ot">-&gt;</span> a) <span class="ot">-&gt;</span> a <span class="ot">-&gt;</span> <span class="dt">Int</span>
 <span class="ot">&gt;</span> order <span class="fu">=</span> todo</code></pre>
-<p>To test <code>order</code>: if we have a function that subtracts 1 from positive numbers and returns n otherwise, the number of times we have to apply it to <code>n</code> to get <code>n</code> again should be <code>n + 1</code>:</p>
+<p>To test <code>order</code>: Suppose we have a function f, and some arbitrary number n. Define f such that <code>f x</code> is x - 1 for positive x, and n otherwise. Then, the number of times we have to apply f to n to get n again should be n + 1:</p>
 <pre class="sourceCode literate literatehaskell"><code class="sourceCode literatehaskell"><span class="ot">&gt; prop_order_subtractOne ::</span> <span class="dt">Int</span> <span class="ot">-&gt;</span> <span class="dt">Bool</span>
 <span class="ot">&gt;</span> prop_order_subtractOne n&#39; <span class="fu">=</span> order f n <span class="fu">==</span> n <span class="fu">+</span> <span class="dv">1</span>
 <span class="ot">&gt;</span>     <span class="kw">where</span>
@@ -160,7 +160,7 @@ g x = case x of
 <p>A good way of implementing this in Haskell is to define a <em>smart constructor</em>: a function like <code>Cycle</code> whose type is <code>[Int] -&gt; Cycle</code>, but which makes sure our statement above holds. Then, as long as we remember to use our smart constructor rather than <code>Cycle</code>, we'll be ok.</p>
 <p>If we were writing a proper program, we would probably define <code>Cycle</code> and its smart constructor in a separate module and then only export the smart constructor, to ensure that we don't make this mistake. Here it's probably not worth the effort.</p>
 <p>The next task is to write this smart constructor function. Let's call it <code>makeCycle</code>. It should take an infinite list of cycling values, cut it off at the first instance where a value is repeated, and then return a <code>Cycle</code> where the smallest value comes first.</p>
-<p>You might find it useful to define a function, <code>rotate</code>, which takes a list and moves one element from the front to the back.</p>
+<p>While implementing <code>makeCycle</code>, you might find it useful to define a function, <code>rotate</code>, which takes a list, takes one element from the front of the list, and puts it at the back. So, for example, <code>rotate [1..5] == [2,3,4,5,1]</code>.</p>
 <pre class="sourceCode literate literatehaskell"><code class="sourceCode literatehaskell"><span class="ot">&gt; rotate ::</span> [a] <span class="ot">-&gt;</span> [a]
 <span class="ot">&gt;</span> rotate <span class="fu">=</span> todo</code></pre>
 <pre class="sourceCode literate literatehaskell"><code class="sourceCode literatehaskell"><span class="ot">&gt; makeCycle ::</span> [<span class="dt">Int</span>] <span class="ot">-&gt;</span> <span class="dt">Cycle</span>
@@ -176,10 +176,10 @@ g x = case x of
 <p>Next: write a function that takes a <code>Cycle</code> and returns its length.</p>
 <pre class="sourceCode literate literatehaskell"><code class="sourceCode literatehaskell"><span class="ot">&gt; cycleLength ::</span> <span class="dt">Cycle</span> <span class="ot">-&gt;</span> <span class="dt">Int</span>
 <span class="ot">&gt;</span> cycleLength <span class="fu">=</span> todo</code></pre>
-<p>Now write a function that takes a deck size, n, and returns the <em>graph</em> of the permutation for shuffling the deck with n cards, as a list of pairs mapping inputs to outputs. So for each input from 1 up to n there should be one pair in the result containing the input and the corresponding output. The order doesn't matter.</p>
-<pre class="sourceCode literate literatehaskell"><code class="sourceCode literatehaskell"><span class="ot">&gt;</span> <span class="kw">type</span> <span class="dt">PermutationGraph</span> <span class="fu">=</span> [(<span class="dt">Int</span>, <span class="dt">Int</span>)]
-<span class="ot">&gt;</span> 
-<span class="ot">&gt; permutation ::</span> <span class="dt">Int</span> <span class="ot">-&gt;</span> <span class="dt">PermutationGraph</span>
+<p>Now we need to take a shuffle for an arbitrary sized deck and work out how to turn it into a list of disjoint cycles. The function <code>g :: S -&gt; S</code> that came up earlier can help here. We will start by computing the <em>graph</em> of <code>g</code>. We can represent it with a list of pairs, <code>(Int, Int)</code>, mapping inputs to outputs.</p>
+<pre class="sourceCode literate literatehaskell"><code class="sourceCode literatehaskell"><span class="ot">&gt;</span> <span class="kw">type</span> <span class="dt">PermutationGraph</span> <span class="fu">=</span> [(<span class="dt">Int</span>, <span class="dt">Int</span>)]</code></pre>
+<p>Write a function that takes a shuffling function and a deck size, n, and returns the graph of the permutation for doing that shuffle on a deck with n cards. So for each input from 1 up to n there should be one pair in the result containing the input and the corresponding output. The order doesn't matter.</p>
+<pre class="sourceCode literate literatehaskell"><code class="sourceCode literatehaskell"><span class="ot">&gt; permutation ::</span> (<span class="dt">Deck</span> <span class="ot">-&gt;</span> <span class="dt">Deck</span>) <span class="ot">-&gt;</span> <span class="dt">Int</span> <span class="ot">-&gt;</span> <span class="dt">PermutationGraph</span>
 <span class="ot">&gt;</span> permutation <span class="fu">=</span> todo</code></pre>
 <p>Here are some example inputs and outputs. (I've used <code>sort</code> so that the order doesn't matter). This says that, for example, the permutation graph for 4 should be <code>[(4,1),(2,2),(3,3),(1,4)]</code>. Again, these examples are included in the tests.</p>
 <pre class="sourceCode literate literatehaskell"><code class="sourceCode literatehaskell"><span class="ot">&gt; examples_permutation ::</span> [(<span class="dt">Int</span>, <span class="dt">PermutationGraph</span>)]
@@ -207,18 +207,20 @@ g x = case x of
 <span class="ot">&gt;</span> prop_decompose_sumCycleLengths n&#39; <span class="fu">=</span> sumCycleLengths n <span class="fu">==</span> n
 <span class="ot">&gt;</span>     <span class="kw">where</span>
 <span class="ot">&gt;</span>     n <span class="fu">=</span> abs n&#39; <span class="fu">+</span> <span class="dv">1</span>
-<span class="ot">&gt;</span>     sumCycleLengths <span class="fu">=</span> sum <span class="fu">.</span> map cycleLength <span class="fu">.</span> decompose <span class="fu">.</span> permutation</code></pre>
+<span class="ot">&gt;</span>     sumCycleLengths <span class="fu">=</span>
+<span class="ot">&gt;</span>           sum <span class="fu">.</span> map cycleLength <span class="fu">.</span> decompose <span class="fu">.</span> permutation shuffle</code></pre>
 <p>Once we have decomposed a permutation into a product of disjoint cycles, the final step is finding the least common multiple of their lengths. Write a function that takes a list of <code>Int</code>, and returns the least common multiple of all of them. The Prelude gives us <code>lcm</code>, but it works on two numbers. You might find it helpful here.</p>
 <pre class="sourceCode literate literatehaskell"><code class="sourceCode literatehaskell"><span class="ot">&gt; lcm&#39; ::</span> [<span class="dt">Int</span>] <span class="ot">-&gt;</span> <span class="dt">Int</span>
 <span class="ot">&gt;</span> lcm&#39; <span class="fu">=</span> todo</code></pre>
-<p>We have all the building blocks now: write another implementation of <code>f</code> using <code>permutation</code>, <code>decompose</code>, <code>cycleLength</code>, and <code>lcm'</code>.</p>
+<p>We have all the building blocks now: write another implementation of <code>f</code> using <code>shuffle</code>, <code>permutation</code>, <code>decompose</code>, <code>cycleLength</code>, and <code>lcm'</code>.</p>
 <pre class="sourceCode literate literatehaskell"><code class="sourceCode literatehaskell"><span class="ot">&gt; f2 ::</span> <span class="dt">Int</span> <span class="ot">-&gt;</span> <span class="dt">Int</span>
 <span class="ot">&gt;</span> f2 <span class="fu">=</span> todo</code></pre>
 <p>Now that we have two different implementations of <code>f</code>, we can test to see whether we got them both right by seeing if they are equal. Because their implementations are quite different this will probably be quite a good indication of whether we got it right.</p>
 <pre class="sourceCode literate literatehaskell"><code class="sourceCode literatehaskell"><span class="ot">&gt; prop_f1_f2_identical ::</span> <span class="dt">Int</span> <span class="ot">-&gt;</span> <span class="dt">Bool</span>
 <span class="ot">&gt;</span> prop_f1_f2_identical x <span class="fu">=</span> f1 x <span class="fu">==</span> f2 x</code></pre>
-<p>You did it! See how much faster <code>f2</code> is? My answers are <a href="answers.lhs">here</a> if you want to compare them.</p>
-<p>Below here is code that you don't need to worry about. This is a function that takes a set of test inputs and expected outputs, a function mapping inputs to outputs, and returns an action that checks whether the expected outputs are the same as the actual outputs, and prints messages to the console if they are not.</p>
+<p>You did it! See how much faster <code>f2</code> is? My answers are <a href="answers.lhs">here</a> if you want to compare them. For extra credit, get QuickCheck to test that the <a href="http://en.wikipedia.org/Faro_Shuffle">Faro shuffle</a> will return a deck to its original order after 8 shuffles.</p>
+<p>Below here is code that you don't need to worry about.</p>
+<p>This code tests a function based on a set of example inputs and outputs. It takes a list of test inputs and expected outputs and a function mapping inputs to outputs, and returns an action that checks whether the expected outputs are the same as the actual outputs. If they are all ok, it prints a message saying so; otherwise, it prints details of all the examples that failed.</p>
 <pre class="sourceCode literate literatehaskell"><code class="sourceCode literatehaskell"><span class="ot">&gt; testByExamples ::</span> (<span class="dt">Show</span> a, <span class="dt">Show</span> b, <span class="dt">Eq</span> b) <span class="ot">=&gt;</span> [(a, b)] <span class="ot">-&gt;</span> (a <span class="ot">-&gt;</span> b) <span class="ot">-&gt;</span> <span class="dt">IO</span> ()
 <span class="ot">&gt;</span> testByExamples examples f <span class="fu">=</span>
 <span class="ot">&gt;</span>     <span class="kw">let</span> fails <span class="fu">=</span> catMaybes <span class="fu">$</span> map runExample examples
@@ -241,7 +243,7 @@ g x = case x of
 <span class="ot">&gt;</span>             , show actual
 <span class="ot">&gt;</span>             , <span class="st">&quot;&gt;.&quot;</span>
 <span class="ot">&gt;</span>             ]</code></pre>
-<p>This is the definition of the program. It says that if we get a number as an argument, calculate <code>f2</code> for that number. Otherwise run the tests.</p>
+<p>This is what gets run when you type <code>runhaskell permutations.lhs</code>. It says that if we get a number as an argument, calculate <code>f2</code> for that number and print it. Otherwise, run the tests.</p>
 <pre class="sourceCode literate literatehaskell"><code class="sourceCode literatehaskell"><span class="ot">&gt; main ::</span> <span class="dt">IO</span> ()
 <span class="ot">&gt;</span> main <span class="fu">=</span> <span class="kw">do</span>
 <span class="ot">&gt;</span>     args <span class="ot">&lt;-</span> getArgs
@@ -264,7 +266,7 @@ g x = case x of
 <span class="ot">&gt;</span>             te examples_f f1 <span class="st">&quot;examples for f1&quot;</span>
 <span class="ot">&gt;</span>             qc prop_makeCycle_drop <span class="st">&quot;prop_makeCycle_drop&quot;</span>
 <span class="ot">&gt;</span>             te examples_permutation
-<span class="ot">&gt;</span>                   (sort <span class="fu">.</span> permutation) <span class="st">&quot;examples for permutation&quot;</span>
+<span class="ot">&gt;</span>                   (sort <span class="fu">.</span> permutation shuffle) <span class="st">&quot;examples for permutation&quot;</span>
 <span class="ot">&gt;</span>             qc prop_decompose_sumCycleLengths
 <span class="ot">&gt;</span>                   <span class="st">&quot;prop_decompose_sumCycleLengths&quot;</span>
 <span class="ot">&gt;</span>             te examples_f f2 <span class="st">&quot;examples for f2&quot;</span>

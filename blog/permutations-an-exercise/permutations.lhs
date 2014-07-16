@@ -78,8 +78,8 @@ pile, and return an updated deck and pile, so let's go with `(Deck, Deck) ->
 
 Now, we should think about what properties our `step` function should satisfy,
 so that we can get QuickCheck to test them for us. Here's one: after performing
-`step` n times on a deck, we should end up with the same number of cards that
-we started with:
+`step` some arbitrary number of times on a deck, we should end up with the same
+number of cards that we started with:
 
 > prop_step_sameLength :: Deck -> Int -> Bool
 > prop_step_sameLength deck n' =
@@ -117,8 +117,8 @@ that might come in handy:
 > shuffle :: Deck -> Deck
 > shuffle = todo
 
-More test properties: shuffling a deck should return another deck with the same
-number of cards:
+Test properties for `shuffle`: shuffling a deck should return another deck with
+the same number of cards:
 
 > prop_shuffle_sameLength :: Deck -> Bool
 > prop_shuffle_sameLength deck = length (shuffle deck) == length deck
@@ -138,8 +138,9 @@ we can test values to see if they're the same as the first one.
 > order :: Eq a => (a -> a) -> a -> Int
 > order = todo
 
-To test `order`: if we have a function that subtracts 1 from positive numbers
-and returns n otherwise, the number of times we have to apply it to `n` to get `n` again should be `n + 1`:
+To test `order`: Suppose we have a function f, and some arbitrary number n.
+Define f such that `f x` is x - 1 for positive x, and n otherwise.  Then, the
+number of times we have to apply f to n to get n again should be n + 1:
 
 > prop_order_subtractOne :: Int -> Bool
 > prop_order_subtractOne n' = order f n == n + 1
@@ -327,8 +328,9 @@ The next task is to write this smart constructor function. Let's call it
 the first instance where a value is repeated, and then return a `Cycle` where
 the smallest value comes first.
 
-You might find it useful to define a function, `rotate`, which takes a list and
-moves one element from the front to the back.
+While implementing `makeCycle`, you might find it useful to define a function,
+`rotate`, which takes a list, takes one element from the front of the list, and
+puts it at the back. So, for example, `rotate [1..5] == [2,3,4,5,1]`.
 
 > rotate :: [a] -> [a]
 > rotate = todo
@@ -353,15 +355,20 @@ Next: write a function that takes a `Cycle` and returns its length.
 > cycleLength :: Cycle -> Int
 > cycleLength = todo
 
-Now write a function that takes a deck size, n, and returns the *graph* of
-the permutation for shuffling the deck with n cards, as a list of pairs mapping
-inputs to outputs. So for each input from 1 up to n there should be one pair
-in the result containing the input and the corresponding output. The order
-doesn't matter.
+Now we need to take a shuffle for an arbitrary sized deck and work out how to
+turn it into a list of disjoint cycles. The function `g :: S -> S` that came up
+earlier can help here. We will start by computing the *graph* of `g`.
+We can represent it with a list of pairs, `(Int, Int)`, mapping inputs to
+outputs.
 
 > type PermutationGraph = [(Int, Int)]
->
-> permutation :: Int -> PermutationGraph
+
+Write a function that takes a shuffling function and a deck size, n, and
+returns the graph of the permutation for doing that shuffle on a deck with n
+cards. So for each input from 1 up to n there should be one pair in the result
+containing the input and the corresponding output. The order doesn't matter.
+
+> permutation :: (Deck -> Deck) -> Int -> PermutationGraph
 > permutation = todo
 
 Here are some example inputs and outputs. (I've used `sort` so that the order
@@ -409,11 +416,12 @@ permutation graph for a given integer n should equal n:
 > prop_decompose_sumCycleLengths n' = sumCycleLengths n == n
 >     where
 >     n = abs n' + 1
->     sumCycleLengths = sum . map cycleLength . decompose . permutation
+>     sumCycleLengths =
+>           sum . map cycleLength . decompose . permutation shuffle
 
 Once we have decomposed a permutation into a product of disjoint cycles, the
 final step is finding the least common multiple of their lengths. Write a
-function that takes a list of `Int`, and returns the least common multiple of
+function that takes a list of Ints, and returns the least common multiple of
 all of them.  The Prelude gives us `lcm`, but it works on two numbers. You
 might find it helpful here.
 
@@ -421,7 +429,7 @@ might find it helpful here.
 > lcm' = todo
 
 We have all the building blocks now: write another implementation of `f` using
-`permutation`, `decompose`, `cycleLength`, and `lcm'`.
+`shuffle`, `permutation`, `decompose`, `cycleLength`, and `lcm'`.
 
 > f2 :: Int -> Int
 > f2 = todo
@@ -435,12 +443,15 @@ indication of whether we got it right.
 > prop_f1_f2_identical x = f1 x == f2 x
 
 You did it! See how much faster `f2` is? My answers are [here](answers.lhs) if
-you want to compare them.
+you want to compare them. For extra credit, get QuickCheck to test that the
+[Faro shuffle][] will return a deck to its original order after 8 shuffles.
 
-Below here is code that you don't need to worry about. This is a function that
-takes a set of test inputs and expected outputs, a function mapping inputs to
-outputs, and returns an action that checks whether the expected outputs are the
-same as the actual outputs, and prints messages to the console if they are not.
+Below here is code that you don't need to worry about.
+
+This code tests a function based on a set of example inputs and outputs. It
+takes a list of test inputs and expected outputs and a function mapping inputs
+to outputs, and returns an action that checks whether the expected outputs are
+the same as the actual outputs. If they are all ok, it prints a message saying so; otherwise, it prints details of all the examples that failed.
 
 > testByExamples :: (Show a, Show b, Eq b) => [(a, b)] -> (a -> b) -> IO ()
 > testByExamples examples f =
@@ -465,8 +476,9 @@ same as the actual outputs, and prints messages to the console if they are not.
 >             , ">."
 >             ]
 
-This is the definition of the program. It says that if we get a number as an
-argument, calculate `f2` for that number. Otherwise run the tests.
+This is what gets run when you type `runhaskell permutations.lhs`. It says that
+if we get a number as an argument, calculate `f2` for that number and print it.
+Otherwise, run the tests.
 
 > main :: IO ()
 > main = do
@@ -490,7 +502,7 @@ argument, calculate `f2` for that number. Otherwise run the tests.
 >             te examples_f f1 "examples for f1"
 >             qc prop_makeCycle_drop "prop_makeCycle_drop"
 >             te examples_permutation
->                   (sort . permutation) "examples for permutation"
+>                   (sort . permutation shuffle) "examples for permutation"
 >             qc prop_decompose_sumCycleLengths
 >                   "prop_decompose_sumCycleLengths"
 >             te examples_f f2 "examples for f2"
@@ -498,3 +510,5 @@ argument, calculate `f2` for that number. Otherwise run the tests.
 >     where
 >     sensible :: Testable a => a -> Property
 >     sensible = mapSize (floor . logBase (2 :: Double) . fromIntegral)
+
+[Faro shuffle]: http://en.wikipedia.org/Faro_Shuffle
