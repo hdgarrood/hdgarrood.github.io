@@ -18,7 +18,10 @@
   stroke-width: 1.5px;
 }
 
-
+.value {
+    font-size: 100%;
+    color: red;
+}
 </style>
 <script type="text/javascript">
 (function() {
@@ -80,11 +83,11 @@ function polygon(n, radius) {
         })
 }
 
-function drawCycle(svg, cycle, radius) {
+function drawCycle(svg, cycle, n, radius) {
     var line = d3.svg.line()
         .interpolate('cardinal-closed')
 
-    var g = svg.append('g')
+    var g = svg.append('g').attr('id', 'cycle-' + n)
     var points = polygon(cycle.length, radius)
 
     var path = g.append('path')
@@ -114,30 +117,81 @@ function drawCycle(svg, cycle, radius) {
     return g
 }
 
-function drawCycles(svg, state, radius) {
-    var translateInitial = 100,
-        translateGap = 200
+function drawValuesForCycle(svg, values, i, group, radius) {
+    var line = d3.svg.line()
+        .interpolate('cardinal-closed')
 
+    var points = _.map(polygon(values.length, radius), function(point) {
+        return [point[0] + 5, point[1] + 30]
+    })
+
+    var inputs = group.selectAll('text')
+        .data(_.zip(values, points), function(d) { return d[0] })
+
+    inputs.enter()
+            .append('text')
+            .attr('x', function(d) { return d[1][0] })
+            .attr('y', function(d) { return d[1][1] })
+            .text(function(d) { return d[0] })
+            .attr('text-anchor', 'middle')
+            .attr('dominant-baseline', 'central')
+            .attr('class', 'value')
+
+    inputs.transition()
+            .attr('x', function(d) { return d[1][0] })
+            .attr('y', function(d) { return d[1][1] })
+
+    return group
+}
+
+function drawCycles(svg, state, radius, translateInitial, translateGap) {
     _.map([0,1,2], function(n) {
         var x = translateInitial + (n * translateGap)
-        drawCycle(svg, state[n], radius)
+        drawCycle(svg, state[n], n, radius)
             .attr('transform', 'translate(' + x + ', 80)')
     })
 }
 
+function drawValues(svg, initialState, state, i, radius, valueGroups,
+        translateInitial, translateGap) {
+    _.map([0,1,2], function(n) {
+        var x = translateInitial + (n * translateGap)
+        drawValuesForCycle(svg, state[n], n, valueGroups[n], radius)
+            .attr('transform', 'translate(' + x + ', 80)')
+    })
+}
+
+function createValueGroups(svg, numGroups) {
+    return _.map(upTo(numGroups - 1), function(n) {
+        return svg.append('g').attr('id', 'cycle-' + n + '-values')
+    })
+}
+
 function start() {
-    var width        = 600,
-        height       = 300,
-        cycleRadius  = 40,
-        states       = getAllStates(),
-        currentIndex = 0
+    var width            = 600,
+        height           = 300,
+        cycleRadius      = 40,
+        states           = getAllStates(),
+        currentIndex     = 0,
+        initialState     = states[0],
+        translateInitial = 100,
+        translateGap     = 200
 
     var svg = d3.select("#cycle-order-viz-svg-container")
                 .append("svg")
                     .attr("width", width)
                     .attr("height", height)
 
-    drawCycles(svg, states[0], cycleRadius)
+    drawCycles(svg, initialState, cycleRadius,
+            translateInitial, translateGap)
+    valueGroups = createValueGroups(svg, initialState.length)
+
+    var i = 0
+    setInterval(function() {
+        drawValues(svg, initialState, states[i], i, cycleRadius, valueGroups,
+            translateInitial, translateGap)
+        i++
+    }, 1000)
 }
 start()
 })()

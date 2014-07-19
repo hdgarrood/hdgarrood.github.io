@@ -1,7 +1,7 @@
 set -ex
 
 ROOT_DIR="$(cd "$(dirname ${BASH_SOURCE[0]})" && cd .. && pwd)"
-PANDOC="/home/harry/build/cabal-sandboxes/pandoc/.cabal-sandbox/bin/pandoc"
+PANDOC="pandoc"
 
 pushd "$ROOT_DIR"
 
@@ -18,7 +18,7 @@ END
 
 "$PANDOC" \
     --from=markdown+lhs \
-    --to=html+lhs \
+    --to=html \
     blog/permutations-an-exercise/permutations.lhs \
     >> _drafts/permutations-an-exercise.html
 

@@ -451,7 +451,8 @@ Below here is code that you don't need to worry about.
 This code tests a function based on a set of example inputs and outputs. It
 takes a list of test inputs and expected outputs and a function mapping inputs
 to outputs, and returns an action that checks whether the expected outputs are
-the same as the actual outputs. If they are all ok, it prints a message saying so; otherwise, it prints details of all the examples that failed.
+the same as the actual outputs. If they are all ok, it prints a message saying
+so; otherwise, it prints details of all the examples that failed.
 
 > testByExamples :: (Show a, Show b, Eq b) => [(a, b)] -> (a -> b) -> IO ()
 > testByExamples examples f =
@@ -464,7 +465,7 @@ the same as the actual outputs. If they are all ok, it prints a message saying s
 >         let actual = f input
 >         in if expected == actual
 >             then Nothing
->             else Just $ (input, expected, actual)
+>             else Just (input, expected, actual)
 >     printFailure (input, expected, actual) =
 >         putStrLn $ concat
 >             [ "failed on input "
@@ -511,4 +512,4 @@ Otherwise, run the tests.
 >     sensible :: Testable a => a -> Property
 >     sensible = mapSize (floor . logBase (2 :: Double) . fromIntegral)
 
-[Faro shuffle]: http://en.wikipedia.org/Faro_Shuffle
+[Faro shuffle]: http://en.wikipedia.org/wiki/Faro_Shuffle
