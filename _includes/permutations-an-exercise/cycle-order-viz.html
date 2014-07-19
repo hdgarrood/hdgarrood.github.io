@@ -265,6 +265,11 @@ function hasIndex(arr, idx) {
     return idx >= 0 && idx < arr.length
 }
 
+function update(svg, state, i, valueGroups, historyGroups) {
+    drawValues(svg, state, i, valueGroups)
+    drawHistory(svg, state, i, historyGroups)
+}
+
 function start() {
     var i = 0,
         svg = d3.select("#cycle-order-viz-svg-container")
@@ -280,8 +285,7 @@ function start() {
     function changeState(difference) {
         if (hasIndex(ALL_STATES, i + difference)) {
             i += difference
-            drawValues(svg, ALL_STATES[i], i, valueGroups)
-            drawHistory(svg, ALL_STATES[i], i, historyGroups)
+            update(svg, ALL_STATES[i], i, valueGroups, historyGroups)
         }
     }
 
@@ -291,10 +295,9 @@ function start() {
     d3.select("#cycle-order-prev")
         .on("click", function() { changeState(-1) })
 
-
-    drawValues(svg, ALL_STATES[i], i, valueGroups)
-    drawHistory(svg, ALL_STATES[i], i, historyGroups)
+    update(svg, ALL_STATES[i], i, valueGroups, historyGroups)
 }
+
 start()
 })()
 </script>
