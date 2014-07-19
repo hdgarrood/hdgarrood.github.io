@@ -1,7 +1,7 @@
 <div id="shuffleviz">
 <div id="shuffleviz-svg-container"></div>
-<button id="prev">Prev</button>
-<button id="next">Next</button>
+<button id="shuffle-prev">Prev</button>
+<button id="shuffle-next">Next</button>
 </div>
 
 <style>
@@ -194,19 +194,11 @@ function start() {
         }
     }
 
-    function next() {
-        changeState(1)
-    }
+    d3.select("#shuffle-next")
+        .on("click", function() { changeState(1) })
 
-    function prev() {
-        changeState(-1)
-    }
-
-    d3.select("#next")
-        .on("click", next)
-
-    d3.select("#prev")
-        .on("click", prev)
+    d3.select("#shuffle-prev")
+        .on("click", function() { changeState(-1) })
 
     update(svg, states[currentIndex])
 }

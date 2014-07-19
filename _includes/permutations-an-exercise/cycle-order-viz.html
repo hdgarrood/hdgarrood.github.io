@@ -1,7 +1,7 @@
 <div id="cycle-order-viz">
 <div id="cycle-order-viz-svg-container"></div>
-<button id="prev">Prev</button>
-<button id="next">Next</button>
+<button id="cycle-order-prev">Prev</button>
+<button id="cycle-order-next">Next</button>
 </div>
 
 <style>
@@ -184,7 +184,10 @@ function drawHistoryForCycle(svg, cycle, cycleIndex, stateIndex, group) {
             .transition()
                 .attr('opacity', '1')
 
-    historyPoints.exit().remove()
+    historyPoints.exit()
+        .transition()
+            .attr('opacity', '0')
+        .remove()
 
     return group
 }
@@ -229,7 +232,7 @@ function createHistoryGroups(svg, numGroups) {
             .attr('class', 'history-label')
             .attr('dominant-baseline', 'middle')
             .attr('text-anchor', 'end')
-            .attr('x', - (HISTORY_POINT_X_DELTA / 2))
+            .attr('x', - (HISTORY_POINT_X_DELTA * 0.7))
             .text(cycleToText(INITIAL_STATE[n]))
 
         return g
@@ -252,14 +255,18 @@ var SVG_WIDTH             = 600,
     VALUE_RADIUS          = 12,
     HISTORY_Y_INITIAL     = 200,
     HISTORY_Y_DELTA       = 28,
-    HISTORY_X             = 100,
+    HISTORY_X             = 110,
     HISTORY_POINT_X_DELTA = 37,
     HISTORY_POINT_RADIUS  = 5,
     ALL_STATES            = getAllStates(),
     INITIAL_STATE         = ALL_STATES[0]
 
+function hasIndex(arr, idx) {
+    return idx >= 0 && idx < arr.length
+}
+
 function start() {
-    var currentIndex = 0,
+    var i = 0,
         svg = d3.select("#cycle-order-viz-svg-container")
                 .append("svg")
                     .attr("width", SVG_WIDTH)
@@ -270,12 +277,23 @@ function start() {
     var valueGroups   = createValueGroups(svg, INITIAL_STATE.length),
         historyGroups = createHistoryGroups(svg, INITIAL_STATE.length)
 
-    var i = 0
-    setInterval(function() {
-        drawValues(svg, ALL_STATES[i], i, valueGroups)
-        drawHistory(svg, ALL_STATES[i], i, historyGroups)
-        if (i < 12) { i++ }
-    }, 1000)
+    function changeState(difference) {
+        if (hasIndex(ALL_STATES, i + difference)) {
+            i += difference
+            drawValues(svg, ALL_STATES[i], i, valueGroups)
+            drawHistory(svg, ALL_STATES[i], i, historyGroups)
+        }
+    }
+
+    d3.select("#cycle-order-next")
+        .on("click", function() { changeState(1) })
+
+    d3.select("#cycle-order-prev")
+        .on("click", function() { changeState(-1) })
+
+
+    drawValues(svg, ALL_STATES[i], i, valueGroups)
+    drawHistory(svg, ALL_STATES[i], i, historyGroups)
 }
 start()
 })()
