@@ -28,6 +28,11 @@
     font-size: 100%;
 }
 
+.history-label {
+    font-family: monospace;
+    font-size: 10px;
+}
+
 </style>
 <script type="text/javascript">
 "use strict";
@@ -131,9 +136,6 @@ function drawCycle(svg, cycle, n) {
 }
 
 function drawValuesForCycle(svg, values, i, group) {
-    var line = d3.svg.line()
-        .interpolate('cardinal-closed')
-
     var points = _.map(polygon(values.length, CYCLE_RADIUS), function(point) {
         return [point[0] + VALUE_OFFSET_X, point[1] + VALUE_OFFSET_Y]
     })
@@ -164,6 +166,29 @@ function drawValuesForCycle(svg, values, i, group) {
     return group
 }
 
+function drawHistoryForCycle(svg, cycle, cycleIndex, stateIndex, group) {
+    var historyPoints =
+        group.selectAll('circle')
+                .data(upTo(stateIndex), function(d) { return d })
+
+    historyPoints.enter()
+            .append('circle')
+            .attr('cx', function(d, i) { return HISTORY_POINT_X_DELTA * i })
+            .attr('cy', 0)
+            .attr('r', HISTORY_POINT_RADIUS)
+            .attr('class', function(d) {
+                var thisCycle = ALL_STATES[d][cycleIndex][0],
+                    initCycle = INITIAL_STATE[cycleIndex][0]
+                return thisCycle == initCycle ?  'value-matching' : 'value' })
+            .attr('opacity', '0')
+            .transition()
+                .attr('opacity', '1')
+
+    historyPoints.exit().remove()
+
+    return group
+}
+
 function drawCycles(svg, state) {
     _.map([0,1,2], function(n) {
         var x = CYCLE_X_INITIAL + (n * CYCLE_X_DELTA)
@@ -178,6 +203,12 @@ function drawValues(svg, state, i, valueGroups) {
     })
 }
 
+function drawHistory(svg, state, i, historyGroups) {
+    _.map([0,1,2], function(n) {
+        drawHistoryForCycle(svg, state[n], n, i, historyGroups[n])
+    })
+}
+
 function createValueGroups(svg, numGroups) {
     return _.map(upTo(numGroups - 1), function(n) {
         var x = CYCLE_X_INITIAL + (n * CYCLE_X_DELTA)
@@ -187,18 +218,45 @@ function createValueGroups(svg, numGroups) {
     })
 }
 
-var SVG_WIDTH         = 600,
-    SVG_HEIGHT        = 300,
-    CYCLE_RADIUS      = 40,
-    CYCLE_X_INITIAL   = 100,
-    CYCLE_X_DELTA     = 200,
-    CYCLE_Y           = 80,
-    CYCLE_ITEM_RADIUS = 20,
-    VALUE_OFFSET_X    = 5,
-    VALUE_OFFSET_Y    = 30,
-    VALUE_RADIUS      = 12,
-    ALL_STATES        = getAllStates(),
-    INITIAL_STATE     = ALL_STATES[0]
+function createHistoryGroups(svg, numGroups) {
+    return _.map(upTo(numGroups - 1), function(n) {
+        var y = HISTORY_Y_INITIAL + (n * HISTORY_Y_DELTA)
+        var g = svg.append('g')
+            .attr('id', 'history-' + n)
+            .attr('transform', 'translate(' + HISTORY_X + ', ' + y + ')')
+
+        g.append('text')
+            .attr('class', 'history-label')
+            .attr('dominant-baseline', 'middle')
+            .attr('text-anchor', 'end')
+            .attr('x', - (HISTORY_POINT_X_DELTA / 2))
+            .text(cycleToText(INITIAL_STATE[n]))
+
+        return g
+    })
+}
+
+function cycleToText(cycle) {
+    return '(' + cycle.join(' ') + ')'
+}
+
+var SVG_WIDTH             = 600,
+    SVG_HEIGHT            = 300,
+    CYCLE_RADIUS          = 40,
+    CYCLE_X_INITIAL       = 100,
+    CYCLE_X_DELTA         = 200,
+    CYCLE_Y               = 80,
+    CYCLE_ITEM_RADIUS     = 20,
+    VALUE_OFFSET_X        = 5,
+    VALUE_OFFSET_Y        = 30,
+    VALUE_RADIUS          = 12,
+    HISTORY_Y_INITIAL     = 200,
+    HISTORY_Y_DELTA       = 28,
+    HISTORY_X             = 100,
+    HISTORY_POINT_X_DELTA = 37,
+    HISTORY_POINT_RADIUS  = 5,
+    ALL_STATES            = getAllStates(),
+    INITIAL_STATE         = ALL_STATES[0]
 
 function start() {
     var currentIndex = 0,
@@ -208,11 +266,14 @@ function start() {
                     .attr("height", SVG_HEIGHT)
 
     drawCycles(svg, INITIAL_STATE)
-    var valueGroups  = createValueGroups(svg, INITIAL_STATE.length)
+
+    var valueGroups   = createValueGroups(svg, INITIAL_STATE.length),
+        historyGroups = createHistoryGroups(svg, INITIAL_STATE.length)
 
     var i = 0
     setInterval(function() {
         drawValues(svg, ALL_STATES[i], i, valueGroups)
+        drawHistory(svg, ALL_STATES[i], i, historyGroups)
         if (i < 12) { i++ }
     }, 1000)
 }
