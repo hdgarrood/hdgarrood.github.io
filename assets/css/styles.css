@@ -51,30 +51,6 @@ h1 {
 .hero p {
   font-size: 1.6em; }
 
-pre, code {
-  background-color: #dde; }
-
-pre {
-  -webkit-border-radius: 5px;
-  -moz-border-radius: 5px;
-  border-radius: 5px;
-  margin: 2%;
-  padding: 1em; }
-
-p > code,
-h1 > code,
-h2 > code,
-h3 > code,
-h4 > code,
-h5 > code,
-li > code {
-  -webkit-border-radius: 5px;
-  -moz-border-radius: 5px;
-  border-radius: 5px;
-  line-height: 1.0;
-  padding-right: 0.3em;
-  padding-left: 0.3em; }
-
 blockquote, svg {
   -webkit-border-radius: 5px;
   -moz-border-radius: 5px;
@@ -82,6 +58,10 @@ blockquote, svg {
   margin: 2%;
   padding: 1em;
   background: #dde; }
+
+pre {
+  padding-left: 1em;
+  border-left: 2px solid #dde; }
 
 .entry-title {
   margin-bottom: 0.2em; }

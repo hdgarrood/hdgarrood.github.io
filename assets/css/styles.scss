@@ -89,30 +89,14 @@ h1 {
     padding: 1em;
 }
 
-pre, code {
-    background-color: #dde;
-}
-
-pre {
-    @include blocky;
-}
-
-p > code,
-h1 > code,
-h2 > code,
-h3 > code,
-h4 > code,
-h5 > code,
-li > code {
-    @include corners;
-    line-height: 1.0;
-    padding-right: 0.3em;
-    padding-left: 0.3em;
-}
-
 blockquote, svg {
     @include blocky;
     background: #dde;
+}
+
+pre {
+    padding-left: 1em;
+    border-left: 2px solid #dde;
 }
 
 .entry-title {
