@@ -13,19 +13,26 @@
 }
 
 .line {
-  fill: none;
-  stroke: #999;
-  stroke-width: 1.5px;
+    fill: none;
+    stroke: #999;
+    stroke-width: 1.5px;
 }
 
 .value {
+    fill: #444;
     font-size: 100%;
-    color: red;
 }
+
+.value-matching {
+    fill: #d37;
+    font-size: 100%;
+}
+
 </style>
 <script type="text/javascript">
+"use strict";
 (function() {
-function initialState() {
+function getInitialState() {
     return [
         [1, 13, 7, 10],
         [3, 12, 4, 6],
@@ -43,8 +50,8 @@ function cycle(arr) {
 }
 
 function getAllStates() {
-    var numStates = 4,
-        state = initialState(),
+    var numStates = 13,
+        state = getInitialState(),
         states = [state],
         i = 1
 
@@ -83,46 +90,52 @@ function polygon(n, radius) {
         })
 }
 
-function drawCycle(svg, cycle, n, radius) {
+function drawCycle(svg, cycle, n) {
     var line = d3.svg.line()
         .interpolate('cardinal-closed')
 
     var g = svg.append('g').attr('id', 'cycle-' + n)
-    var points = polygon(cycle.length, radius)
+    var points = polygon(cycle.length, CYCLE_RADIUS)
 
     var path = g.append('path')
         .datum(points)
         .attr('class', 'line')
         .attr('d', line)
 
-
     var inputs = g.selectAll('text')
         .data(_.zip(cycle, points))
 
     inputs.enter()
-            .append('circle')
+        .append('circle')
             .attr('cx', function(d) { return d[1][0] })
             .attr('cy', function(d) { return d[1][1] })
-            .attr('r', 20)
+            .attr('r', CYCLE_ITEM_RADIUS)
             .attr('fill', '#eee')
 
     inputs.enter()
-            .append('text')
+        .append('text')
             .attr('x', function(d) { return d[1][0] })
             .attr('y', function(d) { return d[1][1] })
             .text(function(d) { return d[0] })
             .attr('text-anchor', 'middle')
             .attr('dominant-baseline', 'central')
 
+    inputs.enter()
+        .append('circle')
+            .attr('cx', function(d) { return d[1][0] + VALUE_OFFSET_X })
+            .attr('cy', function(d) { return d[1][1] + VALUE_OFFSET_Y })
+            .attr('r', VALUE_RADIUS)
+            .attr('fill', '#eee')
+
     return g
 }
 
-function drawValuesForCycle(svg, values, i, group, radius) {
+function drawValuesForCycle(svg, values, i, group) {
     var line = d3.svg.line()
         .interpolate('cardinal-closed')
 
-    var points = _.map(polygon(values.length, radius), function(point) {
-        return [point[0] + 5, point[1] + 30]
+    var points = _.map(polygon(values.length, CYCLE_RADIUS), function(point) {
+        return [point[0] + VALUE_OFFSET_X, point[1] + VALUE_OFFSET_Y]
     })
 
     var inputs = group.selectAll('text')
@@ -135,62 +148,72 @@ function drawValuesForCycle(svg, values, i, group, radius) {
             .text(function(d) { return d[0] })
             .attr('text-anchor', 'middle')
             .attr('dominant-baseline', 'central')
-            .attr('class', 'value')
+            .attr('class', function(d, j) {
+                return INITIAL_STATE[i][j] == d[0] ?
+                        'value-matching' : 'value' })
 
     inputs.transition()
             .attr('x', function(d) { return d[1][0] })
             .attr('y', function(d) { return d[1][1] })
 
+    inputs
+        .attr('class', function(d, j) {
+            return INITIAL_STATE[i][j] == d[0] ?
+                    'value-matching' : 'value' })
+
     return group
 }
 
-function drawCycles(svg, state, radius, translateInitial, translateGap) {
+function drawCycles(svg, state) {
     _.map([0,1,2], function(n) {
-        var x = translateInitial + (n * translateGap)
-        drawCycle(svg, state[n], n, radius)
-            .attr('transform', 'translate(' + x + ', 80)')
+        var x = CYCLE_X_INITIAL + (n * CYCLE_X_DELTA)
+        drawCycle(svg, state[n], n)
+            .attr('transform', 'translate(' + x + ', ' + CYCLE_Y + ')')
     })
 }
 
-function drawValues(svg, initialState, state, i, radius, valueGroups,
-        translateInitial, translateGap) {
+function drawValues(svg, state, i, valueGroups) {
     _.map([0,1,2], function(n) {
-        var x = translateInitial + (n * translateGap)
-        drawValuesForCycle(svg, state[n], n, valueGroups[n], radius)
-            .attr('transform', 'translate(' + x + ', 80)')
+        drawValuesForCycle(svg, state[n], n, valueGroups[n])
     })
 }
 
 function createValueGroups(svg, numGroups) {
     return _.map(upTo(numGroups - 1), function(n) {
-        return svg.append('g').attr('id', 'cycle-' + n + '-values')
+        var x = CYCLE_X_INITIAL + (n * CYCLE_X_DELTA)
+        return svg.append('g')
+            .attr('id', 'cycle-' + n + '-values')
+            .attr('transform', 'translate(' + x + ', ' + CYCLE_Y + ')')
     })
 }
 
+var SVG_WIDTH         = 600,
+    SVG_HEIGHT        = 300,
+    CYCLE_RADIUS      = 40,
+    CYCLE_X_INITIAL   = 100,
+    CYCLE_X_DELTA     = 200,
+    CYCLE_Y           = 80,
+    CYCLE_ITEM_RADIUS = 20,
+    VALUE_OFFSET_X    = 5,
+    VALUE_OFFSET_Y    = 30,
+    VALUE_RADIUS      = 12,
+    ALL_STATES        = getAllStates(),
+    INITIAL_STATE     = ALL_STATES[0]
+
 function start() {
-    var width            = 600,
-        height           = 300,
-        cycleRadius      = 40,
-        states           = getAllStates(),
-        currentIndex     = 0,
-        initialState     = states[0],
-        translateInitial = 100,
-        translateGap     = 200
-
-    var svg = d3.select("#cycle-order-viz-svg-container")
+    var currentIndex = 0,
+        svg = d3.select("#cycle-order-viz-svg-container")
                 .append("svg")
-                    .attr("width", width)
-                    .attr("height", height)
+                    .attr("width", SVG_WIDTH)
+                    .attr("height", SVG_HEIGHT)
 
-    drawCycles(svg, initialState, cycleRadius,
-            translateInitial, translateGap)
-    valueGroups = createValueGroups(svg, initialState.length)
+    drawCycles(svg, INITIAL_STATE)
+    var valueGroups  = createValueGroups(svg, INITIAL_STATE.length)
 
     var i = 0
     setInterval(function() {
-        drawValues(svg, initialState, states[i], i, cycleRadius, valueGroups,
-            translateInitial, translateGap)
-        i++
+        drawValues(svg, ALL_STATES[i], i, valueGroups)
+        if (i < 12) { i++ }
     }, 1000)
 }
 start()
