@@ -1,7 +1,7 @@
 set -ex
 
 ROOT_DIR="$(cd "$(dirname ${BASH_SOURCE[0]})" && cd .. && pwd)"
-PANDOC="pandoc"
+PANDOC="/home/harry/build/cabal-sandboxes/pandoc/.cabal-sandbox/bin/pandoc"
 
 pushd "$ROOT_DIR"
 

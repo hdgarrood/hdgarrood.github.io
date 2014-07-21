@@ -28,11 +28,8 @@ title: "Permutations: an exercise"
 <span class="ot">todo ::</span> a
 todo <span class="fu">=</span> error <span class="st">&quot;todo&quot;</span></code></pre>
 <p>A <code>Card</code> is represented as an <code>Int</code>, except that the type checker should ensure that we don't put a <code>Card</code> where an <code>Int</code> should go, or vice versa.</p>
-<pre class="sourceCode literate haskell"><code class="sourceCode haskell"><span class="kw">newtype</span> <span class="dt">Card</span> <span class="fu">=</span> <span class="dt">Card</span> <span class="dt">Int</span>
+<pre class="sourceCode literate haskell"><code class="sourceCode haskell"><span class="kw">newtype</span> <span class="dt">Card</span> <span class="fu">=</span> <span class="dt">Card</span> {<span class="ot"> unCard ::</span> <span class="dt">Int</span> }
     <span class="kw">deriving</span> (<span class="dt">Eq</span>, <span class="dt">Ord</span>, <span class="dt">Arbitrary</span>)
-
-<span class="ot">unCard ::</span> <span class="dt">Card</span> <span class="ot">-&gt;</span> <span class="dt">Int</span>
-unCard (<span class="dt">Card</span> n) <span class="fu">=</span> n
 
 <span class="kw">instance</span> <span class="dt">Show</span> <span class="dt">Card</span> <span class="kw">where</span>
     show <span class="fu">=</span> show <span class="fu">.</span> unCard</code></pre>
@@ -81,7 +78,7 @@ prop_shuffle_topToBottom deck<span class="fu">@</span>(topCard<span class="fu">:
 <p>Next up is a function <code>order</code> which, given a function, gives us the number of times we have to apply it to a given value to get that value again. So its type should be <code>Eq a =&gt; (a -&gt; a) -&gt; a -&gt; Int</code>. We need the <code>Eq</code> constraint so that we can test values to see if they're the same as the first one.</p>
 <pre class="sourceCode literate haskell"><code class="sourceCode haskell"><span class="ot">order ::</span> <span class="dt">Eq</span> a <span class="ot">=&gt;</span> (a <span class="ot">-&gt;</span> a) <span class="ot">-&gt;</span> a <span class="ot">-&gt;</span> <span class="dt">Int</span>
 order <span class="fu">=</span> todo</code></pre>
-<p>To test <code>order</code>: Suppose we have a function f, and some arbitrary number n. Define f such that <code>f x</code> is x - 1 for positive x, and n otherwise. Then, the number of times we have to apply f to n to get n again should be n + 1:</p>
+<p>To test <code>order</code>: Suppose we have a function f, and some arbitrary number n. Define f such that f(x) is x - 1 for positive x, and n otherwise. Then, the number of times we have to apply f to n to get n again should be n + 1:</p>
 <pre class="sourceCode literate haskell"><code class="sourceCode haskell"><span class="ot">prop_order_subtractOne ::</span> <span class="dt">Int</span> <span class="ot">-&gt;</span> <span class="dt">Bool</span>
 prop_order_subtractOne n&#39; <span class="fu">=</span> order f n <span class="fu">==</span> n <span class="fu">+</span> <span class="dv">1</span>
     <span class="kw">where</span>
@@ -142,6 +139,7 @@ g x = case x of
 <p>The first cycle has 4 elements, so on its own, it must have an order of 4. Does that mean <code>g</code> has an order of 4? No, because applying <code>g</code> four times to 5 gives us 11.</p>
 <p>We know that <code>(1 13 7 10)</code> on its own has an order of 4, and so does <code>(3 12 4 6)</code>. However, <code>(5 11 8)</code> has an order of 3. What's the minimum number of times we have to apply <code>g</code> to get all of these back to where they started?</p>
 <p>{% include permutations-an-exercise/cycle-order-viz.html %}</p>
+<p>The visualisation says that f, applied n times to any of the numbers in the big circles, gives you the number in the corresponding little circle. We start with n = 0, that is, the identity function; clicking 'Next' increments n, and clicking 'Prev' decrements it. If a number is mapped to itself then it is highlighted. The dots along the bottom show how often each of the cycles maps all of the numbers in it to themselves.</p>
 <p>The answer, which hopefully is demonstrated by the visualisation, is the least common multiple of all of the cycle lengths. So in this case, it's 12.</p>
 <p>So now we have a new way of calculating the order of the shuffle for a given deck size: do the shuffle once, use the resulting deck to work out how to represent the shuffle as a set of disjoint cycles, and then get the least common multiple of the cycle lengths.</p>
 <p>First we need a way of representing a cycle in Haskell. Let's go with this:</p>

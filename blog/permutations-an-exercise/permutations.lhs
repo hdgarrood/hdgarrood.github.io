@@ -48,11 +48,8 @@ is especially well suited to the job.
 A `Card` is represented as an `Int`, except that the type checker should ensure
 that we don't put a `Card` where an `Int` should go, or vice versa.
 
-> newtype Card = Card Int
+> newtype Card = Card { unCard :: Int }
 >     deriving (Eq, Ord, Arbitrary)
->
-> unCard :: Card -> Int
-> unCard (Card n) = n
 >
 > instance Show Card where
 >     show = show . unCard
@@ -139,7 +136,7 @@ we can test values to see if they're the same as the first one.
 > order = todo
 
 To test `order`: Suppose we have a function f, and some arbitrary number n.
-Define f such that `f x` is x - 1 for positive x, and n otherwise.  Then, the
+Define f such that f(x) is x - 1 for positive x, and n otherwise.  Then, the
 number of times we have to apply f to n to get n again should be n + 1:
 
 > prop_order_subtractOne :: Int -> Bool
@@ -277,6 +274,13 @@ We know that `(1 13 7 10)` on its own has an order of 4, and so does `(3 12 4
 we have to apply `g` to get all of these back to where they started?
 
 {% include permutations-an-exercise/cycle-order-viz.html %}
+
+The visualisation says that f, applied n times to any of the numbers in the big
+circles, gives you the number in the corresponding little circle. We start with
+n = 0, that is, the identity function; clicking 'Next' increments n, and
+clicking 'Prev' decrements it. If a number is mapped to itself then it is
+highlighted. The dots along the bottom show how often each of the cycles maps
+all of the numbers in it to themselves.
 
 The answer, which hopefully is demonstrated by the visualisation, is the least
 common multiple of all of the cycle lengths. So in this case, it's 12.
