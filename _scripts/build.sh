@@ -2,6 +2,7 @@ set -ex
 
 ROOT_DIR="$(cd "$(dirname ${BASH_SOURCE[0]})" && cd .. && pwd)"
 PANDOC="/home/harry/build/cabal-sandboxes/pandoc/.cabal-sandbox/bin/pandoc"
+PERMUTATIONS_POST="_posts/2014-07-21-permutations-an-exercise.html"
 
 pushd "$ROOT_DIR"
 
@@ -9,7 +10,7 @@ pushd "$ROOT_DIR"
 sass assets/css/styles.scss >assets/css/styles.css
 
 # literate haskell
-cat > _drafts/permutations-an-exercise.html <<END
+cat > "$PERMUTATIONS_POST" <<END
 ---
 layout: post
 title: "Permutations: an exercise"
@@ -20,6 +21,6 @@ END
     --from=markdown+lhs \
     --to=html \
     blog/permutations-an-exercise/permutations.lhs \
-    >> _posts/2014-07-21-permutations-an-exercise.html
+    >> "$PERMUTATIONS_POST"
 
 popd
