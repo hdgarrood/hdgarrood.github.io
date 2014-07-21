@@ -20,6 +20,6 @@ END
     --from=markdown+lhs \
     --to=html \
     blog/permutations-an-exercise/permutations.lhs \
-    >> _drafts/permutations-an-exercise.html
+    >> _posts/2014-07-21-permutations-an-exercise.html
 
 popd
