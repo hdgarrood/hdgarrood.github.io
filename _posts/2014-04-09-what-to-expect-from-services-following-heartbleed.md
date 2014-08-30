@@ -12,6 +12,8 @@ There are two acceptable formats:
 
 **OR**
 
+lol
+
 * We were using an affected version of OpenSSL. We have now:
   * Updated OpenSSL to a fixed version,
   * Recreated SSL keys and certificates,
