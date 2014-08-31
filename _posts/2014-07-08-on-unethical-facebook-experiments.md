@@ -12,8 +12,6 @@ experimented on.
 
 It's worth noting that there are two subtly different definitions of the wordabide by
 the code of conduct."
-
-I agree that we should not consider it likely for Facebook to behave ethically.
 However I think we *should* hold Facebook up to a high moral standard. If we
 simply shrug, say "that's just how it is," and allow them to continue, then we
 deserve everything we get.
