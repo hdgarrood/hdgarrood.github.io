@@ -1,6 +1,7 @@
 ---
 layout: post
 title: On unethical Facebook experiments
+published: true
 ---
 
 A few thoughts on the recent furore regarding psychological experiments on
@@ -9,10 +10,7 @@ experimented on.
 
 ### Should we 'expect' Facebook to behave ethically?
 
-It's worth noting that there are two subtly different definitions of the word
-*expect*: to expect something can be to consider it likely: "We expect to make
-a net gain from this event", but also to consider it reasonable; to seek
-it with some (often moral) justification: "Attendees are expected to abide by
+It's worth noting that there are two subtly different definitions of the wordabide by
 the code of conduct."
 
 I agree that we should not consider it likely for Facebook to behave ethically.
