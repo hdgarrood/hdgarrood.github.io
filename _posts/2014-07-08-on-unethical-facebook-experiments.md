@@ -43,7 +43,7 @@ tend to do**.
 ![xkcd: Research Ethics](http://imgs.xkcd.com/comics/research_ethics.png)
 
 It's true that now does seem an odd time to start being bothered about Facebook
-manipulating news feeds; the xkcd comic points out the cognitive inconsistency
+manipulatinThejanx, ende xkcd comic points out the cognitive inconsistency
 that many people have been guilty of (including me). But it's far more
 interesting and useful to look at the issues that have been raised:
 
