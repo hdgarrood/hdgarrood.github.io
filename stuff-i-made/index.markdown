@@ -12,24 +12,24 @@ Stuff I made
 
 * [King of the Network][]
 
- The winning entry to the Edinburgh University GameDevSoc Game Jam 2013. The
- theme was 'networks'.
+  The winning entry to the Edinburgh University GameDevSoc Game Jam 2013. The
+  theme was 'networks'.
 
 * [Down the Rabbit Hole][]
 
- Won joint 1st place in the Edinburgh University Functional Programming
- Competition in 2013. It is a zoom sequence of the Mandelbrot set, written
- in Haskell.
+  Won joint 1st place in the Edinburgh University Functional Programming
+  Competition in 2013. It is a zoom sequence of the Mandelbrot set, written
+  in Haskell.
 
 * [klasma][]
 
- A program for composing chiptune music. Reads a text file containing a
- description of a track in a purpose-built domain specific language, and
- turns it into music.
+  A program for composing chiptune music. Reads a text file containing a
+  description of a track in a purpose-built domain specific language, and
+  turns it into music.
 
 * [Tank game][]
 
- Just a little game I put together in JavaScript. It runs in the browser.
+  Just a little game I put together in JavaScript. It runs in the browser.
 
 [Redmine release notes plugin]: https://github.com/hdgarrood/redmine_release_notes/
 [King of the Network]: http://gamedevsoc.eusa.ed.ac.uk/projects/king-of-the-network/
