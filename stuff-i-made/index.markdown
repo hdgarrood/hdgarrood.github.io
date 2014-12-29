@@ -6,6 +6,7 @@ Stuff I made
 ------------
 
 * [Multiplayer Pacman][]
+
   A multiplayer version of the classic Pacman game. The server and the client
   were both written in PureScript, a Haskell-like language which compiles to
   JavaScript. Play the game at <https://mpac.herokuapp.com/>.
