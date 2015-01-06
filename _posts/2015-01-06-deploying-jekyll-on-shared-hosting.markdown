@@ -1,6 +1,6 @@
 ---
 layout: post
-title: Deploying Jekyll on Shared Hosting
+title: Deploying Jekyll on shared hosting
 ---
 
 Recently I have been wanting to have the following:
