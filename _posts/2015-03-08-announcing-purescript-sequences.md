@@ -47,12 +47,12 @@ immutability.
 
 [purescript-sequences](https://github.com/hdgarrood/purescript-sequences) is an
 attempt to reap these benefits. It implements a general-purpose sequence data
-type, `Seq`. The API is similar to that of an array, but the data structure
-itself is based on a data structure called a _Finger Tree_. By leveraging
-immutability, it is able to push a new element on to either end or remove an
-element from either end in constant time, and concatenate two sequences in
-logarithmic time &mdash; compare this to the corresponding JavaScript array
-operations, which are both linear time.
+type, `Seq`. The API is similar to that of an array, but the internal
+arrangement of data is very different. By leveraging immutability, it is able
+to push a new element on to either end or remove an element from either end in
+constant time, and concatenate two sequences in logarithmic time &mdash;
+compare this to the corresponding JavaScript array operations, which are both
+linear time.
 
 I've just released version 0.1.0, which I believe is ready for public
 consumption. I've dogfooded it too; my [multiplayer pacman game](https://mpac.herokuapp.com/)
