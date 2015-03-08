@@ -1,4 +1,4 @@
 ---
 permalink: /blog/:title
 markdown: kramdown
-highlighter: rouge
+highlighter: pygments
