@@ -66,5 +66,9 @@ what we expect: for arrays, each `cons` is O(n), so we expect n `cons`
 operations to be O(n<sup>2</sup>).
 
 However, `Seq` appears to be slower than native arrays up to some crossover
-point. On my machine, it's around 5,000 elements. So this library probably
-won't give you a speed boost in all cases.
+point. On my machine, it's around 6,000 elements. So this library probably
+won't give you a speed boost in all cases. It also probably won't be worth
+using if you need to pass arrays back and forth between JavaScript libraries
+and PureScript code, as converting between the two types is O(n).
+
+Anyway, enjoy! Let me know if it works for you (or even, if it doesn't).
