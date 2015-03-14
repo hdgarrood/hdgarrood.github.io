@@ -6,9 +6,6 @@ PERMUTATIONS_POST="_posts/2014-07-21-permutations-an-exercise.html"
 
 pushd "$ROOT_DIR"
 
-# styles
-sass assets/css/styles.scss >assets/css/styles.css
-
 # literate haskell
 cat > "$PERMUTATIONS_POST" <<END
 ---
