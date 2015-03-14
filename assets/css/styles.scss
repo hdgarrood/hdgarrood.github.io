@@ -102,6 +102,18 @@ pre {
     border-left: 2px solid #dde;
 }
 
+// blog index styles
+li.blog-post {
+  margin-bottom: 0.6em;
+}
+
+.blog-post time {
+  color: #444;
+  font-style: italic;
+}
+
+
+// blog post styles
 .entry-title {
     margin-bottom: 0.2em;
 }
