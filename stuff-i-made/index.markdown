@@ -14,6 +14,15 @@ A multiplayer version of the classic Pacman game. The server and the client
 were both written in PureScript, a Haskell-like language which compiles to
 JavaScript.
 
+### purescript-sequences
+
+* source: <https://github.com/hdgarrood/purescript-sequences>
+
+An efficient, general-purpose sequence type for PureScript. This library offers
+a data structure designed for use in PureScript code, in order to take
+advantage of immutability: giving benefits related to both time complexity of
+operations and memory churn.
+
 ### Redmine release notes plugin
 
 * source: <https://github.com/hdgarrood/redmine_release_notes>
