@@ -1,45 +1,53 @@
 ---
 layout: default
+title: Stuff I made
 ---
 
-Stuff I made
-------------
+## Stuff I made
 
-* [Multiplayer Pacman][]
+### Multiplayer Pacman
 
-  A multiplayer version of the classic Pacman game. The server and the client
-  were both written in PureScript, a Haskell-like language which compiles to
-  JavaScript. Play the game at <https://mpac.herokuapp.com/>.
+* live, at: <https://mpac.herokuapp.com>
+* source: <https://github.com/hdgarrood/multipac>
 
-* [Redmine release notes plugin][]
+A multiplayer version of the classic Pacman game. The server and the client
+were both written in PureScript, a Haskell-like language which compiles to
+JavaScript.
 
-  A plugin for the open-source bug tracking and project management system,
-  Redmine.
+### Redmine release notes plugin
 
-* [King of the Network][]
+* source: <https://github.com/hdgarrood/redmine_release_notes>
 
-  The winning entry to the Edinburgh University GameDevSoc Game Jam 2013. The
-  theme was 'networks'.
+A plugin for the open-source bug tracking and project management system,
+Redmine.
 
-* [Down the Rabbit Hole][]
+### King of the Network
 
-  Won joint 1st place in the Edinburgh University Functional Programming
-  Competition in 2013. It is a zoom sequence of the Mandelbrot set, written
-  in Haskell.
+* download from:
+  <https://docs.google.com/file/d/0B2TmqHg3DPXLblUtbUh4bmE4cVk/edit>
 
-* [klasma][]
+The winning entry to the Edinburgh University GameDevSoc Game Jam 2013. The
+theme was 'networks'. We used GameMaker, so there's only an EXE file. It seems
+to work well under Wine though.
 
-  A program for composing chiptune music. Reads a text file containing a
-  description of a track in a purpose-built domain specific language, and
-  turns it into music.
+### Down the Rabbit Hole
 
-* [Tank game][]
+* source: <https://github.com/hdgarrood/inf1-fp-competition>
 
-  Just a little game I put together in JavaScript. It runs in the browser.
+Won joint 1st place in the Edinburgh University Functional Programming
+Competition in 2013. It is a zoom sequence of the Mandelbrot set, written
+in Haskell.
 
-[Redmine release notes plugin]: https://github.com/hdgarrood/redmine_release_notes/
-[Multiplayer Pacman]: https://github.com/hdgarrood/multipac/
-[King of the Network]: http://gamedevsoc.eusa.ed.ac.uk/projects/king-of-the-network/
-[Down the Rabbit Hole]: https://github.com/hdgarrood/inf1-fp-competition/
-[klasma]: https://github.com/hdgarrood/klasma
-[Tank game]: ./tank-game/
+### klasma
+
+* source: <https://github.com/hdgarrood/klasma>
+
+A program for composing chiptune music. Reads a text file containing a
+description of a track in a purpose-built domain specific language, and turns
+it into music.
+
+### Tank game
+
+* play: [here](./tank-game)
+
+Just a little game I put together in JavaScript. It runs in the browser.
