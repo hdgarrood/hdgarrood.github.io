@@ -137,6 +137,24 @@ hr.end-of-post {
     margin-top: 3em;
 }
 
+// source code highlighting
+.sourceCode.haskell .ot {
+    color: #433279;
+}
+
+.sourceCode.haskell .dt {
+    color: #af5a3b;
+}
+
+.sourceCode.haskell .kw {
+    color: #116416;
+}
+
+.sourceCode.haskell .st {
+    color: #af3e3b;
+}
+
+
 // Media queries for larger screens
 .container {
     max-width: 45em;
