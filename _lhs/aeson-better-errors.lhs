@@ -1,10 +1,10 @@
 * [aeson-better-errors on Hackage][]
 
 I've just released a library on Hackage for building parsers using Aeson, which
-should hopefully be able to provide much better errors in most cases. Rather
-than go into specifics about the motivation of my design, I'll just jump right
-in to an example &mdash; then, hopefully, the reason I wrote it will become
-clear.
+should hopefully be able to provide much better errors than you'd get with
+Aeson in most cases. Rather than go into specifics about the motivation of my
+design, I'll just jump right in to an example &mdash; then, hopefully, the
+reason I wrote it will become clear.
 
 > {-# LANGUAGE OverloadedStrings #-}
 > import Control.Applicative
