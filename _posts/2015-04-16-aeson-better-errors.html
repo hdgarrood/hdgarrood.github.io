@@ -8,17 +8,49 @@ published: false
 <li><a href="https://hackage.haskell.org/package/aeson-better-errors">aeson-better-errors on Hackage</a></li>
 </ul>
 <p>I've just released a library on Hackage for building parsers using Aeson, which should hopefully be able to provide much better errors in most cases. Rather than go into specifics about the motivation of my design, I'll just jump right in to an example — then, hopefully, the reason I wrote it will become clear.</p>
-<pre class="sourceCode literate haskell"><code class="sourceCode haskell"><span class="kw">import </span><span class="dt">Control.Applicative</span>
+<pre class="sourceCode literate haskell"><code class="sourceCode haskell"><span class="ot">{-# LANGUAGE OverloadedStrings #-}</span>
+<span class="kw">import </span><span class="dt">Control.Applicative</span>
 <span class="kw">import </span><span class="dt">Data.Aeson</span>
-<span class="kw">import </span><span class="dt">Data.Aeson.BetterErrors</span></code></pre>
+<span class="kw">import </span><span class="dt">Data.Aeson.BetterErrors</span>
+<span class="kw">import qualified</span> <span class="dt">Data.Text.IO</span> <span class="kw">as</span> <span class="dt">T</span></code></pre>
 <p>We'll start simple:</p>
 <pre class="sourceCode literate haskell"><code class="sourceCode haskell"><span class="kw">data</span> <span class="dt">Person</span> <span class="fu">=</span> <span class="dt">Person</span> <span class="dt">String</span> <span class="dt">Int</span> <span class="kw">deriving</span> (<span class="dt">Show</span>)</code></pre>
-<p>Suppose we have the following JSON:</p>
-<pre><code>{&quot;name&quot;: &quot;Bob&quot;, &quot;age&quot;: 25}</code></pre>
+<p>Suppose we have some JSON, like this: <code>{&quot;name&quot;: &quot;Bob&quot;, &quot;age&quot;: 25}</code></p>
 <p>Then, we can write a parser in good old Applicative style:</p>
-<pre class="sourceCode literate haskell"><code class="sourceCode haskell"><span class="ot">asPerson ::</span> <span class="dt">Parse</span> () <span class="dt">Person</span>
-asPerson <span class="fu">=</span> <span class="dt">Person</span> <span class="fu">&lt;$&gt;</span> key <span class="st">&quot;name&quot;</span> asString <span class="fu">&lt;*&gt;</span> key <span class="st">&quot;age&quot;</span> asIntegral</code></pre>
-<p>However, what if</p>
+<pre class="sourceCode literate haskell"><code class="sourceCode haskell"><span class="ot">asPerson1 ::</span> <span class="dt">Parse</span> () <span class="dt">Person</span>
+asPerson1 <span class="fu">=</span> <span class="dt">Person</span> <span class="fu">&lt;$&gt;</span> key <span class="st">&quot;name&quot;</span> asString <span class="fu">&lt;*&gt;</span> key <span class="st">&quot;age&quot;</span> asIntegral</code></pre>
+<p>Then, let's suppose the encoding changes to this: [&quot;Bob&quot;, 25]. That's fine too:</p>
+<pre class="sourceCode literate haskell"><code class="sourceCode haskell"><span class="ot">asPerson2 ::</span> <span class="dt">Parse</span> () <span class="dt">Person</span>
+asPerson2 <span class="fu">=</span> <span class="dt">Person</span> <span class="fu">&lt;$&gt;</span> nth <span class="dv">0</span> asString <span class="fu">&lt;*&gt;</span> nth <span class="dv">1</span> asIntegral</code></pre>
+<p>Let's test these out:</p>
+<pre><code>λ: parse asPerson1 &quot;{\&quot;name\&quot;: \&quot;Bob\&quot;, \&quot;age\&quot;: 25}&quot;
+Right (Person &quot;Bob&quot; 25)
+
+λ: parse asPerson2 &quot;[\&quot;Angela\&quot;, 43]&quot;
+Right (Person &quot;Angela&quot; 43)
+
+λ: parse asPerson1 &quot;{\&quot;name\&quot;: \&quot;Bob\&quot;}&quot;
+Left (BadSchema [] (KeyMissing &quot;age&quot;))
+
+λ: parse asPerson1 &quot;{\&quot;name\&quot;: \&quot;Bob\&quot;, \&quot;age\&quot;: 25.1}&quot;
+Left (BadSchema [ObjectKey &quot;age&quot;] (ExpectedIntegral 25.1))
+
+λ: parse asPerson1 &quot;[\&quot;Bob\&quot;, 25]&quot;
+Left (BadSchema [] (WrongType TyObject (Array (fromList [String &quot;Bob&quot;,Number 25.0]))))</code></pre>
+<p>As you can see, <code>aeson-better-errors</code> uses a sum type for errors. Hooray! Let's see what happens when we display those errors:</p>
+<pre class="sourceCode literate haskell"><code class="sourceCode haskell">printErr (<span class="dt">Right</span> _) <span class="fu">=</span> T.putStrLn <span class="st">&quot;Not an error.&quot;</span>
+printErr (<span class="dt">Left</span> err) <span class="fu">=</span> mapM_ T.putStrLn (displayError (const <span class="st">&quot;n/a&quot;</span>) err)</code></pre>
+<pre><code>λ: printErr $ parse asPerson1 &quot;{\&quot;name\&quot;: \&quot;Bob\&quot;}&quot;
+The required key &quot;age&quot; is missing.
+
+λ: printErr $ parse asPerson1 &quot;[\&quot;Bob\&quot;, 25]&quot;
+Type mismatch:
+Expected a value of type object
+Got: [&quot;Bob&quot;,25]
+
+λ: printErr $ parse asPerson1 &quot;{\&quot;name\&quot;: \&quot;Bob\&quot;, \&quot;age\&quot;: 25.1}&quot;
+At the path: [&quot;age&quot;]
+Expected an integral value, got 25.1</code></pre>
 <ul>
 <li>Often you want to do more than just parse JSON</li>
 <li>Even after extracting the relevant bits from a JSON value, you may want to perform further validations before returning a value</li>
