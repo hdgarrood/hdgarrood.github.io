@@ -36,7 +36,7 @@ asPerson&#39; <span class="fu">=</span> <span class="dt">Person</span> <span cla
 <pre><code>λ: parse asPerson &quot;{\&quot;name\&quot;: \&quot;Bob\&quot;, \&quot;age\&quot;: 25}&quot;
 Right (Person &quot;Bob&quot; 25)
 
-λ: parse asPerson2 &quot;[\&quot;Angela\&quot;, 43]&quot;
+λ: parse asPerson&#39; &quot;[\&quot;Angela\&quot;, 43]&quot;
 Right (Person &quot;Angela&quot; 43)
 
 λ: parse asPerson &quot;{\&quot;name\&quot;: \&quot;Bob\&quot;}&quot;
@@ -111,7 +111,7 @@ Expected a value of type array
 Got: {}</code></pre>
 <p>Note that we still require that the value is an array, even if we aren't able to get the item at index 2 out.</p>
 <p>The <code>eachInObject</code> and <code>keyMay</code> functions are analogous to these, but for objects.</p>
-<p><code>aeson-better-errors</code> also lets you define your own validations and errors, and use them in parsers. For example, suppose I decide that people's names must be less than 20 characters. I'd probably want to put my data types in such a way that it's impossible to construct invalid values (for now, let's pretend it's in a separate module and the constructor is not exported):</p>
+<p><code>aeson-better-errors</code> also lets you define your own validations and errors, and use them in parsers. For example, suppose I decide that people's names must be at most 20 characters. I'd probably want to put my data types in such a way that it's impossible to construct invalid values (for now, let's pretend it's in a separate module and the constructor is not exported):</p>
 <pre class="sourceCode literate haskell"><code class="sourceCode haskell"><span class="kw">newtype</span> <span class="dt">Name</span> <span class="fu">=</span> <span class="dt">Name</span> <span class="dt">String</span> <span class="kw">deriving</span> (<span class="dt">Show</span>)
 
 <span class="kw">data</span> <span class="dt">CustomParseError</span>
@@ -121,7 +121,7 @@ Got: {}</code></pre>
 <span class="ot">parseName&#39; ::</span> <span class="dt">String</span> <span class="ot">-&gt;</span> <span class="dt">Either</span> <span class="dt">CustomParseError</span> <span class="dt">Name</span>
 parseName&#39; s <span class="fu">=</span>
   <span class="kw">let</span> len <span class="fu">=</span> length s
-  <span class="kw">in</span> <span class="kw">if</span> len <span class="fu">&lt;</span> <span class="dv">20</span>
+  <span class="kw">in</span> <span class="kw">if</span> len <span class="fu">&lt;=</span> <span class="dv">20</span>
         <span class="kw">then</span> <span class="dt">Right</span> (<span class="dt">Name</span> s)
         <span class="kw">else</span> <span class="dt">Left</span> (<span class="dt">NameTooLong</span> len)
 

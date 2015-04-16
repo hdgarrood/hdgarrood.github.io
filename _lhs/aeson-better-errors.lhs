@@ -45,7 +45,7 @@ Let's test these out:
 λ: parse asPerson "{\"name\": \"Bob\", \"age\": 25}"
 Right (Person "Bob" 25)
 
-λ: parse asPerson2 "[\"Angela\", 43]"
+λ: parse asPerson' "[\"Angela\", 43]"
 Right (Person "Angela" 43)
 
 λ: parse asPerson "{\"name\": \"Bob\"}"
@@ -154,7 +154,7 @@ objects.
 
 `aeson-better-errors` also lets you define your own validations and errors, and
 use them in parsers. For example, suppose I decide that people's names must be
-less than 20 characters. I'd probably want to put my data types in such a way
+at most 20 characters. I'd probably want to put my data types in such a way
 that it's impossible to construct invalid values (for now, let's pretend it's
 in a separate module and the constructor is not exported):
 
@@ -167,7 +167,7 @@ in a separate module and the constructor is not exported):
 > parseName' :: String -> Either CustomParseError Name
 > parseName' s =
 >   let len = length s
->   in if len < 20
+>   in if len <= 20
 >         then Right (Name s)
 >         else Left (NameTooLong len)
 >
