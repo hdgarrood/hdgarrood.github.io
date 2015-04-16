@@ -146,7 +146,7 @@ Expected a value of type array
 Got: {}
 ~~~
 
-Note that we still require that the object is an array, even if we aren't able
+Note that we still require that the value is an array, even if we aren't able
 to get the item at index 2 out. 
 
 The `eachInObject` and `keyMay` functions are analogous to these, but for
