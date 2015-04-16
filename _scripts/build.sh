@@ -1,7 +1,6 @@
 set -ex
 
 ROOT_DIR="$(cd "$(dirname ${BASH_SOURCE[0]})" && cd .. && pwd)"
-PANDOC="/home/harry/build/cabal-sandboxes/pandoc/.cabal-sandbox/bin/pandoc"
 PERMUTATIONS_POST="_posts/2014-07-21-permutations-an-exercise.html"
 
 pushd "$ROOT_DIR"
@@ -14,10 +13,21 @@ title: "Permutations: an exercise"
 ---
 END
 
-"$PANDOC" \
+pandoc \
     --from=markdown+lhs \
     --to=html \
     blog/permutations-an-exercise/permutations.lhs \
     >> "$PERMUTATIONS_POST"
 
 popd
+
+# literate haskell again
+AESON_POST_SOURCE="_lhs/aeson-better-errors"
+AESON_POST="_posts/2015-04-16-aeson-better-errors.html"
+
+cat "${AESON_POST_SOURCE}.frontmatter" > "$AESON_POST"
+pandoc \
+    --from=markdown+lhs \
+    --to=html \
+    "${AESON_POST_SOURCE}.lhs" \
+    >> "$AESON_POST"

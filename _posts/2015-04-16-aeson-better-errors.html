@@ -1,0 +1,30 @@
+---
+title: Announcing aeson-better-errors
+layout: post
+published: false
+---
+
+<ul>
+<li><a href="https://hackage.haskell.org/package/aeson-better-errors">aeson-better-errors on Hackage</a></li>
+</ul>
+<p>I've just released a library on Hackage for building parsers using Aeson, which should hopefully be able to provide much better errors in most cases. Rather than go into specifics about the motivation of my design, I'll just jump right in to an example — then, hopefully, the reason I wrote it will become clear.</p>
+<pre class="sourceCode literate haskell"><code class="sourceCode haskell"><span class="kw">import </span><span class="dt">Control.Applicative</span>
+<span class="kw">import </span><span class="dt">Data.Aeson</span>
+<span class="kw">import </span><span class="dt">Data.Aeson.BetterErrors</span></code></pre>
+<p>We'll start simple:</p>
+<pre class="sourceCode literate haskell"><code class="sourceCode haskell"><span class="kw">data</span> <span class="dt">Person</span> <span class="fu">=</span> <span class="dt">Person</span> <span class="dt">String</span> <span class="dt">Int</span> <span class="kw">deriving</span> (<span class="dt">Show</span>)</code></pre>
+<p>Suppose we have the following JSON:</p>
+<pre><code>{&quot;name&quot;: &quot;Bob&quot;, &quot;age&quot;: 25}</code></pre>
+<p>Then, we can write a parser in good old Applicative style:</p>
+<pre class="sourceCode literate haskell"><code class="sourceCode haskell"><span class="ot">asPerson ::</span> <span class="dt">Parse</span> () <span class="dt">Person</span>
+asPerson <span class="fu">=</span> <span class="dt">Person</span> <span class="fu">&lt;$&gt;</span> key <span class="st">&quot;name&quot;</span> asString <span class="fu">&lt;*&gt;</span> key <span class="st">&quot;age&quot;</span> asIntegral</code></pre>
+<p>However, what if</p>
+<ul>
+<li>Often you want to do more than just parse JSON</li>
+<li>Even after extracting the relevant bits from a JSON value, you may want to perform further validations before returning a value</li>
+<li>Unfortunately your only choice here is to use String if an error occurs</li>
+<li>this might lead to code like <code>if &quot;expected integer&quot;</code>isInfixOf<code>err</code> - yuck.</li>
+<li>Error messages Aeson gives are not very good</li>
+<li>eg, it can say &quot;got string, expected object&quot;, but it doesn't tell you where in the object</li>
+</ul>
+<p>aeson-better-errors fixes both of these.</p>
