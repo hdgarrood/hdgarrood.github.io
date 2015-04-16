@@ -214,4 +214,7 @@ Just (Person2 (Name "Charlotte") 25)
 Left "At the path: [\"name\"]\nThe name was 27 characters long, but the maximum is 20 characters.\n"
 ~~~
 
+More information and detailed documentation is available on [hackage][]. Enjoy!
+
 [aeson-better-errors on Hackage]: https://hackage.haskell.org/package/aeson-better-errors
+[hackage]: https://hackage.haskell.org/package/aeson-better-errors
