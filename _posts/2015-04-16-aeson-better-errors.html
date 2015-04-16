@@ -1,13 +1,12 @@
 ---
 title: Announcing aeson-better-errors
 layout: post
-published: false
 ---
 
 <ul>
 <li><a href="https://hackage.haskell.org/package/aeson-better-errors">aeson-better-errors on Hackage</a></li>
 </ul>
-<p>I've just released a library on Hackage for building parsers using Aeson, which should hopefully be able to provide much better errors in most cases. Rather than go into specifics about the motivation of my design, I'll just jump right in to an example — then, hopefully, the reason I wrote it will become clear.</p>
+<p>I've just released a library on Hackage for building parsers using Aeson, which should hopefully be able to provide much better errors than you'd get with Aeson in most cases. Rather than go into specifics about the motivation of my design, I'll just jump right in to an example — then, hopefully, the reason I wrote it will become clear.</p>
 <pre class="sourceCode literate haskell"><code class="sourceCode haskell"><span class="ot">{-# LANGUAGE OverloadedStrings #-}</span>
 <span class="kw">import </span><span class="dt">Control.Applicative</span>
 <span class="kw">import </span><span class="dt">Data.Aeson</span>
