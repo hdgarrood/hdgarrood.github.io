@@ -14,14 +14,14 @@ reason I wrote it will become clear.
 > import qualified Data.Text.IO as T
 >
 > import Data.Aeson.BetterErrors
->   (parse, Parse,
+>   (parse, Parse, ParseError, ParseError',
 >     key, keyMay, keyOrDefault,
 >     nth, nthMay, nthOrDefault,
 >     asString, asIntegral,
 >     withString,
 >     eachInArray, eachInObject,
->     displayError,
->     toAesonParser)
+>     displayError, displayError',
+>     toAesonParser, toAesonParser')
 
 We'll start simple:
 
@@ -31,12 +31,12 @@ Suppose we have some JSON, like this: `{"name": "Bob", "age": 25}`
 
 Then, we can write a parser in good old Applicative style:
 
-> asPerson :: Parse () Person
+> asPerson :: Parse e Person
 > asPerson = Person <$> key "name" asString <*> key "age" asIntegral
 
 Now let's suppose the encoding changes to this: `["Bob", 25]`. That's fine too:
 
-> asPerson' :: Parse () Person
+> asPerson' :: Parse e Person
 > asPerson' = Person <$> nth 0 asString <*> nth 1 asIntegral
 
 Let's test these out:
@@ -61,8 +61,9 @@ Left (BadSchema [] (WrongType TyObject (Array (fromList [String "Bob",Number 25.
 As you can see, `aeson-better-errors` uses a sum type for errors. Hooray! Let's
 see what happens when we display those errors:
 
+> printErr :: Either ParseError' v -> IO ()
 > printErr (Right _) = T.putStrLn "Not an error."
-> printErr (Left err) = mapM_ T.putStrLn (displayError (const "n/a") err)
+> printErr (Left err) = mapM_ T.putStrLn (displayError' err)
 
 ~~~
 λ: printErr $ parse asPerson "{\"name\": \"Bob\"}"
@@ -85,7 +86,7 @@ easily write your own.
 The errors also include the path in nested values, which can be really handy.
 For example:
 
-> deeplyNested :: Parse () Int
+> deeplyNested :: Parse e Int
 > deeplyNested = key "a" (nth 3 (key "b" (key "c" asIntegral)))
 
 ~~~
@@ -104,7 +105,7 @@ Parsing homogenous arrays is also easy:
 >   }
 >   deriving (Show)
 > 
-> asClass :: Parse () Class
+> asClass :: Parse e Class
 > asClass =
 >   Class <$> key "teacher" asPerson'
 >         <*> key "students" (eachInArray asPerson')
@@ -116,10 +117,10 @@ Right (Class {classTeacher = Person "Mrs Brown" 49, classStudents = [Person "Geo
 
 As is handling indices which might not be present:
 
-> possiblyAnInt :: Parse () (Maybe Int)
+> possiblyAnInt :: Parse e (Maybe Int)
 > possiblyAnInt = nthMay 2 asIntegral
 
-> intWithDefault :: Parse () Int
+> intWithDefault :: Parse e Int
 > intWithDefault = nthOrDefault 2 14 asIntegral
 
 ~~~
@@ -164,8 +165,8 @@ in a separate module and the constructor is not exported):
 >   = NameTooLong Int
 >   deriving (Show)
 >
-> parseName' :: String -> Either CustomParseError Name
-> parseName' s =
+> parseName :: String -> Either CustomParseError Name
+> parseName s =
 >   let len = length s
 >   in if len <= 20
 >         then Right (Name s)
@@ -177,7 +178,7 @@ Then, it's convenient to be able to validate inside the parser, and we can do
 so:
 
 > asPerson2 :: Parse CustomParseError Person2
-> asPerson2 = Person2 <$> key "name" (withString parseName')
+> asPerson2 = Person2 <$> key "name" (withString parseName)
 >                     <*> key "age" asIntegral
 > 
 
@@ -189,22 +190,53 @@ Right (Person2 (Name "Charlotte") 25)
 Left (BadSchema [ObjectKey "name"] (CustomError (NameTooLong 23)))
 ~~~
 
-Note that the error uses the `CustomError` constructor. If you were wondering
-about the `const "n/a"` earlier on, this is why it's there - in order to
-display a parse error, you need to specify how to display your custom error
-type, by supplying a function `YourCustomError -> Text`. Earlier on, we weren't
-triggering any custom errors, so it was OK to just pass `const "n/a"`.
+Note that the error uses the `CustomError` constructor. All of our parsers up
+to now have been polymorphic in the error type; that is, `Parse e X` for some
+concrete type `X`. This means that, as long as I haven't subverted the type
+system (don't worry, I haven't) they should work for _any_ choice of type `e`.
+However, for the above parser, the error type is always `CustomError`.
 
-Last but not least, it's easy to make any `Parse err a` into a `FromJSON a`
-instance:
+What does this imply? Well, our `printErr` function doesn't work:
 
-> showMyCustomError :: CustomParseError -> T.Text
-> showMyCustomError (NameTooLong x) =
+~~~
+λ: printErr $ parse asPerson2 "{\"name\":\"Charlotte Ooooooooooooo\", \"age\":25}"
+<interactive>:
+    Couldn't match type ‘CustomParseError’ with ‘Data.Void.Void’
+    [...]
+~~~
+
+This is because `printErr` only type checks if the parser used never produces
+custom validation errors. The argument type of `printErr` is `Either
+ParseError' v`; the type `ParseError'` is the type of parse errors which did
+not arise as a result of custom validation errors. In this case, we have an
+`Either (ParseError CustomParseError) v`, because custom validation errors can
+occur, and those custom validation errors are values of the `CustomParseError`
+type.
+
+So how can we write a `printErr` function now? Easy &mdash; we just need to
+supply a function for displaying our custom errors, and then we can use
+`displayError` (the non-primed version) instead:
+
+> displayMyCustomError :: CustomParseError -> T.Text
+> displayMyCustomError (NameTooLong x) =
 >   "The name was " <> T.pack (show x) <> " characters long, " <>
 >     "but the maximum is 20 characters."
->  
+>
+> printErrCustom :: Either (ParseError CustomParseError) v -> IO ()
+> printErrCustom (Right _) = T.putStrLn "Not an error."
+> printErrCustom (Left err) = mapM_ T.putStrLn (displayError displayMyCustomError err)
+
+~~~
+λ: printErrCustom $ parse asPerson2 "{\"name\":\"Charlotte Ooooooooooooo\", \"age\":25}"
+At the path: ["name"]
+The name was 23 characters long, but the maximum is 20 characters.
+~~~
+
+Last but not least, it's easy to make any `Parse e a` value into a `FromJSON a`
+instance:
+
 > instance FromJSON Person2 where
->   parseJSON = toAesonParser showMyCustomError asPerson2
+>   parseJSON = toAesonParser displayMyCustomError asPerson2
 
 ~~~
 λ: decode "{\"name\":\"Charlotte\", \"age\":25}" :: Maybe Person2
@@ -213,6 +245,9 @@ Just (Person2 (Name "Charlotte") 25)
 λ: eitherDecode "{\"name\":\"Charlotte Aaaaaaaaaaaaaaaah\", \"age\":25}" :: Either String Person2
 Left "At the path: [\"name\"]\nThe name was 27 characters long, but the maximum is 20 characters.\n"
 ~~~
+
+Note that there's also `toAesonParser'` for parsers which do not produce custom
+validation errors.
 
 More information and detailed documentation is available on [hackage][]. Enjoy!
 

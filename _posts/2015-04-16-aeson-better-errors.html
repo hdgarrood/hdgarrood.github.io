@@ -15,22 +15,22 @@ layout: post
 <span class="kw">import qualified</span> <span class="dt">Data.Text.IO</span> <span class="kw">as</span> <span class="dt">T</span>
 
 <span class="kw">import </span><span class="dt">Data.Aeson.BetterErrors</span>
-  (parse, <span class="dt">Parse</span>,
+  (parse, <span class="dt">Parse</span>, <span class="dt">ParseError</span>, <span class="dt">ParseError&#39;</span>,
     key, keyMay, keyOrDefault,
     nth, nthMay, nthOrDefault,
     asString, asIntegral,
     withString,
     eachInArray, eachInObject,
-    displayError,
-    toAesonParser)</code></pre>
+    displayError, displayError&#39;,
+    toAesonParser, toAesonParser&#39;)</code></pre>
 <p>We'll start simple:</p>
 <pre class="sourceCode literate haskell"><code class="sourceCode haskell"><span class="kw">data</span> <span class="dt">Person</span> <span class="fu">=</span> <span class="dt">Person</span> <span class="dt">String</span> <span class="dt">Int</span> <span class="kw">deriving</span> (<span class="dt">Show</span>)</code></pre>
 <p>Suppose we have some JSON, like this: <code>{&quot;name&quot;: &quot;Bob&quot;, &quot;age&quot;: 25}</code></p>
 <p>Then, we can write a parser in good old Applicative style:</p>
-<pre class="sourceCode literate haskell"><code class="sourceCode haskell"><span class="ot">asPerson ::</span> <span class="dt">Parse</span> () <span class="dt">Person</span>
+<pre class="sourceCode literate haskell"><code class="sourceCode haskell"><span class="ot">asPerson ::</span> <span class="dt">Parse</span> e <span class="dt">Person</span>
 asPerson <span class="fu">=</span> <span class="dt">Person</span> <span class="fu">&lt;$&gt;</span> key <span class="st">&quot;name&quot;</span> asString <span class="fu">&lt;*&gt;</span> key <span class="st">&quot;age&quot;</span> asIntegral</code></pre>
 <p>Now let's suppose the encoding changes to this: <code>[&quot;Bob&quot;, 25]</code>. That's fine too:</p>
-<pre class="sourceCode literate haskell"><code class="sourceCode haskell"><span class="ot">asPerson&#39; ::</span> <span class="dt">Parse</span> () <span class="dt">Person</span>
+<pre class="sourceCode literate haskell"><code class="sourceCode haskell"><span class="ot">asPerson&#39; ::</span> <span class="dt">Parse</span> e <span class="dt">Person</span>
 asPerson&#39; <span class="fu">=</span> <span class="dt">Person</span> <span class="fu">&lt;$&gt;</span> nth <span class="dv">0</span> asString <span class="fu">&lt;*&gt;</span> nth <span class="dv">1</span> asIntegral</code></pre>
 <p>Let's test these out:</p>
 <pre><code>λ: parse asPerson &quot;{\&quot;name\&quot;: \&quot;Bob\&quot;, \&quot;age\&quot;: 25}&quot;
@@ -48,8 +48,9 @@ Left (BadSchema [ObjectKey &quot;age&quot;] (ExpectedIntegral 25.1))
 λ: parse asPerson &quot;[\&quot;Bob\&quot;, 25]&quot;
 Left (BadSchema [] (WrongType TyObject (Array (fromList [String &quot;Bob&quot;,Number 25.0]))))</code></pre>
 <p>As you can see, <code>aeson-better-errors</code> uses a sum type for errors. Hooray! Let's see what happens when we display those errors:</p>
-<pre class="sourceCode literate haskell"><code class="sourceCode haskell">printErr (<span class="dt">Right</span> _) <span class="fu">=</span> T.putStrLn <span class="st">&quot;Not an error.&quot;</span>
-printErr (<span class="dt">Left</span> err) <span class="fu">=</span> mapM_ T.putStrLn (displayError (const <span class="st">&quot;n/a&quot;</span>) err)</code></pre>
+<pre class="sourceCode literate haskell"><code class="sourceCode haskell"><span class="ot">printErr ::</span> <span class="dt">Either</span> <span class="dt">ParseError&#39;</span> v <span class="ot">-&gt;</span> <span class="dt">IO</span> ()
+printErr (<span class="dt">Right</span> _) <span class="fu">=</span> T.putStrLn <span class="st">&quot;Not an error.&quot;</span>
+printErr (<span class="dt">Left</span> err) <span class="fu">=</span> mapM_ T.putStrLn (displayError&#39; err)</code></pre>
 <pre><code>λ: printErr $ parse asPerson &quot;{\&quot;name\&quot;: \&quot;Bob\&quot;}&quot;
 The required key &quot;age&quot; is missing
 
@@ -63,7 +64,7 @@ At the path: [&quot;age&quot;]
 Expected an integral value, got 25.1</code></pre>
 <p>The <code>displayError</code> function comes with the library, but all of the relevant data types are exported, together with all of their constructors, so you can easily write your own.</p>
 <p>The errors also include the path in nested values, which can be really handy. For example:</p>
-<pre class="sourceCode literate haskell"><code class="sourceCode haskell"><span class="ot">deeplyNested ::</span> <span class="dt">Parse</span> () <span class="dt">Int</span>
+<pre class="sourceCode literate haskell"><code class="sourceCode haskell"><span class="ot">deeplyNested ::</span> <span class="dt">Parse</span> e <span class="dt">Int</span>
 deeplyNested <span class="fu">=</span> key <span class="st">&quot;a&quot;</span> (nth <span class="dv">3</span> (key <span class="st">&quot;b&quot;</span> (key <span class="st">&quot;c&quot;</span> asIntegral)))</code></pre>
 <pre><code>λ: printErr $ parse deeplyNested &quot;{\&quot;a\&quot;:[null,null,null,{\&quot;b\&quot;:{\&quot;c\&quot;:null}}]}&quot;
 At the path: [&quot;a&quot;][3][&quot;b&quot;][&quot;c&quot;]
@@ -77,16 +78,16 @@ Got: null</code></pre>
   }
   <span class="kw">deriving</span> (<span class="dt">Show</span>)
 
-<span class="ot">asClass ::</span> <span class="dt">Parse</span> () <span class="dt">Class</span>
+<span class="ot">asClass ::</span> <span class="dt">Parse</span> e <span class="dt">Class</span>
 asClass <span class="fu">=</span>
   <span class="dt">Class</span> <span class="fu">&lt;$&gt;</span> key <span class="st">&quot;teacher&quot;</span> asPerson&#39;
         <span class="fu">&lt;*&gt;</span> key <span class="st">&quot;students&quot;</span> (eachInArray asPerson&#39;)</code></pre>
 <pre><code>λ: parse asClass &quot;{\&quot;teacher\&quot;: [\&quot;Mrs Brown\&quot;, 49], \&quot;students\&quot;: [[\&quot;George\&quot;, 12], [\&quot;Abigail\&quot;, 13], [\&quot;Michael\&quot;, 14]]}&quot;
 Right (Class {classTeacher = Person &quot;Mrs Brown&quot; 49, classStudents = [Person &quot;George&quot; 12,Person &quot;Abigail&quot; 13,Person &quot;Michael&quot; 14]})</code></pre>
 <p>As is handling indices which might not be present:</p>
-<pre class="sourceCode literate haskell"><code class="sourceCode haskell"><span class="ot">possiblyAnInt ::</span> <span class="dt">Parse</span> () (<span class="dt">Maybe</span> <span class="dt">Int</span>)
+<pre class="sourceCode literate haskell"><code class="sourceCode haskell"><span class="ot">possiblyAnInt ::</span> <span class="dt">Parse</span> e (<span class="dt">Maybe</span> <span class="dt">Int</span>)
 possiblyAnInt <span class="fu">=</span> nthMay <span class="dv">2</span> asIntegral</code></pre>
-<pre class="sourceCode literate haskell"><code class="sourceCode haskell"><span class="ot">intWithDefault ::</span> <span class="dt">Parse</span> () <span class="dt">Int</span>
+<pre class="sourceCode literate haskell"><code class="sourceCode haskell"><span class="ot">intWithDefault ::</span> <span class="dt">Parse</span> e <span class="dt">Int</span>
 intWithDefault <span class="fu">=</span> nthOrDefault <span class="dv">2</span> <span class="dv">14</span> asIntegral</code></pre>
 <pre><code>λ: parse possiblyAnInt &quot;[1,2,3,4]&quot;
 Right (Just 3)
@@ -118,8 +119,8 @@ Got: {}</code></pre>
   <span class="fu">=</span> <span class="dt">NameTooLong</span> <span class="dt">Int</span>
   <span class="kw">deriving</span> (<span class="dt">Show</span>)
 
-<span class="ot">parseName&#39; ::</span> <span class="dt">String</span> <span class="ot">-&gt;</span> <span class="dt">Either</span> <span class="dt">CustomParseError</span> <span class="dt">Name</span>
-parseName&#39; s <span class="fu">=</span>
+<span class="ot">parseName ::</span> <span class="dt">String</span> <span class="ot">-&gt;</span> <span class="dt">Either</span> <span class="dt">CustomParseError</span> <span class="dt">Name</span>
+parseName s <span class="fu">=</span>
   <span class="kw">let</span> len <span class="fu">=</span> length s
   <span class="kw">in</span> <span class="kw">if</span> len <span class="fu">&lt;=</span> <span class="dv">20</span>
         <span class="kw">then</span> <span class="dt">Right</span> (<span class="dt">Name</span> s)
@@ -128,25 +129,39 @@ parseName&#39; s <span class="fu">=</span>
 <span class="kw">data</span> <span class="dt">Person2</span> <span class="fu">=</span> <span class="dt">Person2</span> <span class="dt">Name</span> <span class="dt">Int</span> <span class="kw">deriving</span> (<span class="dt">Show</span>)</code></pre>
 <p>Then, it's convenient to be able to validate inside the parser, and we can do so:</p>
 <pre class="sourceCode literate haskell"><code class="sourceCode haskell"><span class="ot">asPerson2 ::</span> <span class="dt">Parse</span> <span class="dt">CustomParseError</span> <span class="dt">Person2</span>
-asPerson2 <span class="fu">=</span> <span class="dt">Person2</span> <span class="fu">&lt;$&gt;</span> key <span class="st">&quot;name&quot;</span> (withString parseName&#39;)
+asPerson2 <span class="fu">=</span> <span class="dt">Person2</span> <span class="fu">&lt;$&gt;</span> key <span class="st">&quot;name&quot;</span> (withString parseName)
                     <span class="fu">&lt;*&gt;</span> key <span class="st">&quot;age&quot;</span> asIntegral</code></pre>
 <pre><code>λ: parse asPerson2 &quot;{\&quot;name\&quot;:\&quot;Charlotte\&quot;, \&quot;age\&quot;:25}&quot;
 Right (Person2 (Name &quot;Charlotte&quot;) 25)
 
 λ: parse asPerson2 &quot;{\&quot;name\&quot;:\&quot;Charlotte Ooooooooooooo\&quot;, \&quot;age\&quot;:25}&quot;
 Left (BadSchema [ObjectKey &quot;name&quot;] (CustomError (NameTooLong 23)))</code></pre>
-<p>Note that the error uses the <code>CustomError</code> constructor. If you were wondering about the <code>const &quot;n/a&quot;</code> earlier on, this is why it's there - in order to display a parse error, you need to specify how to display your custom error type, by supplying a function <code>YourCustomError -&gt; Text</code>. Earlier on, we weren't triggering any custom errors, so it was OK to just pass <code>const &quot;n/a&quot;</code>.</p>
-<p>Last but not least, it's easy to make any <code>Parse err a</code> into a <code>FromJSON a</code> instance:</p>
-<pre class="sourceCode literate haskell"><code class="sourceCode haskell"><span class="ot">showMyCustomError ::</span> <span class="dt">CustomParseError</span> <span class="ot">-&gt;</span> <span class="dt">T.Text</span>
-showMyCustomError (<span class="dt">NameTooLong</span> x) <span class="fu">=</span>
+<p>Note that the error uses the <code>CustomError</code> constructor. All of our parsers up to now have been polymorphic in the error type; that is, <code>Parse e X</code> for some concrete type <code>X</code>. This means that, as long as I haven't subverted the type system (don't worry, I haven't) they should work for <em>any</em> choice of type <code>e</code>. However, for the above parser, the error type is always <code>CustomError</code>.</p>
+<p>What does this imply? Well, our <code>printErr</code> function doesn't work:</p>
+<pre><code>λ: printErr $ parse asPerson2 &quot;{\&quot;name\&quot;:\&quot;Charlotte Ooooooooooooo\&quot;, \&quot;age\&quot;:25}&quot;
+&lt;interactive&gt;:
+    Couldn&#39;t match type ‘CustomParseError’ with ‘Data.Void.Void’
+    [...]</code></pre>
+<p>This is because <code>printErr</code> only type checks if the parser used never produces custom validation errors. The argument type of <code>printErr</code> is <code>Either ParseError' v</code>; the type <code>ParseError'</code> is the type of parse errors which did not arise as a result of custom validation errors. In this case, we have an <code>Either (ParseError CustomParseError) v</code>, because custom validation errors can occur, and those custom validation errors are values of the <code>CustomParseError</code> type.</p>
+<p>So how can we write a <code>printErr</code> function now? Easy — we just need to supply a function for displaying our custom errors, and then we can use <code>displayError</code> (the non-primed version) instead:</p>
+<pre class="sourceCode literate haskell"><code class="sourceCode haskell"><span class="ot">displayMyCustomError ::</span> <span class="dt">CustomParseError</span> <span class="ot">-&gt;</span> <span class="dt">T.Text</span>
+displayMyCustomError (<span class="dt">NameTooLong</span> x) <span class="fu">=</span>
   <span class="st">&quot;The name was &quot;</span> <span class="fu">&lt;&gt;</span> T.pack (show x) <span class="fu">&lt;&gt;</span> <span class="st">&quot; characters long, &quot;</span> <span class="fu">&lt;&gt;</span>
     <span class="st">&quot;but the maximum is 20 characters.&quot;</span>
- 
-<span class="kw">instance</span> <span class="dt">FromJSON</span> <span class="dt">Person2</span> <span class="kw">where</span>
-  parseJSON <span class="fu">=</span> toAesonParser showMyCustomError asPerson2</code></pre>
+
+<span class="ot">printErrCustom ::</span> <span class="dt">Either</span> (<span class="dt">ParseError</span> <span class="dt">CustomParseError</span>) v <span class="ot">-&gt;</span> <span class="dt">IO</span> ()
+printErrCustom (<span class="dt">Right</span> _) <span class="fu">=</span> T.putStrLn <span class="st">&quot;Not an error.&quot;</span>
+printErrCustom (<span class="dt">Left</span> err) <span class="fu">=</span> mapM_ T.putStrLn (displayError displayMyCustomError err)</code></pre>
+<pre><code>λ: printErrCustom $ parse asPerson2 &quot;{\&quot;name\&quot;:\&quot;Charlotte Ooooooooooooo\&quot;, \&quot;age\&quot;:25}&quot;
+At the path: [&quot;name&quot;]
+The name was 23 characters long, but the maximum is 20 characters.</code></pre>
+<p>Last but not least, it's easy to make any <code>Parse e a</code> value into a <code>FromJSON a</code> instance:</p>
+<pre class="sourceCode literate haskell"><code class="sourceCode haskell"><span class="kw">instance</span> <span class="dt">FromJSON</span> <span class="dt">Person2</span> <span class="kw">where</span>
+  parseJSON <span class="fu">=</span> toAesonParser displayMyCustomError asPerson2</code></pre>
 <pre><code>λ: decode &quot;{\&quot;name\&quot;:\&quot;Charlotte\&quot;, \&quot;age\&quot;:25}&quot; :: Maybe Person2
 Just (Person2 (Name &quot;Charlotte&quot;) 25)
 
 λ: eitherDecode &quot;{\&quot;name\&quot;:\&quot;Charlotte Aaaaaaaaaaaaaaaah\&quot;, \&quot;age\&quot;:25}&quot; :: Either String Person2
 Left &quot;At the path: [\&quot;name\&quot;]\nThe name was 27 characters long, but the maximum is 20 characters.\n&quot;</code></pre>
+<p>Note that there's also <code>toAesonParser'</code> for parsers which do not produce custom validation errors.</p>
 <p>More information and detailed documentation is available on <a href="https://hackage.haskell.org/package/aeson-better-errors">hackage</a>. Enjoy!</p>
