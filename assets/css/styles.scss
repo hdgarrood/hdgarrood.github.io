@@ -27,24 +27,26 @@
     '/assets/fonts/ubuntumono-r-webfont',
     'ubuntumono-regular');
 
+$background-inner: #f0f0f0;
+$background-outer: darken($background-inner, 3%);
+
+$links: #0d5a9e;
+
 // base styles
 body {
     font: normal 120% "OpenSans", Helvetica, Arial, sans-serif;
     color: #333;
-    background: #f5f5f5;
+    background-color: $background-outer;
     line-height: 1.4;
-
     overflow-y: scroll;
 }
 
 a {
-    text-decoration: none;
-    font-weight: bold;
-    color: #4CA9BF;
+    color: $links;
 }
 
-a:hover {
-    text-decoration: underline;
+a:hover, a:focus {
+    color: lighten($links, 10%);
 }
 
 h1, h2, h3, h4, h5 {
@@ -73,7 +75,9 @@ main {
 
 h1 {
     text-align: right;
+    padding-top: 1em;
     padding-right: 1.2em;
+    margin: 0;
 }
 
 .hero p {
@@ -105,6 +109,7 @@ pre {
 // blog index styles
 li.blog-post {
   margin-bottom: 0.6em;
+  font-size: 110%;
 }
 
 .blog-post time {
@@ -154,11 +159,9 @@ hr.end-of-post {
     color: #af3e3b;
 }
 
-
-// Media queries for larger screens
 .container {
     max-width: 45em;
     margin-left: auto;
     margin-right: auto;
-    border-right: solid #4CA9BF 2px;
+    background-color: $background-inner;
 }
