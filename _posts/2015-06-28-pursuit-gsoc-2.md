@@ -1,6 +1,6 @@
 ---
 layout: post
-title: Pursuit GSOC project - progress update 2
+title: 'GSOC progress #2: Extracted libraries & Hoogle'
 ---
 
 More progress updates on my GSOC project. Things seem to be going well!
