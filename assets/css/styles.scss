@@ -27,10 +27,11 @@
     '/assets/fonts/ubuntumono-r-webfont',
     'ubuntumono-regular');
 
-$background-inner: #f0f0f0;
+$background-inner: #f8f8f8;
 $background-outer: darken($background-inner, 3%);
 
 $links: #0d5a9e;
+$links-visited: #ad5a9e;
 
 // base styles
 body {
@@ -47,6 +48,14 @@ a {
 
 a:hover, a:focus {
     color: lighten($links, 10%);
+}
+
+a:visited {
+    color: $links-visited;
+}
+
+a:visited:hover, a:visited:focus {
+    color: lighten($links-visited, 10%);
 }
 
 h1, h2, h3, h4, h5 {
