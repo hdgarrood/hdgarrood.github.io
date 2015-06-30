@@ -75,11 +75,14 @@ encodings are more effective.
 
 Phil Freeman has now deployed a pre-alpha version of pursuit to
 <http://new-pursuit.purescript.org>. Feel free to have a look around, but
-please don't start trying to actually use it just yet. Additionally, deploying
-it has uncovered a couple of issues which seem to make deployment harder than
-it needs to be. For example, configuration such as the port to listen on, or
-the data directory, or OAuth tokens for the Github API. I will try to address
-these soon.
+please don't start trying to actually use it just yet. Additionally, trying to
+actually deploy it has revealed various deficiencies; generally, deployment
+seems harder than it ought to be. For example, setting configuration values
+such as the port to listen on, or the data directory, or OAuth tokens for the
+Github API is a bit painful. There's a weird mixture of parsing and using
+configuration settings at both compile time and run time that I haven't fully
+understood, and (as unfortunately seems to often be the case with compile-time
+code) the errors are not very clear. I'm planning on addressing this soon.
 
 [aeson-better-errors on Hackage]: https://hackage.haskell.org/package/aeson-better-errors
 [tutorial/introduction blog post]: /blog/aeson-better-errors/
