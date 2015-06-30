@@ -1,14 +1,13 @@
 ---
 layout: post
-title: 'GSOC progress #2: Extracted libraries & Hoogle'
+title: 'GSOC progress update #2: Extracted libraries & Hoogle'
 ---
 
 More progress updates on my GSOC project. Things seem to be going well!
 
 ### Extracted Haskell libraries
 
-I extracted two Haskell libraries from the work I have been doing for this
-project.
+I extracted two Haskell libraries out of what I've been doing recently.
 
 The first, aeson-better-errors, arose from a desire to get better errors out of
 aeson parsers for common errors, such as type mismatches, missing object keys,
@@ -41,16 +40,19 @@ a data type and `ToJSON`/`FromJSON` instances for Bower's package manifest file
 format (that is, `bower.json` files). You can find [bower-json on Hackage][]
 too.
 
-### Inside the PureScript compiler
+### Changes to the psc-publish tool
 
-The most significant change inside the compiler is to delay the 'rendering'
-process, which takes parts of a PureScript AST and converts them into an
+`psc-publish` is the tool which looks through all the source code of a
+PureScript package, extracts the information required to host it on Pursuit,
+and dumps that information as JSON. Previously, this included rendering code;
+that is, taking parts of a PureScript AST and converting them into an
 intermediate format called `RenderedCode`, suitable for generating plain text
-or highlighted HTML code from.
+or highlighted HTML from. Now, the rendering has been delayed until later, and
+so it is no longer a responsibility of `psc-publish`.
 
-This means that the information stored in the JSON-serialized files created by
-`psc-publish` now includes values of types such as `Language.PureScript.Type`
-and `Language.PureScript.Kind` in place of where it previously would have had
+This means that the information stored in the JSON output by `psc-publish` now
+includes values of types such as `Language.PureScript.Type` and
+`Language.PureScript.Kind` in place of where it previously would have had
 `RenderedCode`, and this gives us some more flexibility with respect to what we
 do with it.
 
@@ -62,7 +64,7 @@ a type synonym such as the following:
 
     type Person a = { name :: String, age :: Int | a }
 
-would currently be encoded like this (although this is very much a first-pass):
+would currently be encoded like this (although this is very much a first pass):
 
     type Person a = Object (PS_Row (PS_Label_name String) (PS_Label_age Int) (PS_Row_Tail a))
 

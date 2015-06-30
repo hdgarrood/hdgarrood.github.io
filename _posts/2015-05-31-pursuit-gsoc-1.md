@@ -1,5 +1,5 @@
 ---
-title: 'GSOC progress #1: First steps'
+title: 'GSOC progress update #1: First steps'
 layout: post
 ---
 
