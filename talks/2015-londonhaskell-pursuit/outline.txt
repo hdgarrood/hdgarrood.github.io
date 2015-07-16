@@ -1,0 +1,84 @@
+- What problem is pursuit trying to solve?
+- How did we get here?
+- Where we are now?
+
+- What integrating with Hoogle is like?
+- What using Yesod is like?
+- Differences to Hackage?
+- Strong integration with GitHub: advantages, disadvantages.
+
+===========
+
+What problem?
+- There is a lot of reusable PureScript code available as libraries
+- We want to make it accessible and discoverable.
+Questions like:
+- How do I use this library?
+- What can I do with a value of type X? What does it represent?
+- What does the function Y do?
+- Does any function with the type Z exist?
+- Has anyone written code to help deal with, eg, nonempty arrays?
+
+===
+
+First started wondering while writing multiplayer pacman
+- Documentation was hard to find, usually your best bet was a Google search
+  leading to a GitHub repository. This only works for repository names; no way
+  of searching by module name, function name, type name...
+- If you know the package name but not the github user / org that it's under,
+  that's awkward too, although Google does work.
+- I ended up reimplementing a few functions from Haskell's already existed in
+  other places that I just hadn't found yet. For example, I went a long time
+  before realizing that functions like foldr, mconcat, intercalate only exist
+  in their generalised forms in Data.Foldable / Data.Traversable.  I also went
+  a long time not realising various libraries existed; eg nonempty-arrays.
+
+===
+
+At the time, pursuit was mostly client-side and written in PureScript. There
+was a Haskell program which took a list of files on standard input, parsed
+them, and generated a JSON file with a list of entries: that is, a tuple:
+(module, name, type). Then the client-side application started by fetching
+that, building a database (in fact a trie), and then displayed an <input>
+element that would react to changes by displaying relevant entries below it.
+
+problems:
+- Required human input to regenerate, so regeneration was dependent on Phil
+  having enough free time.
+- Wasn't able to tell you which package something came from, had no concept of
+  packages
+- Very basic name search: eg, wanted to search for suffixes, and Phil made
+  suffixes branch, but then the trie became too large to be practical
+- No type search
+- Separate from documentation; results might not line up with docs on GitHub,
+  since versions can drift apart.
+
+===
+
+Next: Generate data from a list of libraries; automate the database rebuilding.
+Probably my first contribution. Created a libraries JSON file, which would list
+all the libraries that should be included and where to get them, and set up a
+cron job to periodically recreate the resulting JSON data file.
+
+Another nice thing was that this introduced the notion of libraries as well as
+including information about the github repository that they came from, which
+meant that we could then display that in the output.
+
+problems:
+- syntax, ugh, please don't make humans edit JSON
+- error reporting; when the job runs automatically on a server, it's difficult
+  to report errors, not just to the administrator of the server (because
+  relying on remembering to check the logs is a non-starter), but even more to
+  the library authors whose libraries weren't building.
+- a database regen was either succeed or fail: even if all but one libraries
+  could be generated successfully, if the last didn't build, then the database
+  wouldn't be updated. Debugging these was annoying and time-consuming. This
+  meant that we had long periods with no updates.
+
+===
+
+Next iteration: move the database + querying to server-side, in Haskell. Very
+basic scotty application that had just one route, which would take a query
+as a part of the query string, and return a list of matching entries as JSON.
+
+Problems:

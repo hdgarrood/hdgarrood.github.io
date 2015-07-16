@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <script type="text/javascript" src="reveal.js"></script>
+    <link rel="stylesheet" type="text/css" href="reveal.css">
+    <link rel="stylesheet" type="text/css" href="style.css">
+    <title>Enhancing PureScript's Pursuit</title>
+  </head>
+  <body>
+    <div class="reveal">
+      <div class="slides">
+        <section id="title">
+          <h1>Enhancing PureScript's Pursuit</h1>
+          <h3>Harry Garrood</h3>
+        </section>
+
+        <section id="overview">
+          <h2>Overview</h2>
+          <ul>
+            <li>The problem</li>
+            <li>How we got here</li>
+            <li>Where we are now</li>
+          </ul>
+        </section>
+
+        <section id="the-problem">
+          <h2>The problem</h2>
+          <ul>
+            <li>A fair bit of reusable PureScript code exists</li>
+            <li>We want to make it accessible and discoverable</li>
+          </ul>
+          <p>What kind of questions do we want Pursuit to answer?</p>
+        </section>
+
+        <section id="how-did-we-get-here">
+          <h2>How did we get here?</h2>
+          <ul>
+            <li>The application was client-side and written in PureScript</li>
+            <li>A small Haskell program, using the compiler as a library, to generate JSON data</li>
+            <li>Client starts by fetching this data and assembling an 'index'</li>
+          </ul>
+        </section>
+      </div>
+    </div>
+
+    <script type="text/javascript">
+      Reveal.initialize({
+          slideNumber: true,
+          history: true,
+      })
+    </script>
+  </body>
+</html>
