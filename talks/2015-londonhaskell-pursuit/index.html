@@ -34,12 +34,44 @@
           <p>What kind of questions do we want Pursuit to answer?</p>
         </section>
 
-        <section id="how-did-we-get-here">
+        <section id="how-did-we-get-here-1">
           <h2>How did we get here?</h2>
+          <h3>Pursuit 1</h3>
           <ul>
-            <li>The application was client-side and written in PureScript</li>
-            <li>A small Haskell program, using the compiler as a library, to generate JSON data</li>
-            <li>Client starts by fetching this data and assembling an 'index'</li>
+            <li>Pursuit was originally client-side and written in PureScript</li>
+            <li>Separate data generator program</li>
+            <li>Index assembled on the client</li>
+          </ul>
+        </section>
+
+        <section id="how-did-we-get-here-2">
+          <h2>How did we get here?</h2>
+          <h3>Problems</h3>
+          <ul>
+            <li>Manual data regeneration</li>
+            <li>No concept of packages</li>
+            <li>Very basic search: just prefixes</li>
+            <li>Not scalable</li>
+          </ul>
+        </section>
+
+        <section id="how-did-we-get-here-3">
+          <h2>How did we get here?</h2>
+          <h3>Automating data regeneration</h3>
+          <ul>
+            <li>JSON file listing packages</li>
+            <li>Fetch those packages via git before generating data</li>
+            <li>Run as part of a cron job</li>
+          </ul>
+        </section>
+
+        <section id="how-did-we-get-here-3">
+          <h2>How did we get here?</h2>
+          <h3>More problems</h3>
+          <ul>
+            <li>Difficult to report errors</li>
+            <li>Errors make the whole thing fail</li>
+            <li>Requires everything to build together</li>
           </ul>
         </section>
       </div>

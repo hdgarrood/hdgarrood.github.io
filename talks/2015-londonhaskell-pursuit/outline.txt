@@ -65,7 +65,7 @@ including information about the github repository that they came from, which
 meant that we could then display that in the output.
 
 problems:
-- syntax, ugh, please don't make humans edit JSON
+- syntax, please don't make humans edit JSON
 - error reporting; when the job runs automatically on a server, it's difficult
   to report errors, not just to the administrator of the server (because
   relying on remembering to check the logs is a non-starter), but even more to
@@ -82,3 +82,4 @@ basic scotty application that had just one route, which would take a query
 as a part of the query string, and return a list of matching entries as JSON.
 
 Problems:
+- 
