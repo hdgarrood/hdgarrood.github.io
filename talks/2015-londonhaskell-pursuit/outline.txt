@@ -1,13 +1,6 @@
-- What problem is pursuit trying to solve?
-- How did we get here?
-- Where we are now?
 
-- What integrating with Hoogle is like?
-- What using Yesod is like?
-- Differences to Hackage?
-- Strong integration with GitHub: advantages, disadvantages.
-
-===========
+===
+slide 3
 
 What problem?
 - There is a lot of reusable PureScript code available as libraries
@@ -18,8 +11,6 @@ Questions like:
 - What does the function Y do?
 - Does any function with the type Z exist?
 - Has anyone written code to help deal with, eg, nonempty arrays?
-
-===
 
 First started wondering while writing multiplayer pacman
 - Documentation was hard to find, usually your best bet was a Google search
@@ -83,3 +74,11 @@ as a part of the query string, and return a list of matching entries as JSON.
 
 Problems:
 - 
+
+==========
+
+Todo?
+- What integrating with Hoogle is like?
+- What using Yesod is like?
+- Differences to Hackage?
+- Strong integration with GitHub: advantages, disadvantages.

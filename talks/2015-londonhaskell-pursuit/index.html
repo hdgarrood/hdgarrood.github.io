@@ -44,6 +44,16 @@
           </ul>
         </section>
 
+        <section id="trie">
+          <h2>A trie</h2>
+          <img style="float: left" src="trie.png" alt="A trie">
+          <pre style="float: right; text-align: left; font-family: monospace; line-height: 1.5em;"><code>
+data Trie a
+  = Trie (Maybe a)
+         (Map Char (Trie a))
+          </code></pre>
+        </section>
+
         <section id="how-did-we-get-here-2">
           <h2>How did we get here?</h2>
           <h3>Problems</h3>
