@@ -13,16 +13,11 @@ Questions like:
 - Has anyone written code to help deal with, eg, nonempty arrays?
 
 First started wondering while writing multiplayer pacman
-- Documentation was hard to find, usually your best bet was a Google search
-  leading to a GitHub repository. This only works for repository names; no way
-  of searching by module name, function name, type name...
-- If you know the package name but not the github user / org that it's under,
-  that's awkward too, although Google does work.
-- I ended up reimplementing a few functions from Haskell's already existed in
-  other places that I just hadn't found yet. For example, I went a long time
-  before realizing that functions like foldr, mconcat, intercalate only exist
-  in their generalised forms in Data.Foldable / Data.Traversable.  I also went
-  a long time not realising various libraries existed; eg nonempty-arrays.
+- Documentation was hard to find
+- Often Google was your best bet
+  - only for package names, not function / module / type
+- Easy to reimplement/not use things that already exist
+  - eg: mconcat, intercalate, non-empty arrays
 
 ===
 
@@ -63,8 +58,12 @@ problems:
   the library authors whose libraries weren't building.
 - a database regen was either succeed or fail: even if all but one libraries
   could be generated successfully, if the last didn't build, then the database
-  wouldn't be updated. Debugging these was annoying and time-consuming. This
-  meant that we had long periods with no updates.
+  wouldn't be updated. Debugging these was annoying and time-consuming; we had
+  one because of:
+  - unicode in a source file
+  - Data.Text.IO using environment variables
+  - Upstart fiddled with these variables
+  This meant that we had long periods with no updates.
 
 ===
 
@@ -73,9 +72,78 @@ basic scotty application that had just one route, which would take a query
 as a part of the query string, and return a list of matching entries as JSON.
 
 Problems:
-- 
+- Search now even more basic (= exact match)
 
-==========
+===
+
+Where we are now:
+
+- HTML documentation
+  - (show in browser)
+  - package overview pages
+  - Links to dependencies is great
+    - mention bug re transitive dependencies
+  - Titles for fully-qualified names
+  - Source links on GitHub
+  - Markdown via Cheapskate. Doesn't seem to be a problem (yet) that we use two
+    different renderers.
+  - Only shows published versions, no risk of accidentally looking at master
+    docs
+
+- Github integration
+  - (show 'published by')
+  - accounts as identities (so that we know who uploaded stuff)
+  - OAuth
+  - Displaying READMEs
+  - source links
+  - backup
+- Pros
+  - easy deployment
+  - no sensitive data on the server
+  - easy implementation
+- Cons
+  - if Github goes down, no uploading because impossible to authenticate
+
+- Hoogle
+  - (show: "s (t a) -> t (s a)")
+  - Good searching by name and type :)
+  - How does it work?
+    - Store an intermediate form of data, similar to an AST, containing
+      modules -> declarations, with type (both senses), title, docs, etc.
+    - Go over all the packages, turning this into a Hoogle input file
+      - To do this, we have to pretend it's Haskell:
+        - fiddle with rows, turn them into weird haskell-ish types
+        - flip arrows around in type class declarations
+    - Give that to Hoogle, create a database
+    - This all takes around 5 seconds for the whole database at the moment
+    - Stick it in a TVar, regenerate hourly
+    - Finally, take queries from the web UI and pass them to Hoogle
+  - Although a couple of problems with type search
+    - 500 errors because I wasn't interpreting Hoogle output correctly
+    - Thinks two identically named data constructors in different modules are
+      the same
+    - No results for the following:
+      - Char -> String
+      - Map k v -> List (Tuple k v) 
+  - Rows are hideous
+    - (show)
+
+- Filesystem database
+  - JSON files, in the same structure
+  - Potentially going to bite us later on
+    - "Three options, Postgres, SQLite, intense pain"
+  - But it seems ok so far
+  - Backup is super easy: just git commit and push to GitHub.
+  - The only configuration necessary is to specify a directory to use
+  - Also: very easy to duplicate production DB for development
+
+===
+
+In the future
+
+- Automated uploading
+- Better Hoogle integration
+  - first class PureScript support
 
 Todo?
 - What integrating with Hoogle is like?

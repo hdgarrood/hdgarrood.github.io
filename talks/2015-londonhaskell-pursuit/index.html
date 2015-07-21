@@ -36,7 +36,6 @@
 
         <section id="how-did-we-get-here-1">
           <h2>How did we get here?</h2>
-          <h3>Pursuit 1</h3>
           <ul>
             <li>Pursuit was originally client-side and written in PureScript</li>
             <li>Separate data generator program</li>
@@ -55,8 +54,7 @@ data Trie a
         </section>
 
         <section id="how-did-we-get-here-2">
-          <h2>How did we get here?</h2>
-          <h3>Problems</h3>
+          <h2>Problems</h2>
           <ul>
             <li>Manual data regeneration</li>
             <li>No concept of packages</li>
@@ -66,8 +64,7 @@ data Trie a
         </section>
 
         <section id="how-did-we-get-here-3">
-          <h2>How did we get here?</h2>
-          <h3>Automating data regeneration</h3>
+          <h2>Automating data regeneration</h2>
           <ul>
             <li>JSON file listing packages</li>
             <li>Fetch those packages via git before generating data</li>
@@ -75,13 +72,59 @@ data Trie a
           </ul>
         </section>
 
-        <section id="how-did-we-get-here-3">
-          <h2>How did we get here?</h2>
-          <h3>More problems</h3>
+        <section id="how-did-we-get-here-4">
+          <h2>More problems</h2>
           <ul>
-            <li>Difficult to report errors</li>
+            <li>Difficult to report errors to the right person</li>
             <li>Errors make the whole thing fail</li>
-            <li>Requires everything to build together</li>
+            <li>Making humans edit JSON</li>
+          </ul>
+        </section>
+
+        <section id="how-did-we-get-here-5">
+          <h2>Moving the database to the server</h2>
+          <p>todo</p>
+        </section>
+
+        <section id="where-we-are-now-1">
+          <h2>Where we are now</h2>
+        </section>
+
+        <section id="where-we-are-now-2">
+          <h2>HTML documentation</h2>
+          <ul>
+            <li>Package overview page</li>
+            <li>Links to dependencies</li>
+            <li>Source links via GitHub</li>
+          </ul>
+        </section>
+
+        <section id="where-we-are-now-3">
+          <h2>GitHub integration</h2>
+          <ul>
+            <li>Authentication (OAuth)</li>
+            <li>Displaying readme files</li>
+            <li>Source links</li>
+            <li>Backup</li>
+          </ul>
+        </section>
+
+        <section id="where-we-are-now-3">
+          <h2>Hoogle</h2>
+          <ul>
+            <li>Store an intermediate form of data</li>
+            <li>Generate Hoogle input files</li>
+            <li>Fiddle to make it parseable by haskell-src-exts</li>
+            <li>Use Hoogle library to create a database</li>
+            <li>Regenerate periodically</li>
+          </ul>
+        </section>
+
+        <section id="where-we-are-now-4">
+          <h2>Filesystem database</h2>
+          <ul>
+            <li>JSON files, one per version per package</li>
+            <li>Backup + configuration are super easy</li>
           </ul>
         </section>
       </div>
