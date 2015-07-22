@@ -16,15 +16,6 @@
           <h3>Harry Garrood</h3>
         </section>
 
-        <section id="overview">
-          <h2>Overview</h2>
-          <ul>
-            <li>The problem</li>
-            <li>How we got here</li>
-            <li>Where we are now</li>
-          </ul>
-        </section>
-
         <section id="the-problem">
           <h2>The problem</h2>
           <ul>
@@ -34,72 +25,25 @@
           <p>What kind of questions do we want Pursuit to answer?</p>
         </section>
 
-        <section id="how-did-we-get-here-1">
-          <h2>How did we get here?</h2>
+        <section id="pursuit-2">
+          <h2>Pursuit now</h2>
           <ul>
-            <li>Pursuit was originally client-side and written in PureScript</li>
-            <li>Separate data generator program</li>
-            <li>Index assembled on the client</li>
+            <li>Haskell web application (Yesod)</li>
+            <li>Small amount of JavaScript (!)</li>
           </ul>
         </section>
 
-        <section id="trie">
-          <h2>A trie</h2>
-          <img style="float: left" src="trie.png" alt="A trie">
-          <pre style="float: right; text-align: left; font-family: monospace; line-height: 1.5em;"><code>
-data Trie a
-  = Trie (Maybe a)
-         (Map Char (Trie a))
-          </code></pre>
-        </section>
-
-        <section id="how-did-we-get-here-2">
-          <h2>Problems</h2>
-          <ul>
-            <li>Manual data regeneration</li>
-            <li>No concept of packages</li>
-            <li>Very basic search: just prefixes</li>
-            <li>Not scalable</li>
-          </ul>
-        </section>
-
-        <section id="how-did-we-get-here-3">
-          <h2>Automating data regeneration</h2>
-          <ul>
-            <li>JSON file listing packages</li>
-            <li>Fetch those packages via git before generating data</li>
-            <li>Run as part of a cron job</li>
-          </ul>
-        </section>
-
-        <section id="how-did-we-get-here-4">
-          <h2>More problems</h2>
-          <ul>
-            <li>Difficult to report errors to the right person</li>
-            <li>Errors make the whole thing fail</li>
-            <li>Making humans edit JSON</li>
-          </ul>
-        </section>
-
-        <section id="how-did-we-get-here-5">
-          <h2>Moving the database to the server</h2>
-          <p>todo</p>
-        </section>
-
-        <section id="where-we-are-now-1">
-          <h2>Where we are now</h2>
-        </section>
-
-        <section id="where-we-are-now-2">
+        <section id="html-documentation">
           <h2>HTML documentation</h2>
           <ul>
             <li>Package overview page</li>
             <li>Links to dependencies</li>
             <li>Source links via GitHub</li>
+            <li>Package authors run a tool locally and upload</li>
           </ul>
         </section>
 
-        <section id="where-we-are-now-3">
+        <section id="github-integration">
           <h2>GitHub integration</h2>
           <ul>
             <li>Authentication (OAuth)</li>
@@ -109,7 +53,12 @@ data Trie a
           </ul>
         </section>
 
-        <section id="where-we-are-now-3">
+        <section id="purescript-rows">
+          <h2>Interlude: Rows</h2>
+          <!-- what rows are -->
+        </section>
+
+        <section id="hoogle">
           <h2>Hoogle</h2>
           <ul>
             <li>Store an intermediate form of data</li>
@@ -120,7 +69,7 @@ data Trie a
           </ul>
         </section>
 
-        <section id="where-we-are-now-4">
+        <section id="filesystem-db">
           <h2>Filesystem database</h2>
           <ul>
             <li>JSON files, one per version per package</li>
