@@ -86,17 +86,6 @@ Hoogle
 
 ===
 
-Filesystem database
-- JSON files, in the same structure
-- Potentially going to bite us later on
-  - "Three options, Postgres, SQLite, intense pain"
-- But it seems ok so far
-- Backup is super easy: just git commit and push to GitHub.
-- The only configuration necessary is to specify a directory to use
-- Also: very easy to duplicate production DB for development
-
-===
-
 In the future
 
 - Automated uploading
