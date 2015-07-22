@@ -32,3 +32,9 @@ html * {
 .reveal p {
   margin-top: 2em;
 }
+
+.reveal pre,
+.reveal code {
+  font-family: monospace;
+  line-height: 1.5em;
+}

@@ -55,7 +55,12 @@
 
         <section id="purescript-rows">
           <h2>Interlude: Rows</h2>
-          <!-- what rows are -->
+          <div style="text-align: left;">
+            <pre class="fragment"><code>type Person = { name :: String, age :: Int }</code></pre>
+            <pre class="fragment"><code>p :: Person    =&gt;    p.name :: String</code></pre>
+            <pre class="fragment"><code>type Person = Prim.Object (name :: String, age :: Int)</code></pre>
+            <pre class="fragment"><code>log :: forall e. String -&gt; Eff (console :: CONSOLE | e) Unit</code></pre>
+          </div>
         </section>
 
         <section id="hoogle">
@@ -66,14 +71,6 @@
             <li>Fiddle to make it parseable by haskell-src-exts</li>
             <li>Use Hoogle library to create a database</li>
             <li>Regenerate periodically</li>
-          </ul>
-        </section>
-
-        <section id="filesystem-db">
-          <h2>Filesystem database</h2>
-          <ul>
-            <li>JSON files, one per version per package</li>
-            <li>Backup + configuration are super easy</li>
           </ul>
         </section>
       </div>
