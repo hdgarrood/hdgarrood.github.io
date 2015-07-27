@@ -62,10 +62,10 @@ and tag the version, run `psc-publish` for real, and upload the result to
 Pursuit.
 
 Soon, I intend to contribute a feature to `pulp` which performs the above for
-you, as well as bumping the version (for now, not automatically) and tagging a
-commit for the release. Uploading packages to Pursuit directly from the command
-line should be possible; the only difficult part is the authentication (which
-is not *that* difficult).
+you, as well as bumping the version and tagging a commit for the release.
+Uploading packages to Pursuit directly from the command line should be
+possible; the only difficult part is the authentication (which is not *that*
+difficult).
 
 ### Deployment
 
