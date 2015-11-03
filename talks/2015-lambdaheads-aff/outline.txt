@@ -1,0 +1,71 @@
+
+Outline
+* (Haskell) referential transparency, IO actions
+* PureScript intro
+* Eff (synchronous) actions in PureScript
+* Making an asynchronous version
+* Neat Aff stuff
+  * fork
+  * parallel
+  * semigroup, monoid
+  * plus, monadplus
+  * monaderror?
+
+===========
+
+Section 1: IO as actions
+
+* referential transparency
+(look up proper definition)
+  * want outputs to only depend on inputs
+  * Programs need to do IO
+  * How do we reconcile these?
+
+* Representations of IO actions
+
+* Putting actions together
+  * (>>=)
+  * return
+  * can build more from these: eg, forM
+
+---
+
+Section 2: short intro to PureScript
+
+* purescript
+  * Like Haskell
+  * Compiles to JS
+
+* Much better aligned with JS semantics
+  * Strict
+  * Primitive types match JS's
+    * Boolean, Number, String, Array, Object, Function
+  * => PureScript has no RTS
+
+* Eff =~ IO
+
+---
+
+Section 3: Getting (IO) stuff done in PureScript
+
+* But Eff is synchronous
+  * Like JS
+
+* Callbacks
+  * For the same reasons as JS, quickly becomes painful
+
+* What do we *want* to write?
+
+* How can we realise this code?
+  * Aff: represents asynchronous actions
+  * Difference between (>>=) for Aff/Eff
+
+Section 3a: Examples
+
+* Handling errors
+
+* Fork?
+
+* Kick off a bunch of things together, and continue only when all are done
+
+* Timeout?

@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <script type="text/javascript" src="reveal.js"></script>
+    <link rel="stylesheet" type="text/css" href="reveal.css">
+    <link rel="stylesheet" type="text/css" href="style.css">
+    <title>Dealing with asynchronous-ness in PureScript</title>
+  </head>
+  <body>
+    <div class="reveal">
+      <div class="slides">
+        <section id="title">
+          <h1>Dealing with asynchronous-ness in PureScript</h1>
+          <h3>Harry Garrood</h3>
+        </section>
+
+        <section id="overview">
+          <h1>Overview</h1>
+          <ol>
+            <li>IO without side effects</li>
+            <li>Quick introduction to PureScript</li>
+            <li>Asynchronous IO in PureScript</li>
+          </ol>
+        </section>
+
+        <section id="io-without-side-effects">
+          <section id="side-effects">
+            <h1>Side effects</h1>
+            <ul>
+              <li>Any communication a function performs with the rest of the
+                program (or the outside world) other than its parameters or
+                return value.</li>
+            </ul>
+<pre><code>printf("Hello world!\n");
+read_file("foo.txt");
+rand();</code></pre>
+          </section>
+
+          <section id="performing-io">
+            <h1>Representing IO without side-effects</h1>
+            <ul>
+              <li>A data type for representations of IO actions</li>
+            </ul>
+<pre><code>printf    -&gt; putStrLn  :: String -> IO ()
+read_file -&gt; readFile  :: String -> IO String
+rand      -&gt; getRandom :: IO Int</code></pre>
+          </section>
+        </section>
+
+      </div>
+    </div>
+
+    <script type="text/javascript">
+      Reveal.initialize({
+          history: true,
+      })
+    </script>
+  </body>
+</html>
