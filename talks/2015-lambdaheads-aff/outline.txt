@@ -35,14 +35,14 @@ Section 2: short intro to PureScript
 * purescript
   * Like Haskell
   * Compiles to JS
-
-* Much better aligned with JS semantics
-  * Strict
-  * Primitive types match JS's
-    * Boolean, Number, String, Array, Object, Function
-  * => PureScript has no RTS
+  * Much better aligned with JS semantics
+      * Strict
+      * Primitive types match JS's
+        * Boolean, Number, String, Array, Object, Function
+      * => PureScript has no RTS
 
 * Eff =~ IO
+  * representation of Eff: JS function.
 
 ---
 

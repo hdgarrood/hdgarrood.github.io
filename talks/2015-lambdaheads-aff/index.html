@@ -36,6 +36,10 @@
 <pre><code>printf("Hello world!\n");
 read_file("foo.txt");
 rand();</code></pre>
+
+            <ul>
+              <li>Why avoid side effects?</li>
+            </ul>
           </section>
 
           <section id="performing-io">
@@ -47,8 +51,93 @@ rand();</code></pre>
 read_file -&gt; readFile  :: String -> IO String
 rand      -&gt; getRandom :: IO Int</code></pre>
           </section>
+
+          <section id="putting-io-actions-together">
+            <h1>Putting IO actions together</h1>
+<pre><code>(>>=)  :: IO a -> (a -> IO b) -> IO b
+return :: a -> IO a
+
+getLine >>= putStrLn
+
+forM :: [a] -> (a -> IO b) -> IO [b]
+
+forM [1,2,3] $ \x -> putStrLn ("x is: " ++ show x)</code></pre>
+          </section>
         </section>
 
+        <section id="purescript-intro">
+          <section id="purescript">
+            <h1>PureScript</h1>
+<pre><code>module Main where
+
+import Prelude
+import Control.Monad.Eff.Console (log)
+
+greet :: String -> String
+greet name = "Hello, " ++ name ++ "!"
+
+main = log (greet "World")</code></pre>
+          </section>
+
+          <section id="eff">
+            <h1>IO =~ Eff</h1>
+<pre><code>log :: String -> Eff _ Unit
+
+function log(message) {
+  return function() {
+    console.log(message)
+    return {}
+  }
+}</code></pre>
+        </section>
+      </section>
+
+      <section id="section-3">
+        <section id="limitations-of-eff">
+          <h1>Limitations of Eff</h1>
+          <ul>
+            <li>Synchronous</li>
+          </ul>
+          <pre><code>httpGet :: String -&gt; Eff _ HttpResponse</code></pre>
+          <ul>
+            <li>Callbacks</li>
+          </ul>
+          <pre><code>httpGet :: String
+            -&gt; (HttpResponse -&gt; Eff _ Unit)
+            -&gt; Eff _ Unit</code></pre>
+        </section>
+
+        <section id="callbacks">
+          <h1>Limitations of callbacks</h1>
+  <pre><code>main =
+  getLine (\inputFile -&gt; do
+    log ("Reading: " ++ inputFile)
+    readFile inputFile (\json -&gt;
+      case parseJson json of
+        Left err -&gt;
+          throw err
+        Right data -&gt;
+          httpPost url data (\response -&gt;
+            log response.body)))</code></pre>
+        </section>
+
+        <section id="asynchronous-actions">
+          <h1>Asynchronous actions</h1>
+<pre><code>program :: Aff _ Unit
+program = do
+  inputFile &lt;- getLine
+  log ("Reading: " ++ inputFile)
+  json &lt;- readFile inputFile
+  case parseJson json of
+    Left err -&gt;
+      throw err
+    Right data -&gt; do
+      response &lt;- httpPost url data
+      log response.body
+
+main = launchAff program</code></pre>
+          </section>
+        </section>
       </div>
     </div>
 
