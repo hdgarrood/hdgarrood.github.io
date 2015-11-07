@@ -15,18 +15,17 @@ Outline
 
 Section 1: IO as actions
 
-* referential transparency
-(look up proper definition)
+* Side effects
+  * definition
   * want outputs to only depend on inputs
-  * Programs need to do IO
-  * How do we reconcile these?
+  * explanation of examples
 
-* Representations of IO actions
-
-* Putting actions together
-  * (>>=)
-  * return
-  * can build more from these: eg, forM
+* IO without side effects
+  * Data type for repr.
+    * Parameter = eventual result
+  * Do notation
+    * Makes it easy to put actions together
+    * Not the only way
 
 ---
 
@@ -42,23 +41,34 @@ Section 2: short intro to PureScript
       * => PureScript has no RTS
 
 * Eff =~ IO
-  * representation of Eff: JS function.
+  * Ignore the first type param
+  * Representation of Eff: JS function.
 
 ---
 
-Section 3: Getting (IO) stuff done in PureScript
+Section 3: Async IO in PureScript
 
-* But Eff is synchronous
-  * Like JS
+* Limitations of Eff
+  * Eff is synchronous; blocks main thread
+    * Like JS
+    * Will freeze the tab
+  * Callbacks, like JS, are an answer
 
-* Callbacks
-  * For the same reasons as JS, quickly becomes painful
+* Limitations of callbacks
+    * For the same reasons as JS, quickly becomes painful
+    * Deeply nested syntax trees
+    * Subtle bug here:
+      * throwing asynchronously
+    * Error handling
+      * could copy Node but we can do better
 
 * What do we *want* to write?
-
-* How can we realise this code?
-  * Aff: represents asynchronous actions
-  * Difference between (>>=) for Aff/Eff
+  * Synchronous-style program
+  * Actually executes asynchronously
+  * Possible to catch exceptions, just like in synchronous code
+    * Should be able to deal with errors only when we choose to
+  -- *drumroll*
+  * This is exactly what the purescript library Aff is
 
 Section 3a: Examples
 

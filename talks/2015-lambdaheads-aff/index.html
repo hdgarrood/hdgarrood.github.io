@@ -19,61 +19,49 @@
         <section id="overview">
           <h1>Overview</h1>
           <ol>
-            <li>IO without side effects</li>
-            <li>Quick introduction to PureScript</li>
+            <li>Background: IO without side effects</li>
+            <li>Background: Quick introduction to PureScript</li>
             <li>Asynchronous IO in PureScript</li>
           </ol>
         </section>
 
         <section id="io-without-side-effects">
           <section id="side-effects">
-            <h1>Side effects</h1>
+            <h1>Background: Side effects</h1>
             <ul>
               <li>Any communication a function performs with the rest of the
                 program (or the outside world) other than its parameters or
                 return value.</li>
-            </ul>
-<pre><code>printf("Hello world!\n");
-read_file("foo.txt");
-rand();</code></pre>
-
-            <ul>
-              <li>Why avoid side effects?</li>
+              <li>FP = avoiding side effects</li>
             </ul>
           </section>
 
           <section id="performing-io">
-            <h1>Representing IO without side-effects</h1>
+            <h1>What IO looks like without side-effects</h1>
             <ul>
               <li>A data type for representations of IO actions</li>
             </ul>
-<pre><code>printf    -&gt; putStrLn  :: String -> IO ()
-read_file -&gt; readFile  :: String -> IO String
-rand      -&gt; getRandom :: IO Int</code></pre>
-          </section>
-
-          <section id="putting-io-actions-together">
-            <h1>Putting IO actions together</h1>
-<pre><code>(>>=)  :: IO a -> (a -> IO b) -> IO b
-return :: a -> IO a
-
-getLine >>= putStrLn
-
-forM :: [a] -> (a -> IO b) -> IO [b]
-
-forM [1,2,3] $ \x -> putStrLn ("x is: " ++ show x)</code></pre>
+              <pre><code>readFile :: String -&gt; IO String</code></pre>
+            <ul>
+              <li>Do notation:</li>
+            </ul>
+<pre><code>main = do
+  putStr "Please enter your name: "
+  name &lt;- getLine
+  putStrLn ("'" ++ name ++ "'? That's a nice name!")
+  putStrLn ("It has " ++ length name ++ " characters.")</code></pre>
           </section>
         </section>
 
         <section id="purescript-intro">
           <section id="purescript">
-            <h1>PureScript</h1>
+            <h1>Background: PureScript</h1>
 <pre><code>module Main where
 
 import Prelude
 import Control.Monad.Eff.Console (log)
 
-greet :: String -> String
+greet :: String -&gt; String
 greet name = "Hello, " ++ name ++ "!"
 
 main = log (greet "World")</code></pre>
@@ -81,7 +69,7 @@ main = log (greet "World")</code></pre>
 
           <section id="eff">
             <h1>IO =~ Eff</h1>
-<pre><code>log :: String -> Eff _ Unit
+<pre><code>log :: String -&gt; Eff _ Unit
 
 function log(message) {
   return function() {
@@ -98,11 +86,11 @@ function log(message) {
           <ul>
             <li>Synchronous</li>
           </ul>
-          <pre><code>httpGet :: String -&gt; Eff _ HttpResponse</code></pre>
+          <pre><code>httpGet :: URL -&gt; Eff _ HttpResponse</code></pre>
           <ul>
             <li>Callbacks</li>
           </ul>
-          <pre><code>httpGet :: String
+          <pre><code>httpGet :: URL
             -&gt; (HttpResponse -&gt; Eff _ Unit)
             -&gt; Eff _ Unit</code></pre>
         </section>
@@ -110,32 +98,61 @@ function log(message) {
         <section id="callbacks">
           <h1>Limitations of callbacks</h1>
   <pre><code>main =
-  getLine (\inputFile -&gt; do
+  getFirstArgument (\inputFile -&gt; do
     log ("Reading: " ++ inputFile)
     readFile inputFile (\json -&gt;
       case parseJson json of
         Left err -&gt;
           throw err
         Right data -&gt;
-          httpPost url data (\response -&gt;
-            log response.body)))</code></pre>
+          httpPost (url data) (payload data) (\resp -&gt;
+            log resp.body)))</code></pre>
         </section>
 
         <section id="asynchronous-actions">
-          <h1>Asynchronous actions</h1>
-<pre><code>program :: Aff _ Unit
-program = do
-  inputFile &lt;- getLine
+          <h1>What do we want to write?</h1>
+<pre><code>main = do
+  inputFile &lt;- getFirstArgument
   log ("Reading: " ++ inputFile)
   json &lt;- readFile inputFile
   case parseJson json of
     Left err -&gt;
       throw err
     Right data -&gt; do
-      response &lt;- httpPost url data
+      response &lt;- httpPost (url data) (payload data)
       log response.body
+</code></pre>
+          </section>
+        </section>
 
-main = launchAff program</code></pre>
+        <section id="aff-examples">
+          <section id="aff-error-handling">
+            <h1>Error handling with Aff</h1>
+<pre><code>main = catchError myProgram (\err -&gt; do
+  log "Oops! Something went wrong."
+  log "This is a bug. Please report it!"
+  log "Error details:"
+  log (inspect err))</pre></code>
+          </section>
+
+          <section id="aff-error-handling-2">
+            <h1>Error handling with Aff</h1>
+<pre><code>(&lt;|&gt;) :: forall a. Eff _ a -&gt; Eff _ a -&gt; Eff _ a
+        
+httpGet "http://foo.com" &lt;|&gt; httpGet "http://bar.com"
+
+attemptGet ["http://foo.com", "http://bar.com"]
+  where
+  attemptGet domains =
+    foldr (&lt;|&gt;) onAllFailed (map httpGet domains)
+  onAllFailed =
+    throwError (error "Could not GET from any domain")</pre></code>
+          </section>
+
+          <section id="aff-monoid">
+            <h1>Using the Monoid instance</h1>
+<pre><code>parseFile :: String -&gt; Eff _ Database</pre></code>
+(++) :: forall a. (Monoid a) =&gt; a -&gt; a -&gt; a
           </section>
         </section>
       </div>
