@@ -27,6 +27,7 @@ Section 1: IO as actions
     * Makes it easy to put actions together
     * Not the only way
 
+05:00
 ---
 
 Section 2: short intro to PureScript
@@ -44,6 +45,7 @@ Section 2: short intro to PureScript
   * Ignore the first type param
   * Representation of Eff: JS function.
 
+8:00
 ---
 
 Section 3: Async IO in PureScript

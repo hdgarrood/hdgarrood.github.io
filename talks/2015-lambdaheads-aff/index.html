@@ -137,7 +137,7 @@ function log(message) {
 
           <section id="aff-error-handling-2">
             <h1>Error handling with Aff</h1>
-<pre><code>(&lt;|&gt;) :: forall a. Eff _ a -&gt; Eff _ a -&gt; Eff _ a
+<pre><code>(&lt;|&gt;) :: forall a. Aff _ a -&gt; Aff _ a -&gt; Aff _ a
         
 httpGet "http://foo.com" &lt;|&gt; httpGet "http://bar.com"
 
