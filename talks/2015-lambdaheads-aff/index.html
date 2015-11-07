@@ -42,6 +42,10 @@
               <li>A data type for representations of IO actions</li>
             </ul>
               <pre><code>readFile :: String -&gt; IO String</code></pre>
+          </section>
+
+          <section id="performing-io-2">
+            <h1>What IO looks like without side-effects</h1>
             <ul>
               <li>Do notation:</li>
             </ul>
@@ -149,10 +153,28 @@ attemptGet ["http://foo.com", "http://bar.com"]
     throwError (error "Could not GET from any domain")</pre></code>
           </section>
 
-          <section id="aff-monoid">
-            <h1>Using the Monoid instance</h1>
-<pre><code>parseFile :: String -&gt; Eff _ Database</pre></code>
-(++) :: forall a. (Monoid a) =&gt; a -&gt; a -&gt; a
+          <section id="aff-parallel">
+            <h1>Running actions in parallel</h1>
+<pre><code>newtype Par e a = Par (Aff e a)
+
+Par (httpGet "http://foo.com") :: Par _ a</pre></code>
+          </section>
+
+          <section id="aff-parallel-2">
+            <h1>Running actions in parallel</h1>
+<pre><code>traverse :: forall a b.
+  (a -&gt; Par _ b) -&gt; Array a -&gt; Par _ (Array b)
+
+loadAll
+  [ "/images/player.png"
+  , "/images/wall.png"
+  , "/images/enemy.png"
+  ]
+  where
+  loadAll urls =
+    runPar (traverse go urls)
+  go url =
+    Par (httpGet url)</pre></code>
           </section>
         </section>
       </div>
