@@ -15,7 +15,7 @@ you do decide to use it. Your time is valuable, and I won't claim to be a
 better judge of how it should be spent than you.
 
 So. I know the FFI is easy to use, and very attractive for certain problems,
-particularly when it's a hard to work out how to give things types in
+particularly when it's difficult to work out how to give things types in
 PureScript. But when you feel like you want to use it, I would like to ask you
 to consider the following:
 
