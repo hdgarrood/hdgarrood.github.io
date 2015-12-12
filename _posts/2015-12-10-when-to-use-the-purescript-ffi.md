@@ -1,28 +1,37 @@
 ---
 layout: post
-title: A plea; consider not using the PureScript FFI
+title: Deciding when to use the PureScript FFI
 ---
 
-After encounting 3 separate sets of bindings to node's `child_process` API (one
-of which is, admittedly, my fault), I felt I needed to write this. I don't mean
-to single out anybody; `child_process` is just a particularly unfortunate
-example. It's certainly not the only one.
+I was led to write this because I think we have a bit of problem at the moment
+with the FFI. It's very common to see it used, even for things that arguably
+don't really need it. By contrast, I've been writing Haskell for over 3 years
+now, and I have *never* used the FFI.
+
+Before I start I want to make it clear that I don't want you to stop using it
+entirely other than inside bindings libraries. There are still plenty of
+situations where it makes sense. I also don't want you to feel guilty whenever
+you do decide to use it. Your time is valuable, and I won't claim to be a
+better judge of how it should be spent than you.
 
 So. I know the FFI is easy to use, and very attractive for certain problems,
 particularly when it's a hard to work out how to give things types in
 PureScript. But when you feel like you want to use it, I would like to ask you
-to consider the following, if you have the time:
+to consider the following:
 
 ### 1. Is there a PureScript library for what I want to do already?
-   
-If the answer is "yes", but it doesn't quite work for your use case, then
-consider opening an issue or sending a pull request. There is a good chance
-that this will result in improvements to the library that everyone can then
-benefit from.
 
-For example, if you just want to persuade the type checker that a value of some
-type is actually some other type, there is a library for that:
-[unsafe-coerce](http://pursuit.purescript.org/packages/purescript-unsafe-coerce).
+If you're not sure, [Pursuit](http://pursuit.purescript.org) can be a good
+place to look. One example of an existing library that doesn't get used as much
+as it probably should is
+[unsafe-coerce](http://pursuit.purescript.org/packages/purescript-unsafe-coerce),
+which allows you to persuade the type checker that a value of some type is
+actually some other type.
+
+If there already is a relevant library, but it doesn't quite work for your use
+case, then consider opening an issue or sending a pull request. There is a good
+chance that this will result in improvements to the library that everyone can
+then benefit from.
 
 ### 2. Could I write this without using the FFI?
 
@@ -41,13 +50,17 @@ gives a better result than trying to write bindings to it via the FFI. I
 certainly found this to be the case when I wrote
 [ansi](http://pursuit.purescript.org/packages/purescript-ansi).
 
-### 3. Could I create a PureScript library for this?
+### 3. Could I create a separate library for this?
 
 Admittedly, this option is particularly time-consuming. But it does allow you
 to leverage the community; I think we're best equipped to design good APIs when
 we have different people, with different perspectives or use cases, working
 together. When you create a library, you also create a place which enables this
 kind of discussion.
+
+Coming up with a typed, purely functional layer on top of stateful or effectful
+APIs can be *hard*; if we want to create good bindings, I think the opportunity
+to get input from other users is just too valuable to pass up.
 
 ### But why?
 
