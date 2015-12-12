@@ -59,7 +59,7 @@ together. When you create a library, you also create a place which enables this
 kind of discussion.
 
 Coming up with a typed, purely functional layer on top of stateful or effectful
-APIs can be *hard*; if we want to create good bindings, I think the opportunity
+APIs can be *hard;* if we want to create good bindings, I think the opportunity
 to get input from other users is just too valuable to pass up.
 
 ### But why?
