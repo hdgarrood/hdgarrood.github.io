@@ -8,7 +8,7 @@ PureScript community with the FFI. It's very common to see it used, even for
 things that arguably don't really need it. By contrast, I've been writing
 Haskell for over 3 years now, and I have *never* used the Haskell FFI.
 
-Before I start I want to make it clear that I don't want you to stop using it
+Before I start, I want to make it clear that I don't want you to stop using it
 entirely other than inside bindings libraries. There are still plenty of
 situations where it makes sense. I also don't want you to feel guilty whenever
 you do decide to use it. Your time is valuable, and I won't claim to be a
