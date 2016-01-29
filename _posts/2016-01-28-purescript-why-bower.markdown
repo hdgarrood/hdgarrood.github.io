@@ -41,10 +41,10 @@ looking a bit like this on the disk:
 
     my-package
       node_modules
-        purescript-maps
+        purescript-maps (at 2.0.0)
         purescript-foo
           node_modules
-            purescript-maps
+            purescript-maps (at 1.0.0)
 
 Unfortunately, this doesn't work well with PureScript code. Suppose that
 `purescript-foo` exports a function like this:
