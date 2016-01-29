@@ -1,0 +1,134 @@
+---
+layout: post
+title: Why the PureScript community uses Bower
+---
+
+*(or, perhaps more appropriately, "Why the PureScript community does not use
+npm")*
+
+Lots of people dislike having to use Bower as the PureScript package manager,
+for various reasons. It certainly has problems, but I do think it's the best
+choice currently available, so I am writing this post, which explains why.
+
+Before I start, a quick notice: if Bower (or any other part of the standard
+PureScript toolchain) is causing you problems, I (and, most probably, other
+PureScript-ers) would like to know! The #purescript IRC channel on freenode is
+a good place to ask, as is the [mailing list](https://groups.google.com/forum/#!forum/purescript).
+
+### Handling dependency conflicts
+
+The main reason PureScript does not use npm is to do with the way npm deals
+with *dependency conflicts*.
+
+For example, suppose I am writing a package which depends on `purescript-maps
+>= 2.0.0 < 3.0.0`. Suppose we now want to depend on some other package; let's
+call it `purescript-foo`. The `purescript-foo` package happens to declare a
+version range for `purescript-maps` which only allows slightly older versions:
+`>= 1.0.0 < 2.0.0`. So if we wrote out our dependency tree, it might look like
+this:
+
+    my-package
+      purescript-maps: >= 2.0.0 < 3.0.0
+      purescript-foo: *
+        purescript-maps: >= 1.0.0 < 2.0.0
+
+Unfortunately, there is no version of `purescript-maps` which can satisfy both
+of these constraints. So what does the package manager do here?
+
+### Nesting dependencies
+
+npm's solution to this problem is to nest the dependencies. The files end up
+looking a bit like this on the disk:
+
+    my-package
+      node_modules
+        purescript-maps
+        purescript-foo
+          node_modules
+            purescript-maps
+
+Unfortunately, this doesn't work well with PureScript code. Suppose that
+`purescript-foo` exports a function like this:
+
+    doSomething :: Map Foo Bar -> Baz
+
+So, you call `doSomething`, providing a `Map Foo Bar`, which you constructed
+with your copy of `purescript-maps`. This gives you a runtime error!
+
+One of the main benefits of PureScript is supposed to be code that you can have
+confidence in; runtime errors should turn into compile-time ones. So we can't
+have this.
+
+I'm going to delve into the technical details of how this happens and how we
+might stop this from happening now, but you don't have to read all that. The
+short answer is: Bower solves this problem by having "flat" dependencies. No
+nesting occurs; instead, if there are conflicts, Bower will ask you how to
+resolve them; that is, it will ask you to choose one particular version, even
+though it will violate the constraints declared by one or more of the other
+packages. Of course, this is not ideal either, but it's much better than
+runtime errors. Additionally, there is a lot we could still do to reduce the
+likelihood of dependency conflicts happening (and I might write about this
+later).
+
+### Technical details: what happened?
+
+That runtime error happened because `purescript-foo` is expecting the `Map`
+argument to `doSomething` to have been constructed by the same copy of
+`purescript-maps` as the one it has installed. Currently, pattern matching on
+sum types in PureScript is based on `instanceof` checks, which effectively
+means that passing values between different versions of dependencies like this
+is not safe &mdash; a value constructed by `purescript-maps@1.0.0` will not be
+considered to be an `instanceof` the `Map` type in `purescript-maps@2.0.0`.
+
+One solution could be to allow multiple versions of a particular library to be
+installed, but distinguish them in the type checker, so, for example,
+`purescript-maps@1.0.0:Map` would be a separate type from
+`purescript-maps@2.0.0:Map`. It's not clear whether this is a good idea,
+though.  While it goes some way towards alleviating problems of "dependency
+hell" by reducing the likelihood of dependency conflicts, it introduces new
+problems:
+
+* It's still possible to reach a situation where you need a 1.0.0 `Map` but you
+  only have a 2.0.0 `Map`. For maps, this situation is not too dire, as you
+  might be able to convert between them. For other data types, you might be
+  completely stuck.
+* The size of your code could increase hugely, especially for larger projects.
+
+*Note that these ideas came from Evan Czaplicki, the creator of Elm, and not
+me. See also the relevant [elm-package issue][].*
+
+An alternative approach would be to allow "private dependencies". For example,
+let's suppose now that the library `purescript-foo` still depends on
+`purescript-maps`, but only internally: no part of the dependency on
+`purescript-maps` "leaks" out into `purescript-foo`'s API. Now, there should be
+no risk of such a runtime error occurring, right?
+
+Unfortunately, it defining what a "private" dependency actually is seems quite
+thorny: consider these slides from a talk by Andres Löh and Duncan Coutts from
+Well-Typed, which broadly discusses the same issues in the context of Haskell:
+
+![Encapsulations are subtle](/assets/img/encapsulations-are-subtle.png)
+
+Further, if there are two copies of the same *function* from two different
+versions of the same library, and these functions happen to have the same type
+but have slightly different behaviour, it's probably not going to be obvious
+which one is actually being used in some situations. I worry that this could
+lead to bugs which would be incredibly difficult to diagnose.
+
+
+
+### Some additional notes/resources
+
+* This post is based on npm >= 3. npm <= 2 behaves slightly differently:
+  dependencies are *always* nested, even if there are no conflicts, which means
+  you're even more susceptible to these kinds of problems. See also [npm's
+  documentation on how it nests
+  dependencies](https://docs.npmjs.com/files/folders).
+* [The full slides from that Well-Typed talk][] which I mentioned earlier.
+
+
+[smart constructors]: https://leanpub.com/purescript/read#leanpub-auto-smart-constructors
+[this PR on purescript-free]: https://github.com/purescript/purescript-free/pull/37
+[elm-package issue]: https://github.com/elm-lang/elm-package/issues/89#issuecomment-69499678
+[The full slides from that Well-Typed talk]: https://wiki.haskell.org/wikiupload/b/b4/HIW2011-Talk-Loeh.pdf
+[Bryan O'Sullivan's post]: https://plus.google.com/103469090998089605155/posts/HdC6oCy8RWW
