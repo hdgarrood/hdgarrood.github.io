@@ -23,8 +23,8 @@ with *dependency conflicts*.
 For example, suppose I am writing a package which depends on `purescript-maps
 >= 2.0.0 < 3.0.0`. Suppose we now want to depend on some other package; let's
 call it `purescript-foo`. The `purescript-foo` package happens to declare a
-version range for `purescript-maps` which declares a different range: `>= 1.0.0
-< 2.0.0`. So if we wrote out our dependency tree, it might look like this:
+different version range for `purescript-maps`: it uses `>= 1.0.0 < 2.0.0`. So
+if we wrote out our dependency tree, it might look like this:
 
     my-package
       purescript-maps: >= 2.0.0 < 3.0.0
