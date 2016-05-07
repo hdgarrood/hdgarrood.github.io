@@ -119,6 +119,16 @@ authority: Just (URIAuth {uriUserInfo = "", uriRegName = "example.com", uriPort 
 path: /lol
 ```
 
+Using it with an invalid URI will fail at compile time; replacing the
+quasiquoted URI in the above program with `[uri|invalid|]` yields:
+
+```haskell
+$ stack build
+<snip>
+[2 of 2] Compiling Main             ( test/Spec.hs, .stack-work/dist/x86_64-osx/Cabal-1.22.5.0/build/qq-literals-test/qq-literals-test-tmp/Main.o )
+/Users/hgarrood/Documents/code/qq-literals/test/Spec.hs:8:28: Failed to parse URI: invalid
+```
+
 I'm quite pleased with how this experiment turned out. I especially like that
 it (mostly) insulates users from the perils of Template Haskell. Of course,
 as a consumer of this, you yourself have to ensure that the `Name` argument
@@ -128,4 +138,4 @@ if people think it's a good enough idea. I've put the whole thing up on GitHub:
 <https://github.com/hdgarrood/qq-literals/>.
 
 Thanks to everyone who participated in the original thread, without which this
-definitely wouldn't have occurred to me! :)
+definitely wouldn't have occurred to me.
