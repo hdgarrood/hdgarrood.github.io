@@ -82,6 +82,23 @@ img {
     margin-right: auto;
 }
 
+tbody tr:nth-child(odd) {
+  background: #eee;
+}
+
+th {
+  border: 2px solid black;
+}
+
+td {
+  border: 1px solid black;
+}
+
+th, td {
+  padding: 0 1.2em;
+  text-align: center;
+}
+
 // layout
 main {
     padding: 2em;
