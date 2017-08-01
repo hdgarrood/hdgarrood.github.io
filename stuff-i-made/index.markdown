@@ -5,14 +5,21 @@ title: Stuff I made
 
 ## Stuff I made
 
+### solitaire
+
+* [play](./solitaire/)
+* [source on GitHub](https://github.com/hdgarrood/solitaire)
+
+A simple Solitaire game, writen in PureScript, a Haskell-like language which
+compiles to PureScript.
+
 ### Multiplayer Pacman
 
 * [play](https://mpac.herokuapp.com)
 * [source on GitHub](https://github.com/hdgarrood/multipac)
 
 A multiplayer version of the classic Pacman game. The server and the client
-were both written in PureScript, a Haskell-like language which compiles to
-JavaScript.
+were both written in PureScript.
 
 ### purescript-sequences
 
