@@ -139,3 +139,7 @@ if people think it's a good enough idea. I've put the whole thing up on GitHub:
 
 Thanks to everyone who participated in the original thread, without which this
 definitely wouldn't have occurred to me.
+
+### Update
+
+This is now on Hackage: <https://hackage.haskell.org/package/qq-literals/>.
