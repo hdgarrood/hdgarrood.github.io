@@ -1,0 +1,101 @@
+---
+layout: default
+mathjax: true
+---
+
+<!-- override styles to make the page wider -->
+<style>
+  .container { max-width: 75em }
+  th, td, tr { border: none; outline: 0 }
+
+  /* Override alternating table row colours */
+  tbody tr:nth-child(odd) {
+    background: none;
+  }
+</style>
+
+<h2>Properties of the direct & inverse image</h2>
+
+<p>
+Throughout this document, \(X\) and \(Y\) are sets, \(f\) is a function \(X \to
+Y\). Additionally, \(A, A' \subseteq X\), and \(B, B' \subseteq Y\).
+</p>
+
+<p>
+\(f(A)\) denotes the <em>direct image</em>, that is,
+$$f(A) = \left\{ y \in Y : \exists x \in A. \; f(x) = y \right\},$$
+</p>
+
+<p>
+and \(f^{-1}(B)\) denotes the <em>inverse image</em>, that is,
+$$f^{-1}(B) = \left\{ x \in X : f(x) \in B \right\}.$$
+</p>
+
+<h3>Relation between direct & inverse image</h3>
+
+<table>
+  <tr>
+    <td style="width: 45%">
+      <img src="adjunctionLHS.svg">
+    </td>
+    <td>
+      <span>if and only if</span>
+    </td>
+    <td style="width: 45%">
+      <img src="adjunctionRHS.svg">
+    </td>
+  </tr>
+  <tr>
+    <td>
+      $$\color{blue}{ f(A) } \subseteq \color{red}{ B }$$
+    </td>
+    <td>
+      $$\Leftrightarrow$$
+    </td>
+    <td>
+      $$\color{blue}{ A } \subseteq \color{red}{ f^{-1}(B) }$$
+    </td>
+  </tr>
+</table>
+
+In particular, \(A \subseteq f^{-1}(f(A))\), and \(f(f^{-1}(B)) \subseteq B\).
+
+<h3>Direct & inverse image both preserve inclusions</h3>
+
+<table style="width:60%; margin-left: auto; margin-right: auto;">
+  <tr>
+    <td colspan="3" style="margin-left: auto; margin-right: auto">
+      <img src="direct-image-inclusions.svg">
+    </td>
+  </tr>
+  <tr>
+    <td width="45%">
+      $$\color{blue}{ A } \subseteq \color{red}{ A' }$$
+    </td>
+    <td>
+      $$\Rightarrow$$
+    </td>
+    <td width="45%">
+      $$\color{blue}{ f(A) } \subseteq \color{red}{ f(A') }$$
+    </td>
+  </tr>
+</table>
+
+<table style="width:60%; margin-left: auto; margin-right: auto;">
+  <tr>
+    <td colspan="3" style="margin-left: auto; margin-right: auto">
+      <img src="inverse-image-inclusions.svg">
+    </td>
+  </tr>
+  <tr>
+    <td width="45%">
+      $$\color{blue}{ f^{-1}(B) } \subseteq \color{red}{ f^{-1}(B') }$$
+    </td>
+    <td>
+      $$\Leftarrow$$
+    </td>
+    <td width="45%">
+      $$\color{blue}{ B } \subseteq \color{red}{ B' }$$
+    </td>
+  </tr>
+</table>

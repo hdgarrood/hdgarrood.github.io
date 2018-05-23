@@ -1,0 +1,43 @@
+<svg viewBox="0 0 2000 1000" xmlns="http://www.w3.org/2000/svg">
+  <style>
+    * { stroke-width: 3pt }
+    text { font: italic 72pt serif; stroke-opacity: 0 }
+    .c1 { fill: #19e; stroke: #08b; font-size: 40pt }
+    .c2 { fill: #e51; stroke: #d40; font-size: 40pt }
+  </style>
+  <!-- X -->
+  <text x="300" y="100">X</text>
+  <ellipse cx="500" cy="500" rx="276" ry="456" fill-opacity="0" stroke="#000"/>
+  <!-- Y -->
+  <text x="1300" y="100">Y</text>
+  <ellipse cx="1500" cy="500" rx="276" ry="456" fill-opacity="0" stroke="#000"/>
+
+  <!-- f(A') -->
+  <text x="1450" y="340" class="c2">f(A')</text>
+  <ellipse cx="1500" cy="500" rx="138" ry="228" fill-opacity="0.1" class="c2"/>
+  <!-- f(A) -->
+  <text x="1450" y="460" class="c1">f(A)</text>
+  <ellipse cx="1500" cy="500" rx="69" ry="114" fill-opacity="0.1" class="c1"/>
+
+  <!-- f -->
+  <line x1="500" x2="1500" y1="272" y2="386" stroke="#000" stroke-dasharray="10,10"/>
+  <line x1="500" x2="1500" y1="728" y2="614" stroke="#000" stroke-dasharray="10,10"/>
+
+  <!-- X -->
+  <text x="300" y="100">X</text>
+  <ellipse cx="500" cy="500" rx="276" ry="456" fill-opacity="0" stroke="#000"/>
+  <!-- Y -->
+  <text x="1300" y="100">Y</text>
+  <ellipse cx="1500" cy="500" rx="276" ry="456" fill-opacity="0" stroke="#000"/>
+
+  <!-- A' -->
+  <text x="420" y="240" class="c2">A'</text>
+  <ellipse cx="500" cy="500" rx="207" ry="342" fill-opacity="0.1" class="c2"/>
+  <!-- A -->
+  <text x="440" y="370" class="c1">A</text>
+  <ellipse cx="500" cy="500" rx="138" ry="228" fill-opacity="0.1" class="c1"/>
+
+  <!-- f⁻¹-->
+  <line x1="500" x2="1500" y1="158" y2="272" stroke="#000" stroke-dasharray="10,10"/>
+  <line x1="500" x2="1500" y1="842" y2="728" stroke="#000" stroke-dasharray="10,10"/>
+</svg>
