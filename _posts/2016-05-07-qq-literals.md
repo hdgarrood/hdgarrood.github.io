@@ -1,6 +1,7 @@
 ---
 layout: post
 title: User-defined literals in Haskell via QuasiQuotes
+updated: 2017-12-22
 ---
 
 A couple of days ago, somebody submitted a blog post to the Haskell subreddit,
