@@ -1,0 +1,33 @@
+---
+layout: null
+title: Atom feed
+---
+
+<?xml version="1.0" encoding="utf-8"?>
+
+<!-- Adapted from https://natelandau.com/jekyll-rss-feed-template/ -->
+
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <title type="text" xml:lang="en">Harry Garrood’s blog</title>
+    <link type="application/atom+xml" href="{{ site.baseurl }}/atom.xml" rel="self"/>
+    <link href="{{ site.baseurl }}/"/>
+  <updated>{{ site.time | date_to_xmlschema }}</updated>
+  <id>{{ site.baseurl }}/</id>
+  <author>
+    <name>Harry Garrood</name>
+    <email>harry@garrood.me</email>
+  </author>
+  <rights type="text">Copyright © {{ site.time | date: "%Y" }} Harry Garrood. All rights reserved.</rights>
+  {% for post in site.posts limit:10 %}
+  <entry>
+    <title>{{ post.title | xml_escape }}</title>
+    <link rel="alternate" type="text/html" href="{{ site.baseurl }}{{ post.url }}"/>
+    <published>{{ post.date | date_to_xmlschema }}</published>
+    {% if post.updated %}
+    <updated>{{ post.updated | date_to_xmlschema }}</updated>
+    {% endif %}
+    <id>{{ site.baseurl }}{{ post.id }}</id>
+    <content type="html"><![CDATA[ {{ post.content | markdownify }} ]]></content>
+  </entry>
+  {% endfor %}
+</feed>
