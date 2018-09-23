@@ -15,7 +15,6 @@ compiles to PureScript.
 
 ### Multiplayer Pacman
 
-* [play](https://mpac.herokuapp.com)
 * [source on GitHub](https://github.com/hdgarrood/multipac)
 
 A multiplayer version of the classic Pacman game. The server and the client
