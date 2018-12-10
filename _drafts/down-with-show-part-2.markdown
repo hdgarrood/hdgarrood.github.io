@@ -221,8 +221,8 @@ I've also discussed its shortcomings from the perspective of showing things in
 the repl or for debugging purposes, and I've hinted at how we might be able to
 address these.
 
-In the next post, I'll talk in more detail about a design I've come up with to
-addressing these shortcomings.
+In the next post, I'll talk in more detail about a design I've come up with in
+order to address these shortcomings.
 
 Next up: [Part 3: A replacement for Show][]
 
