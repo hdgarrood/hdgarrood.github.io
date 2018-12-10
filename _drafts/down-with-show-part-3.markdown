@@ -39,14 +39,14 @@ design of "call this class's member function on the result to turn it into
 something printable".
 
 Since this class is going to be specifically for debugging purposes, we are
-going to call it `Debug`. So far we've got something like this:
+going to call it `Debug`. So far we've got something like this
 
 ```
 class Debug a where
   debug :: a -> Repr
 ```
 
-Where `Repr` is a type which we haven't nailed down the details of just yet,
+where `Repr` is a type which we haven't nailed down the details of just yet,
 but we know that we want it to represent some sort of tree structure.
 
 We'll first need to provide some functions for constructing values of the type
@@ -148,7 +148,7 @@ prettyPrint :: Repr -> String
 ```
 
 for displaying these values in the repl, together with a bunch of `Debug`
-instances for all of the types in the core library. Let's put it all together
+instances for all of the types in the core libraries. Let's put it all together
 and see what we get:
 
 ```
