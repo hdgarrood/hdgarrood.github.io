@@ -274,15 +274,17 @@ This is solved by the `prettyPrint` and `prettyPrintWithOptions` functions.
 #### The fact that we produce a `String` makes it tempting to abuse the `Show` class for other purposes.
 
 Now, when we provide `Debug` instances, we are constrained in that we may
-only produce a `Repr` instance. We don't expose any `Repr` constructors; the
-only way we have to create these values is via the functions I've described
-above. This constraint ensures that a `Debug` instance is very unlikely to
-be useful in any situation other than its intended purpose.
+only produce a `Repr` value rather than any old `String`. We don't expose any
+`Repr` constructors; the only way we can create these values is via the
+functions I've described above. This constraint ensures that a `Debug` instance
+is very unlikely to be useful in any situation other than its intended purpose.
 
 ### I want this!!!!
 
 Of course you do. You can check out [my PureScript implementation on GitHub](https://github.com/hdgarrood/purescript-debugged).
-I probably won't do a Haskell one; feel free to port it yourself.
+It doesn't yet do everything I've described in this post, but I'm confident
+that everything I've described is possible. I probably won't do a Haskell port,
+so feel free to port it yourself.
 
 [the first post]: ../down-with-show-part-1/
 [the second post]: ../down-with-show-part-2/
