@@ -138,7 +138,8 @@ valid approaches. For example, if you want to use Template Haskell to generate
 JSON encoders and decoders, a design involving type classes like `ToJSON` and
 `FromJSON` is probably the best approach. Having said that, the approach I've
 detailed in this post is my preferred approach, and I'm quite confident in its
-effectiveness.
+effectiveness. In the next post, I'm going to look at the `Show` type class
+with these rules of thumb in mind.
 
 Next up: [Part 2: What's wrong with the Show type class](../down-with-show-part-2/)
 

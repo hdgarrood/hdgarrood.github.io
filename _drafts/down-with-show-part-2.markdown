@@ -49,6 +49,9 @@ being for debugging, whereas `__str__` is for 'nicely printable' string
 representations of objects, which is closer to what I've described as
 displaying values.
 
+Let's look at each of these purposes in turn, and how effective the `Show`
+class is in fulfilling them.
+
 #### Serialization
 
 Contrary to what [Real World Haskell: Chapter 6][] argues, I would say that
@@ -129,9 +132,9 @@ The fact that so many types don't have instances is a significant hindrance to
 the purpose of seeing representations of values in the repl. You might argue
 that showing functions in the repl would be useless anyway, because what would
 we produce? However, it is very common to come across types which are products
-or records where one field is a function or some other type which lacks a
-`Show` instance. In these cases, we can't derive a `Show` instance, so if we
-want to be able to see values of this type in the repl, we would have to
+or records where one field is a function, or an `IO T`, or any other type which
+lacks a `Show` instance. In these cases, we can't derive a `Show` instance, so
+if we want to be able to see values of this type in the repl, we would have to
 manually write a `Show` instance which skips over the problematic fields, and
 this is quite tiresome; in practice, we often don't bother. Another option is
 to use orphan instances for problematic fields, which is fine in languages

@@ -47,8 +47,7 @@ class Debug a where
 ```
 
 Where `Repr` is a type which we haven't nailed down the details of just yet,
-but we know that we want it to provide a sort of tree structure so that we can
-do things like pretty-printing or cutting off at a certain depth.
+but we know that we want it to represent some sort of tree structure.
 
 We'll first need to provide some functions for constructing values of the type
 `Repr` from primitive types:
@@ -62,6 +61,10 @@ string :: String -> Repr
 array :: Array Repr -> Repr
 record :: Array (Tuple String Repr) -> Repr
 ```
+
+The functions `int`, `number`, `boolean`, `char`, and `string` are for
+constructing leaves in this tree, whereas the functions `array` and `record`
+will usually have children, which they receive as arguments.
 
 We'll also want a function for algebraic data types with named constructors:
 
@@ -96,7 +99,13 @@ opaque "function"
   ]
 ```
 
-if we are able to get a value-level representation for the types involved.
+if we are able to implement a function along the lines of
+
+```
+typeRepr :: forall a. Typeable a => Proxy a -> Repr
+```
+
+to produce a value-level representation of the type `a`.
 
 Finally, to handle collection types like `Map` which keep their internal
 structure hidden, we will add two more functions:
@@ -220,7 +229,7 @@ a function
 diff :: Repr -> Repr -> ReprDelta
 ```
 
-and another pretty-printing function
+for diffing `Repr` values, plus another pretty-printing function
 
 ```
 prettyPrintDelta :: ReprDelta -> String
@@ -279,7 +288,7 @@ only produce a `Repr` value rather than any old `String`. We don't expose any
 functions I've described above. This constraint ensures that a `Debug` instance
 is very unlikely to be useful in any situation other than its intended purpose.
 
-### I want this!!!!
+### I want this!!!
 
 Of course you do. You can check out [my PureScript implementation on GitHub](https://github.com/hdgarrood/purescript-debugged).
 It doesn't yet do everything I've described in this post, but I'm confident
