@@ -1,0 +1,51 @@
+html * {
+  font-family: Trebuchet MS, Ubuntu, sans-serif;
+  font-size: 150%;
+  margin-bottom: 1em;
+  color: #e7efc5;
+  text-align: left;
+}
+
+body {
+  background: radial-gradient(#34113f, #2a234c);
+}
+
+.reveal h1, 
+.reveal h2, 
+.reveal h3, 
+.reveal p {
+  margin-bottom: 1em;
+}
+
+.reveal li {
+  margin-bottom: 0.5em;
+  margin-top: 0.5em;
+}
+
+.reveal h1 {
+  font-size: 150%;
+  font-weight: bolder;
+}
+
+.reveal h2 {
+  font-size: 140%;
+}
+
+.reveal h3 {
+  font-size: 120%;
+}
+
+.reveal p {
+  margin-top: 2em;
+}
+
+.reveal pre,
+.reveal code {
+  font-family: monospace;
+  line-height: 1.5em;
+}
+
+.reveal pre {
+  background: rgba(255, 255, 255, 0.1);
+  padding: 1em;
+}

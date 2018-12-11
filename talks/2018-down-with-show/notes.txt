@@ -1,0 +1,119 @@
+# Down with Show!
+
+- Context: rules of thumb for when to use a type class
+- What is wrong with Show?
+- How to fix it
+
+## Rules of thumb
+
+Should represent a genuine abstraction
+
+- Should be possible to write functions over the class generically and being
+  sure that they will behave sensibly without having to check individual
+  instances
+- Eg. Monad class; laws guarantee that >=> is associative, which allows us to
+  write code like this without fear:
+
+```
+desugar
+  :: (MonadSupply m, MonadError MultipleErrors m, MonadWriter MultipleErrors m)
+  => [ExternsFile]
+  -> [Module]
+  -> m [Module]
+desugar externs =
+  map desugarSignedLiterals
+    >>> traverse desugarObjectConstructors
+    >=> traverse desugarDoModule
+    >=> traverse desugarAdoModule
+    >=> map desugarLetPatternModule
+    >>> traverse desugarCasesModule
+    >=> traverse desugarTypeDeclarationsModule
+    >=> desugarImports externs
+    >=> rebracket externs
+    >=> traverse checkFixityExports
+    >=> traverse (deriveInstances externs)
+    >=> desugarTypeClasses externs
+    >=> traverse createBindingGroupsModule
+```
+
+Should have no more than a few sensible instances for any given type
+
+- This is part of why I don't like Arbitrary, because there is no 'one size
+  fits all' method for many types.
+  - Quaternion library only being tested with numbers in the range [0,1)
+
+Bonus: if there is some redundancy
+
+`fmap` vs `parseJSON`.
+
+## What is wrong with Show?
+
+- Not clear what it is for. String is too general a type, making it too
+  tempting to use for other purposes.
+
+- Can be used for:
+  - display
+  - serialization
+  - repl, debugging
+  
+Why is this a problem? One implementation may do for all of these purposes for
+primitive types like Int, but for other types this is often difficult.
+
+Tries to do too much at once
+
+I will go through each use case and see if we can find a better alternative
+
+### Serialization
+
+Show for serialization is only useful if you know you only ever have to
+interface with other Haskell programs using the same code. Even then it's very
+wasteful; binary formats are a better option.
+
+RWH recommends Show for serialization!!
+
+### Display
+
+-- Make sense as an abstraction? Not really; we can't safely write functions
+with Show constraints and expect them to work.
+
+Eg: Parsec requires us to give our token type a Show instance, which it uses
+for printing tokens in error messages. Means we have to give our token type
+a Show instance specifically designed for this purpose
+
+- This can conflict with repl/debugging usage; we might want more information
+  in the repl, eg if our tokens include annotations with their location in
+  the file
+
+-- Few sensible impls per type? No: often lots of different options which will
+depend heavily on context. Eg dates; localised + individual user settings?
+
+-- Redundancy? No: far to easy to `show` the wrong thing.
+
+Using Show for display has serious pitfalls:
+
+For a long time, the PureScript compiler used Show instances for
+pretty-printing AST nodes. 
+  - makes debugging difficult; values of different types sometimes
+    indistinguishable
+  - changing an instance is always a breaking change, but it rarely
+    introduces compile failures, so it's easy to miss.
+
+Better to use individual functions
+
+### Debugging/repl
+
+Lots of instances are missing: (->), IORef, IO
+
+- Perhaps because of the idea that Show is also for serialization?
+
+No pretty printing
+
+- There is a library which parses Show instances and then prints them again
+  with pretty-printing; but wouldn't it be better to just use a tree format in
+  the first place?
+
+No configurability of how printing is done
+
+- Can't eg cut off at a certain depth when all we have is String
+
+## A replacement

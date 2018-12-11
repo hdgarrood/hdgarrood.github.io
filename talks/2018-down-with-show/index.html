@@ -1,0 +1,139 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <script type="text/javascript" src="reveal.js"></script>
+    <link rel="stylesheet" type="text/css" href="reveal.css">
+    <link rel="stylesheet" type="text/css" href="style.css">
+    <title>Down with Show!</title>
+  </head>
+  <body>
+    <div class="reveal">
+      <div class="slides">
+        <section id="title">
+          <h1>Down with Show!</h1>
+          <h3>Harry Garrood</h3>
+        </section>
+
+        <section id="overview">
+          <h1>Overview</h1>
+          <ol>
+            <!-- <li>Rules of thumb for what deserves to be a type class</li> -->
+            <li>The problem with Show</li>
+            <li>A replacement for Show, and what it gives us</li>
+          </ol>
+        </section>
+
+        <!--
+        <section id="when-to-use-type-classes">
+          <section id="when-to-use-type-classes-1">
+            <h1>Rules of thumb for what deserves to be a type class</h1>
+            <p>A type class should preferably:</p>
+            <ul>
+              <li>represent a genuine abstraction</li>
+              <li>have no more than a few sensible implementations for any given type</li>
+              <li>provide some redundancy</li>
+            </ul>
+          </section>
+
+          <section id="when-to-use-type-classes-2">
+            <h1>Represent a genuine abstraction</h1>
+            <p>An example using Monad, from the PureScript compiler</p>
+              <pre><code>desugar externs =
+  map desugarSignedLiterals
+    &gt;&gt;&gt; traverse desugarObjectConstructors
+    &gt;=&gt;    traverse desugarDoModule
+    &gt;=&gt;    traverse desugarAdoModule
+    &gt;=&gt;    map desugarLetPatternModule
+    &gt;&gt;&gt; traverse desugarCasesModule
+    &gt;=&gt;    traverse desugarTypeDeclarationsModule
+    ...</code></pre>
+          </section>
+
+          <section id="when-to-use-type-classes-3">
+            <h1>Have no more than a few sensible implementations per type</h1>
+            <p>Compare:</p>
+            <li><code>Monoid (a,b)</code></li>
+            <li><code>Arbitrary Double</code></li>
+          </section>
+
+          <section id="when-to-use-type-classes-4">
+            <h1>Provide some redundancy</h1>
+            <p>Compare:</p>
+<pre><code>fmap not "hello, world"</code></pre>
+<p>versus</p>
+<pre><code>parseJSON json :: Parser (Map String String)</code></pre>
+          </section>
+        </section>
+        -->
+
+        <section id="what-is-wrong-with-show">
+          <section id="show-1">
+            <h1>What is wrong with Show?</h1>
+            <p>Is it for:</p>
+            <ul>
+              <li>Serialization?</li>
+              <li>Display, eg in a user interface?</li>
+              <li>Debugging / use in the repl?</li>
+            </ul>
+          </section>
+
+          <section id="show-2">
+            <h1>Serialization</h1>
+            <ul>
+              <li>Show-serialized values will not be understood by non-Haskell programs</li>
+              <li>Inefficient</li>
+              <li>(Real World Haskell argues that Show is good for serialization!)</li>
+              <li>Better served by other serialization libraries</li>
+            </ul>
+          </section>
+
+          <section id="show-3">
+            <h1>Display</h1>
+            <ul>
+              <li>Doesn't really make sense as an abstraction. Eg Parsec's
+                error messages: "unexpected ')', expected new line or end of
+                input"</li>
+              <li>Too many sensible implementations for some types, eg dates/times</li>
+              <li>Too easy to <code>show</code> the wrong thing</li>
+              <li>Impossible to change in a non-breaking way</li>
+              <li>Better served by individual functions</li>
+            </ul>
+          </section>
+
+          <section id="show-4">
+            <h1>Debugging / the repl</h1>
+            <ul>
+              <li>Lots of types don't have instances: <code>(-&gt;), IORef, IO</code></li>
+              <li>Poor display for large / complex values</li>
+              <li>No configurability in how printing is done</li>
+              <li>Better served by ...?</li>
+            </ul>
+          </section>
+        </section>
+
+        <section id="debug-class">
+          <section id="debug-class-1">
+            <h1>A replacement for Show</h1>
+            <pre><code>class Debug a where
+  debug :: a -&gt; Repr</code></pre>
+            <p>To recap, it should:</p>
+            <ul>
+              <li>explicitly only be for use in the repl and debugging</li>
+              <li>be possible to give every type of kind <code>Type</code> an instance</li>
+              <li>use a type with more structure than <code>String</code></li>
+              <li>allow us to perform configurable pretty-printing in the repl</li>
+            </ul>
+          </section>
+        </section>
+      </div>
+    </div>
+
+    <script type="text/javascript">
+      Reveal.initialize({
+          history: true,
+      })
+    </script>
+  </body>
+</html>
