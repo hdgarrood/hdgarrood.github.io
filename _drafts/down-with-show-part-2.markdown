@@ -82,7 +82,7 @@ use of type classes from [the previous post][].
   `Double` also has a variety of options, depending on whether you want to use
   scientific notation, or how many decimal places are reasonable in the
   context. For dates or times, the format you want to use is often dependent
-  on the user's locale as well as their specific settings (e.g. some users
+  on the user's locale as well as their individual settings (e.g. some users
   prefer times in the 24-hour format).
 - Does it have any redundancy in its members' types? No; this is another reason
   I would argue that `show` has no place in production code. It's far too easy
@@ -106,18 +106,23 @@ expression evaluates to is printed. Otherwise, I get an error along the lines
 of `No instance for (Show T)`.
 
 From the perspective of showing values in the repl, the first major drawback
-of `Show` is a direct result of it trying to do too much at once. Any
-serialization method needs to be *injective,* which means that serializing two
+of `Show` is that lots of types don't have instances. This is perhaps a result
+of it trying to do too much at once.
+
+Any serialization method must be *injective,* which means that serializing two
 distinct values should give you two distinct results: this is crucial if we
 want other programs to be able to accept what we produce and reconstruct the
-same value. However, if we decide that `Show` instances must be injective, this
-rules out instances for a lot of types. For example, we can't write an
-injective `Show` instance for functions `a -> b`, unless we know that `a` is
-only inhabited by finitely many values (because we need to check what our
-function does to each of these values). Even then, the output is very unlikely
-to be useful unless the type `a` has a very small number of inhabitants. But
-some of the most common types we use have a large number of inhabitants, or
-even infinitely many! Consider e.g. `Int`, `Integer`, or `[a]`.
+same value.
+
+If `Show` was originally intended to be used for serialization, then `show` of
+course would have needed to be injective. However, this rules out instances for
+a lot of types. For example, we can't write an injective `Show` instance for
+functions `a -> b`, unless we know that `a` is only inhabited by finitely many
+values (because we need to check what our function does to each of these
+values). Even then, the output is very unlikely to be useful unless the type
+`a` has a very small number of inhabitants. But some of the most common types
+we use have a large number of inhabitants, or even infinitely many! Consider
+e.g. `Int`, `Integer`, or `[a]`.
 
 There are other examples, too. For example, there are a few types which we
 can't do anything with unless we move into `IO`. The type `IO` itself is one:

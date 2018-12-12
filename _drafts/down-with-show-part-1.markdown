@@ -47,14 +47,17 @@ type class should preferably:
 ### Make sense as an abstraction
 
 This means for a class `C a`, it should be possible to write useful functions
-of the form `C a => whatever`. For example, the function
+of the form `C a => whatever`, and know that these functions will behave
+sensibly for any choice of `a` having a `C a` instance. For example, the
+function
 ```
 (<=<) :: Monad m => (b -> m c) -> (a -> m b) -> (a -> m c)
 ```
 which performs Kleisli composition of functions of the form `a -> m b`, is
-guaranteed to be associative by the `Monad` laws. This means we can do things
-like combining a whole bunch of monadic functions with `<=<` without having to
-worry about parentheses changing the meaning of the resulting expression.  The
+guaranteed to be associative for any choice of `m` having a `Monad m` instance
+as a consequence of the `Monad` laws. This means we can do things like
+combining a whole bunch of monadic functions with `<=<` without having to worry
+about parentheses changing the meaning of the resulting expression.  The
 `Monad` class is a perfect example of this concept more generally: the
 `Control.Monad` module and the `monad-loops` package contain many more useful
 functions with `Monad` constraints.
@@ -65,12 +68,14 @@ This is closely tied to the previous rule: it is usually the laws of a class
 which enable us to write code which is generic over that class and be sure that
 they will behave sensibly for any instance.
 
-### Have at most one sensible, correct behaviour for a given type
+### Have no more than a few sensible, correct behaviours for a given type (preferably just one)
 
-If there are types which have a few equally sensible possibilities for their
+If there are types which have lots of equally sensible possibilities for their
 instances of some class, it becomes harder to write code making use of that
 class; we may have to check the instances individually before knowing that
-they're safe to use with a given function.
+they're safe to use with a given function. In some cases, we may have to create
+lots of newtypes to be able to make use of functions which are generic over
+the class; at this point, it's better to just use regular functions.
 
 There are a few notable counterexamples for this one. For instance, the
 `Monoid` type class is probably one of the most justifiable type classes
@@ -125,21 +130,23 @@ But the `FromJSON (Map k v)` instance expects something quite different:
   ["scheduler", "^0.11.0"]
 ]
 ```
-It's very tempting to just write `fromJSON` or `parseJSON` to parse one of
-these, but of course this won't work, because of the above mismatch. I would
-argue that the `FromJSON` class makes it far too easy to write code which makes
-mistakes like this one.
+It's very tempting to just write `parseJSON` to parse one of these, but of
+course this won't work, because of the above mismatch. I would argue that the
+`FromJSON` class makes it far too easy to write code which makes mistakes like
+this one.
 
 ### Disclaimer
 
 I'm not going to go as far as to argue that the approach I've described here is
-the unique correct way to use type classes; there are plenty of other
-valid approaches. For example, if you want to use Template Haskell to generate
-JSON encoders and decoders, a design involving type classes like `ToJSON` and
-`FromJSON` is probably the best approach. Having said that, the approach I've
-detailed in this post is my preferred approach, and I'm quite confident in its
-effectiveness. In the next post, I'm going to look at the `Show` type class
-with these rules of thumb in mind.
+the unique correct way to use type classes; there are plenty of other valid
+options. For example, if you want to use Template Haskell to generate instances
+from your type definitions, such as JSON encoders and decoders, a design
+involving type classes like `ToJSON` and `FromJSON` is probably your best bet.
+Having said that, the approach I've detailed in this post is the one I try to
+follow where I can, and I'm quite confident in its effectiveness.
+
+In the next post, I'm going to look at the `Show` type class with these rules
+of thumb in mind.
 
 Next up: [Part 2: What's wrong with the Show type class](../down-with-show-part-2/)
 
