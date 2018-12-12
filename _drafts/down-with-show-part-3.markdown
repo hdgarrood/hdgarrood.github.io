@@ -3,11 +3,6 @@ layout: post
 title: "Down with Show! Part 3: A replacement for Show"
 ---
 
-<style type="text/css">
-span.removed {color: red;}
-span.added {color: green;}
-</style>
-
 This is part three of three in a series in which I will argue that it is time
 to consign the `Show` type class to the dustbin of history. In [the first
 post][] I discussed some rules of thumb for what I think makes a good type
@@ -261,7 +256,7 @@ C
   <Map { "a": 3, "b": 6 }>
   <Map
   { 3: "a",
-    6: <span class="removed">-"b"</span> <span class="added">+"c"</span> }></code></pre>
+    6: <span style="color:red;">-"b"</span> <span style="color:green;">+"c"</span> }></code></pre>
 
 with colours in your terminal.
 
