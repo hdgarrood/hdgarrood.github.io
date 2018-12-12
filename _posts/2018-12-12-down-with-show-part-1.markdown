@@ -41,7 +41,7 @@ of what I'm about to say is new. For example:
 I would argue that, even though type classes are fantastically useful, it's
 actually quite rare to find yourself in a position where introducing a new one
 is a good idea. My rules of thumb for deciding whether or not to introduce a
-new type class are basically the same as Gabriel's (see above); in my view, a
+new type class are largely inspired by Gabriel's (see above); in my view, a
 type class should preferably:
 
 ### Make sense as an abstraction
