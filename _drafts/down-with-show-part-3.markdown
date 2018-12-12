@@ -205,15 +205,14 @@ complex, uses multiple lines for its pretty-printed representation.
 We can even go further and define a more flexible pretty-printing function:
 
 ```
-prettyPrintWithOptions ::
-  { maxDepth :: Int
-  , onOneLine :: Boolean
-  ...
+prettyPrintWith ::
+  { maxDepth :: Maybe Int
+  , compactThreshold :: Int
   } -> Repr -> String
 ```
 
-to configure things like the maximum depth or whether the output should all
-appear on one line.
+to configure things like the maximum depth before cutting off, or how large a
+tree may become before it is considered too large to appear on one line.
 
 That's not all, though. Since the `Repr` data type retains the tree structure,
 we can also define a type
@@ -278,7 +277,7 @@ constructor function for it without causing a breaking change to this API.
 
 #### The `Show` output for large and complex values is difficult to read.
 
-This is solved by the `prettyPrint` and `prettyPrintWithOptions` functions.
+This is solved by the `prettyPrint` and `prettyPrintWith` functions.
 
 #### The fact that we produce a `String` makes it tempting to abuse the `Show` class for other purposes.
 
@@ -291,9 +290,8 @@ is very unlikely to be useful in any situation other than its intended purpose.
 ### I want this!!!
 
 Of course you do. You can check out [my PureScript implementation on GitHub](https://github.com/hdgarrood/purescript-debugged).
-It doesn't yet do everything I've described in this post, but I'm confident
-that everything I've described is possible. I probably won't do a Haskell port,
-so feel free to port it yourself.
+I probably won't do a Haskell port, so feel free to port it to Haskell
+yourself.
 
 [the first post]: ../down-with-show-part-1/
 [the second post]: ../down-with-show-part-2/
