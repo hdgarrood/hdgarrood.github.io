@@ -231,7 +231,7 @@ address these.
 In the next post, I'll talk in more detail about a design I've come up with in
 order to address these shortcomings.
 
-<!-- Next up: [Part 3: A replacement for Show][] -->
+Next up: [Part 3: A replacement for Show][]
 
 [Real World Haskell: Chapter 6]: http://book.realworldhaskell.org/read/using-typeclasses.html
 [Stack Overflow: Should I use typeclasses or not?]: https://stackoverflow.com/questions/17100036/should-i-use-typeclasses-or-not
