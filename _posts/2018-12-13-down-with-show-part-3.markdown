@@ -262,7 +262,7 @@ with colours in your terminal.
 Let's go back and check we've addressed all of the the shortcomings of `Show`
 with this new design.
 
-#### Many types, such as `(->)` or `IORef` don't have `Show` instances.
+#### Many types, such as `(->)` or `IORef`, don't have `Show` instances.
 
 This should hopefully be solved with the `opaque` constructor. I haven't yet
 come across a type which can't be given a useful `Debug` instance, but if
