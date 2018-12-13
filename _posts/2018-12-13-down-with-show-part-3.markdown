@@ -242,9 +242,9 @@ which enables us to do this:
 
 ```
   let
-    items = [Tuple "a" 3, Tuple "b" 6]
-    x = C (Map.fromFoldable items) (Map.fromFoldable (map swap items))
-    y = C (Map.fromFoldable items) (Map.fromFoldable (map swap items <> [Tuple 6 "c"]))
+    items = [Tuple "a" 3, Tuple "b" 6, Tuple "c" 13]
+    x = Map.fromFoldable items
+    y = Map.fromFoldable (items <> [Tuple "b" 9])
   in
     assertEqual x y
 ```
@@ -252,11 +252,10 @@ which enables us to do this:
 which produces:
 
 <pre><code>Test failed:
-C
-  <Map { "a": 3, "b": 6 }>
-  <Map
-  { 3: "a",
-    6: <span style="color:red;">-"b"</span> <span style="color:green;">+"c"</span> }></code></pre>
+<Map
+{ "a": 3,
+  "b": <span style="color:red">-6</span> <span style="color:green">+9</span>,
+  "c": 13 }></code></pre>
 
 with colours in your terminal.
 
