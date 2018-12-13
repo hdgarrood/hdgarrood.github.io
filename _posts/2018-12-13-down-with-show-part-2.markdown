@@ -36,8 +36,8 @@ things, I'm going to argue that it's not particularly good at any of them.
 
 Firstly, it's important to recognise that these three purposes are actually
 distinct; although a single function might suffice for all three purposes in
-the cases of many primitive types such as `Int` or `Bool`, this is not likely
-to remain true once you start dealing with more complex types, and particularly
+the cases of many basic types such as `Int` or `Bool`, this is not likely to
+remain true once you start dealing with more complex types, and particularly
 not for those types which are built out of sums and products (and you
 inevitably *will* meet these sorts of types as soon as you start e.g. building
 an application).
@@ -46,7 +46,7 @@ If you know Python, you might be aware of the difference between [`__str__`][]
 and [`__repr__`][], which sort of goes along the same lines as the above. I
 think Python was right to separate these functions: `__repr__` is designated as
 being for debugging, whereas `__str__` is for 'nicely printable' string
-representations of objects, which is closer to what I've described as
+representations of objects, which is perhaps closer to what I've described as
 displaying values.
 
 Let's look at each of these purposes in turn, and how effective the `Show`
@@ -109,20 +109,20 @@ From the perspective of showing values in the repl, the first major drawback
 of `Show` is that lots of types don't have instances. This is perhaps a result
 of it trying to do too much at once.
 
-Any serialization method must be *injective,* which means that serializing two
-distinct values should give you two distinct results: this is crucial if we
-want other programs to be able to accept what we produce and reconstruct the
-same value.
+Any function being used for serialization must be *injective,* which means that
+serializing two distinct values should give you two distinct results: this is
+crucial if we want other programs to be able to accept what we produce and
+reconstruct the same value.
 
 If `Show` was originally intended to be used for serialization, then `show` of
-course would have needed to be injective. However, this rules out instances for
-a lot of types. For example, we can't write an injective `Show` instance for
-functions `a -> b`, unless we know that `a` is only inhabited by finitely many
-values (because we need to check what our function does to each of these
-values). Even then, the output is very unlikely to be useful unless the type
-`a` has a very small number of inhabitants. But some of the most common types
-we use have a large number of inhabitants, or even infinitely many! Consider
-e.g. `Int`, `Integer`, or `[a]`.
+course would have needed to be injective for every instance. However, this
+rules out instances for a lot of types. For example, we can't write an
+injective `Show` instance for functions `a -> b`, unless we know that `a` is
+only inhabited by finitely many values (because we need to check what our
+function does to each of these values). Even then, the output is very unlikely
+to be useful unless the type `a` has a very small number of inhabitants. But
+some of the most common types we use have a large number of inhabitants, or
+even infinitely many! Consider e.g. `Int`, `Integer`, or `[a]`.
 
 There are other examples, too. For example, there are a few types which we
 can't do anything with unless we move into `IO`. The type `IO` itself is one:
@@ -142,11 +142,11 @@ lacks a `Show` instance. In these cases, we can't derive a `Show` instance, so
 if we want to be able to see values of this type in the repl, we would have to
 manually write a `Show` instance which skips over the problematic fields, and
 this is quite tiresome; in practice, we often don't bother. Another option is
-to use orphan instances for problematic fields, which is fine in languages
-which support them (note that PureScript does not), but far from ideal. (For
-instance, there is an orphan `Show (a -> b)` instance in the Haskell module
-`Text.Show.Functions`, which always produces the string `"<function>"`.) One
-reason to avoid orphan instances is that you can't opt-in to them on a
+to use orphan instances for problematic fields. For example, there is an orphan
+`Show (a -> b)` instance in the Haskell module `Text.Show.Functions`, which
+always produces the string `"<function>"`. This is fine in languages which
+support orphan instances (note that PureScript does not), but far from ideal.
+One reason to avoid orphan instances is that you can't opt-in to them on a
 per-module basis; if I use an orphan instance in a certain module, then
 everyone else who imports that module also has that instance in
 scope, whether they want it or not.
@@ -232,7 +232,7 @@ address these.
 In the next post, I'll talk in more detail about a design I've come up with in
 order to address these shortcomings.
 
-Next up: [Part 3: A replacement for Show][]
+<!-- Next up: [Part 3: A replacement for Show][] -->
 
 [Real World Haskell: Chapter 6]: http://book.realworldhaskell.org/read/using-typeclasses.html
 [Stack Overflow: Should I use typeclasses or not?]: https://stackoverflow.com/questions/17100036/should-i-use-typeclasses-or-not
