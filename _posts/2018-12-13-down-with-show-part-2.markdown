@@ -235,9 +235,9 @@ Next up: [Part 3: A replacement for Show][]
 
 [Real World Haskell: Chapter 6]: http://book.realworldhaskell.org/read/using-typeclasses.html
 [Stack Overflow: Should I use typeclasses or not?]: https://stackoverflow.com/questions/17100036/should-i-use-typeclasses-or-not
-[the previous post]: ../down-with-show-part-1/
+[the previous post]: {{ site.baseurl }}{% post_url 2018-12-12-down-with-show-part-1 %}
 [`__repr__`]: https://docs.python.org/3/reference/datamodel.html?highlight=__str__#object.__repr__
 [`__str__`]: https://docs.python.org/3/reference/datamodel.html?highlight=__str__#object.__str__
 [@rightfold]: https://github.com/rightfold
 [a GitHub thread discussing this issue]: https://github.com/purescript/purescript/issues/1675#issuecomment-216758519
-[Part 3: A replacement for Show]: ../down-with-show-part-3
+[Part 3: A replacement for Show]: {{ site.baseurl }}{% post_url 2018-12-13-down-with-show-part-3 %}

@@ -4,7 +4,7 @@ layout: post
 ---
 
 The most significant development since my last entry is that Pursuit has been
-deployed! See the [announcement post](../pursuit-deployed/) I wrote.
+deployed! See the [announcement post][] I wrote.
 
 Things that have changed since the last update:
 
@@ -104,3 +104,5 @@ from running at all on browsers that support CSP in response headers (which I
 think is most of them).
 
 Raw HTML in Markdown code documentation is now disallowed as well.
+
+[announcement post]: {{ site.baseurl }}{% post_url 2015-07-15-pursuit-deployed %}

@@ -287,5 +287,5 @@ Of course you do. You can check out [my PureScript implementation on GitHub](htt
 I probably won't do a Haskell port, so feel free to port it to Haskell
 yourself.
 
-[the first post]: ../down-with-show-part-1/
-[the second post]: ../down-with-show-part-2/
+[the first post]: {{ site.baseurl }}{% post_url 2018-12-12-down-with-show-part-1 %}
+[the second post]: {{ site.baseurl }}{% post_url 2018-12-13-down-with-show-part-2 %}

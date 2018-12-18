@@ -148,7 +148,7 @@ follow where I can, and I'm quite confident in its effectiveness.
 In the next post, I'm going to look at the `Show` type class with these rules
 of thumb in mind.
 
-Next up: [Part 2: What's wrong with the Show type class](../down-with-show-part-2/)
+Next up: [Part 2: What's wrong with the Show type class]({{ site.baseurl }}{% post_url 2018-12-13-down-with-show-part-2 %})
 
 [Definitive guide on when to use typeclasses?]: https://www.reddit.com/r/haskell/comments/1j0awq/definitive_guide_on_when_to_use_typeclasses/
 [Haskell Antipattern: Existential Typeclass]: https://lukepalmer.wordpress.com/2010/01/24/haskell-antipattern-existential-typeclass/
