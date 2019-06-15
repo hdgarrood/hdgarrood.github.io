@@ -17,6 +17,8 @@ and there are a few frequently asked questions I think are worth clarifying.
 Before I begin I'd like to mention that this is just my personal view, which is
 not necessarily shared by other maintainers.
 
+So, some frequently asked questions:
+
 ### Isn't it more urgent to move away from Bower now that it is deprecated?
 
 I don't think so. The fact that Bower now prints a deprecation message when you
@@ -95,24 +97,29 @@ sophisticated version solver, which we don't); package sets provide a way of
 reusing the work done to find successful install plans.
 
 So what about package sets? I think they're great and you should totally use
-them! [Fabrizio][] and [Justin][] have been doing fantastic work on the
-[package-sets][] repository, which provides PureScript package sets, and
-[spago][], a package manager and build tool which makes use of package sets to
+them! [Fabrizio][] and [Justin][] have been doing some really fantastic work on
+the [package-sets][] repository, which provides PureScript package sets, and
+[Spago][], a package manager and build tool which makes use of package sets to
 make it easier to get all of your dependencies installed and working together.
+
+Seriously, if you use PureScript and you haven't tried Spago out yet, drop
+everything and do it right now.
 
 ### Package sets versus bounds and solving
 
 Note that the two approaches are _not_ incompatible with each other. Take for
 example the Haskell ecosystem, which makes good use of both approaches. In
 particular, I suspect that the fact that Haskell libraries (mostly) have
-version bounds makes the package set curators' job quite a bit easier. Also,
-I'm often very grateful that library authors include version bounds in their
-Haskell libraries, because occasionally you do need to make tweaks to your
-package set, e.g. to use the latest version of a particular library because you
-need a particular feature or fix. When you do this, you may find that your
-dependencies no longer compile together, and your package set can no longer
-help you resolve this. It's in this situation that version bounds (and a
-solver) can be really helpful.
+version bounds makes the package set curators' job quite a bit easier, since it
+makes the task of letting library authors know that their libraries need
+updating (and why) much more easily automatable; see the [Stackage issue
+tracker][] for some examples. Also, I'm often very grateful that library
+authors include version bounds in their Haskell libraries, because occasionally
+you do need to make tweaks to your package set, e.g. to use the latest version
+of a particular library because you need a particular feature or fix. When you
+do this, you may find that your dependencies no longer compile together, and
+your package set can no longer help you resolve this. It's in this situation
+that version bounds (and a solver) can be really helpful.
 
 I think the ideal situation for package management is that you can choose where
 to situate yourself on the spectrum where you have no package sets and just
@@ -127,26 +134,32 @@ things when you ask for them; a package registry which was often down for
 maintenance would not score highly on availability. By 'integrity' I mean being
 sure that nobody has tampered with something when you download it.
 
-One of the things which bothers me the most about the current state of
-PureScript package management is that it is all based on tags in git
-repositories, which are pretty much the worst possible option on both fronts.
-If a maintainer of any package you depend on decides one day that they can't be
-bothered any more and deletes the repository, your build breaks. (Hopefully
-someone else has a cached copy.) Additionally, a well-meaning maintainer could
-mutate a tag in their repository to point at a different commit, meaning that
-different people get different code depending on when they performed the
-install.
+One of my least favourite things about the current state of PureScript package
+management is that it is all based on tags in git repositories, which are
+pretty much the worst possible option on both fronts.  If a maintainer of any
+package you depend on decides one day that they can't be bothered any more and
+deletes the repository, your build breaks. (Hopefully someone else has a cached
+copy.) Additionally, a well-meaning maintainer could mutate a tag in their
+repository to point at a different commit, meaning that different people get
+different code depending on when they performed the install.
 
 I would very much like PureScript to start using a proper package registry at
 some point in order to address these issues. It would be great to be able to
 use the npm registry, but that might be awkward without the singleton packages
 RFC (unless we want to hack together a nonstandard client or something). Other
-interesting possibilities are [IPFS][] and [entropic][].
+interesting possibilities are [entropic][] and [IPFS][].
+
+### Closing thoughts
+
+Realistically my hands are already more than full with the compiler and core
+libraries, so I'm very unlikely to be able to dedicate anywhere near the
+sufficient amount of time to make progress on the above issues.
 
 [Stackage]: https://stackage.org
 [Fabrizio]: https://github.com/f-f
 [Justin]: https://github.com/justinwoo
 [package-sets]: https://github.com/purescript/package-sets
-[spago]: https://github.com/spacchetti/spago
+[Spago]: https://github.com/spacchetti/spago
 [IPFS]: https://ipfs.io
 [entropic]: https://github.com/entropic-dev/entropic
+[Stackage issue tracker]: https://github.com/commercialhaskell/stackage/issues
