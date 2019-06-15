@@ -37,14 +37,14 @@ particularly high on the list.
 
 Yarn is an alternative package manager for JavaScript which offers a `--flat`
 command line option to allow you to specify that you only want one version of
-any dependency to exist throughout your install tree. At first, this seems like
-it provides precisely what we're missing from npm! Unfortunately, it's not
-quite flexible enough to fill the gap, since lots of npm packages _rely_ on
-npm's dependency nesting in order to be able to install. Therefore, it needs to
-be possible to specify that some, but not all, packages be installed 'flat',
-and to allow others to use nesting. Specifically, what we want by default is
-that PureScript packages should be installed flat whereas JavaScript packages
-should be installed as usual, that is, with nesting if necessary.
+any given dependency to exist throughout your install tree. At first, this
+seems like it provides precisely what we're missing from npm! Unfortunately,
+it's not quite flexible enough to fill the gap, since lots of npm packages
+_rely_ on npm's dependency nesting in order to be able to install. Therefore,
+it needs to be possible to specify that some packages be installed 'flat', and
+others may use nesting. Specifically, what we want by default is that
+PureScript packages should be installed flat whereas JavaScript packages should
+be installed as usual, that is, with nesting if necessary.
 
 Furthermore, requesting that at most one version of any PureScript dependency
 may exist in a dependency tree really needs to be something the package
