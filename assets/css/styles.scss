@@ -1,32 +1,6 @@
 ---
 ---
 
-// fonts
-@mixin font-face($name, $url, $svgId) {
-    @font-face {
-        font-family: "#{$name}";
-        src: url($url + ".eot"),
-             url($url + ".eot#iefix") format('embedded-opentype'),
-             url($url + ".woff") format('woff'),
-             url($url + ".ttf") format('truetype'),
-             url($url + ".svg#" + $svgId) format('svg');
-        font-weight: normal;
-        font-style: normal;
-    }
-}
-
-@include font-face('Bree Serif',
-    '/assets/fonts/BreeSerif-Regular-webfont',
-    'BreeSerifRegular');
-
-@include font-face('OpenSans',
-    '/assets/fonts/OpenSans-Light-webfont',
-    'OpenSans-Lightregular');
-
-@include font-face('Ubuntu Mono',
-    '/assets/fonts/ubuntumono-r-webfont',
-    'ubuntumono-regular');
-
 $background-inner: #f8f8f8;
 $background-outer: darken($background-inner, 3%);
 
@@ -35,7 +9,9 @@ $links-visited: #ad5a9e;
 
 // base styles
 body {
-    font: normal 120% "OpenSans", Helvetica, Arial, sans-serif;
+    font-family: Montserrat, Helvetica, Arial, sans-serif;
+    font-weight: normal;
+    font-size: 120%;
     color: #333;
     background-color: $background-outer;
     line-height: 1.4;
@@ -59,7 +35,7 @@ a:visited:hover, a:visited:focus {
 }
 
 h1, h2, h3, h4, h5 {
-    font-family: "Bree Serif", "Georgia", serif;
+    font-family: "Roboto Slab", serif;
 }
 
 code, pre {
