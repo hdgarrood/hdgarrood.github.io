@@ -98,7 +98,7 @@ function by prefixing it with a single-quote character.
 
 Now, we can use the `uri` quasiquoter as follows:
 
-````haskell
+```haskell
 {-# LANGUAGE QuasiQuotes #-}
 
 import Spec.Example (uri)
@@ -123,7 +123,7 @@ path: /lol
 Using it with an invalid URI will fail at compile time; replacing the
 quasiquoted URI in the above program with `[uri|invalid|]` yields:
 
-```haskell
+```
 $ stack build
 <snip>
 [2 of 2] Compiling Main             ( test/Spec.hs, .stack-work/dist/x86_64-osx/Cabal-1.22.5.0/build/qq-literals-test/qq-literals-test-tmp/Main.o )

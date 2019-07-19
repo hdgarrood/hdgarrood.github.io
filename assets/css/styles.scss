@@ -1,21 +1,46 @@
 ---
 ---
 
-$background-inner: #f8f8f8;
-$background-outer: darken($background-inner, 3%);
+// mixins
+@mixin corners {
+    -webkit-border-radius: 5px;
+    -moz-border-radius: 5px;
+    border-radius: 5px;
+}
 
-$links: #0d5a9e;
-$links-visited: #ad5a9e;
+@mixin blocky {
+    @include corners;
+    margin: 2%;
+    padding: 1em;
+}
+
+// colours
+$base-bg: #f1edf9;
+$outer-bg: #353535;
+$base-bg2: #cbc6cb;
+$base-fg: #353535;
+$base-fg2: #444444;
+$violet: #891a93;
+$blue: #275dad;
+$darkblue: #454ade;
+$orange: #e36f25;
+$red: #c03221;
+$green: #88a408;
+
+$links: $blue;
+$links-visited: $violet;
 
 // base styles
 body {
     font-family: Montserrat, Helvetica, Arial, sans-serif;
     font-weight: normal;
     font-size: 120%;
-    color: #333;
-    background-color: $background-outer;
+    color: $base-fg;
     line-height: 1.4;
     overflow-y: scroll;
+
+    /* Background pattern from Toptal Subtle Patterns https://toptal.com/designers/subtlepatterns */
+    background: $outer-bg url("/assets/img/prism.png") repeat scroll 0% 0%;
 }
 
 a {
@@ -58,10 +83,21 @@ code, pre {
 }
 
 pre {
-  overflow-wrap: break-word;
+    overflow-wrap: break-word;
 }
 
 code {
+    @include corners;
+    background: rgba(0,0,0, 5%);
+    font-size: 0.8em;
+    padding: 0.25em;
+    border: 1px solid rgba(0,0,0, 2%);
+}
+
+pre code {
+    border: none;
+    background: transparent;
+    padding: 0;
     font-size: 0.9em;
 }
 
@@ -109,29 +145,13 @@ main {
     max-width: 45em;
     margin-left: auto;
     margin-right: auto;
-    background-color: $background-inner;
+    margin-bottom: 5em;
+    background-color: $base-bg;
 }
 
-@mixin corners {
-    -webkit-border-radius: 5px;
-    -moz-border-radius: 5px;
-    border-radius: 5px;
-}
-
-@mixin blocky {
-    @include corners;
-    margin: 2%;
-    padding: 1em;
-}
-
-blockquote, svg {
+blockquote, svg, pre {
     @include blocky;
-    background: #dde;
-}
-
-pre {
-    padding-left: 1em;
-    border-left: 2px solid #dde;
+    background: rgba(0,0,0, 5%);
 }
 
 // blog index styles
@@ -168,19 +188,113 @@ hr.end-of-post {
     margin-top: 3em;
 }
 
-// source code highlighting
-.sourceCode.haskell .ot {
-    color: #433279;
+.highlight .c, /* Comment */
+.highlight .ch, /* Comment.Hashbang */
+.highlight .cm, /* Comment.Multiline */
+.highlight .cp, /* Comment.Preproc */
+.highlight .cpf, /* Comment.PreprocFile */
+.highlight .c1, /* Comment.Single */
+.highlight .cs /* Comment.Special */
+{
+  color: $green;
 }
 
-.sourceCode.haskell .dt {
-    color: #af5a3b;
+.highlight .n, /* Name */
+.highlight .na, /* Name.Attribute */
+.highlight .nb, /* Name.Builtin */
+.highlight .nc, /* Name.Class */
+.highlight .no, /* Name.Constant */
+.highlight .nd, /* Name.Decorator */
+.highlight .ni, /* Name.Entity */
+.highlight .ne, /* Name.Exception */
+.highlight .nf, /* Name.Function */
+.highlight .nl, /* Name.Label */
+.highlight .nn, /* Name.Namespace */
+.highlight .nx, /* Name.Other */
+.highlight .py, /* Name.Property */
+.highlight .nt, /* Name.Tag */
+.highlight .nv, /* Name.Variable */
+.highlight .bp, /* Name.Builtin.Pseudo */
+.highlight .fm, /* Name.Function.Magic */
+.highlight .vc, /* Name.Variable.Class */
+.highlight .vg, /* Name.Variable.Global */
+.highlight .vi, /* Name.Variable.Instance */
+.highlight .vm /* Name.Variable.Magic */
+{
+  color: $base-fg;
 }
 
-.sourceCode.haskell .kw {
-    color: #116416;
+.highlight .l, /* Literal */
+.highlight .ld, /* Literal.Date */
+.highlight .m, /* Literal.Number */
+.highlight .s, /* Literal.String */
+.highlight .mb, /* Literal.Number.Bin */
+.highlight .mf, /* Literal.Number.Float */
+.highlight .mh, /* Literal.Number.Hex */
+.highlight .mi, /* Literal.Number.Integer */
+.highlight .mo, /* Literal.Number.Oct */
+.highlight .sa, /* Literal.String.Affix */
+.highlight .sb, /* Literal.String.Backtick */
+.highlight .sc, /* Literal.String.Char */
+.highlight .dl, /* Literal.String.Delimiter */
+.highlight .sd, /* Literal.String.Doc */
+.highlight .s2, /* Literal.String.Double */
+.highlight .se, /* Literal.String.Escape */
+.highlight .sh, /* Literal.String.Heredoc */
+.highlight .si, /* Literal.String.Interpol */
+.highlight .sx, /* Literal.String.Other */
+.highlight .sr, /* Literal.String.Regex */
+.highlight .s1, /* Literal.String.Single */
+.highlight .ss, /* Literal.String.Symbol */
+.highlight .il /* Literal.Number.Integer.Long */
+{
+  color: $orange;
 }
 
-.sourceCode.haskell .st {
-    color: #af3e3b;
+.highlight .k, /* Keyword */
+.highlight .kc, /* Keyword.Constant */
+.highlight .kd, /* Keyword.Declaration */
+.highlight .kn, /* Keyword.Namespace */
+.highlight .kp, /* Keyword.Pseudo */
+.highlight .kr, /* Keyword.Reserved */
+.highlight .kt /* Keyword.Type */
+{
+  color: $blue;
+}
+
+.highlight .o, /* Operator */
+.highlight .ow /* Operator.Word */
+{
+  color: $base-fg2;
+}
+
+.highlight .p /* Punctuation */
+{
+  color: $base-fg2;
+}
+
+.highlight .gd /* Generic.Deleted */
+{
+  color: $red;
+}
+
+.highlight .gi, /* Generic.Inserted */
+{
+  color: $green;
+}
+
+.highlight .ge, /* Generic.Emph */
+.highlight .gs, /* Generic.Strong */
+.highlight .gu /* Generic.Subheading */
+{
+  color: $base-fg;
+}
+
+.highlight .w /* Text.Whitespace */
+{
+  background-color: $base-bg;
+}
+
+.highlight .err /* Error */
+{
 }

