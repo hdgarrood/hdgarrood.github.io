@@ -44,7 +44,7 @@ is a good idea. My rules of thumb for deciding whether or not to introduce a
 new type class are largely inspired by Gabriel's (see above); in my view, a
 type class should preferably:
 
-### Make sense as an abstraction
+## Make sense as an abstraction
 
 This means for a class `C a`, it should be possible to write useful functions
 of the form `C a => whatever`, and know that these functions will behave
@@ -62,13 +62,13 @@ about parentheses changing the meaning of the resulting expression.  The
 `Control.Monad` module and the `monad-loops` package contain many more useful
 functions with `Monad` constraints.
 
-### Have at least one law
+## Have at least one law
 
 This is closely tied to the previous rule: it is usually the laws of a class
 which enable us to write code which is generic over that class and be sure that
 they will behave sensibly for any instance.
 
-### Have no more than a few sensible, correct behaviours for a given type (preferably just one)
+## Have no more than a few sensible, correct behaviours for a given type (preferably just one)
 
 If there are types which have lots of equally sensible possibilities for their
 instances of some class, it becomes harder to write code making use of that
@@ -83,7 +83,7 @@ around, but it doesn't meet this criterion. Most numeric types, such as `Int`
 and `Double`, will have at least two sensible implementations, since addition
 and multiplication both form a monoid.
 
-### Have some redundancy in its members' types
+## Have some redundancy in its members' types
 
 I'll illustrate what I mean by this with an example. Take `fmap` from
 `Functor`:
@@ -135,7 +135,7 @@ course this won't work, because of the above mismatch. I would argue that the
 `FromJSON` class makes it far too easy to write code which makes mistakes like
 this one.
 
-### Disclaimer
+## Disclaimer
 
 I'm not going to go as far as to argue that the approach I've described here is
 the unique correct way to use type classes; there are plenty of other valid

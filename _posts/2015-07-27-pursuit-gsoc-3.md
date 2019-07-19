@@ -8,7 +8,7 @@ deployed! See the [announcement post][] I wrote.
 
 Things that have changed since the last update:
 
-### Hoogle
+## Hoogle
 
 Hoogle integration is now set up and working. The way it works currently is:
 
@@ -35,7 +35,7 @@ process a lot less error prone, and hopefully faster, too, as well as improving
 many of the current deficiencies of Pursuit's Hoogle search interface, so I
 think we will look at upgrading very soon after it is released.
 
-### Caching
+## Caching
 
 The caching system has been replaced with a simpler one: when a cacheable
 page is served, the Yesod application will also write a file with the same
@@ -46,7 +46,7 @@ appropriate caching headers. The server knows when any cached file should
 expire, since this only happens when new versions of things get uploaded, and
 simply deletes cached files where necessary.
 
-### Uploading packages
+## Uploading packages
 
 We got rid of the old 2-step upload-then-verify process, in favour of a
 one-step process that requires authentication at the time of upload (using
@@ -67,14 +67,14 @@ Uploading packages to Pursuit directly from the command line should be
 possible; the only difficult part is the authentication (which is not *that*
 difficult).
 
-### Deployment
+## Deployment
 
 The compile-time code is all gone and replaced with configuration via
 environment variables at runtime. This is nice because it means that we're free
 to compile a binary for production in any environment; on my machine, on
 Travis, on the server, wherever.
 
-### User interface
+## User interface
 
 Links to `Prim` types, such as `String` and `Int`, now work. All that was
 needed was a pretend `Prim` module (which I created, see
@@ -95,7 +95,7 @@ pretty much any device width.
 Also, various polishing; things like making 404 errors nicer, adding a help
 page, and adding an upload link to the top banner.
 
-### Security
+## Security
 
 Content Security Policy headers, to mitigate the risk of XSS. We already
 sanitize HTML, so in theory, the CSP is not necessary. In practice, of course,

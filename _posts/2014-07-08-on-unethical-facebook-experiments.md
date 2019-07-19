@@ -7,7 +7,7 @@ A few thoughts on the recent furore regarding psychological experiments on
 Facebook users, where the subjects were not aware that they were being
 experimented on.
 
-### Should we 'expect' Facebook to behave ethically?
+## Should we 'expect' Facebook to behave ethically?
 
 It's worth noting that there are two subtly different definitions of the word
 *expect*: to expect something can be to consider it likely: "We expect to make
@@ -22,7 +22,7 @@ deserve everything we get.
 
 Now that that is out of the way:
 
-### Are these experiments surprising?
+## Are these experiments surprising?
 
 No&mdash;given Facebook's track record, it is clear that they do not care about
 their users. Facebook's history is full of episodes of neglecting to respect
@@ -37,7 +37,7 @@ completely unbalanced approach to removing inappropriate content (breastfeeding
 pictures are deemed unacceptable, while hate groups dedicated to praising
 murderers are not).
 
-### Does that make these revelations insignificant?
+## Does that make these revelations insignificant?
 
 Of course not! Something about these experiments has upset a lot of people,
 regardless of whether it would have done had they all been behaving perfectly
@@ -96,7 +96,7 @@ corporate surveillance, and whenever you *send* an email to someone who uses
 one of these four, your data is still captured and mined. What proportion of
 your contacts do you think use one of these four services? 95%?  99%?
 
-### Final thoughts
+## Final thoughts
 
 It all looks rather bleak. Thankfully there are some very capable people
 working on this problem:

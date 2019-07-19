@@ -18,7 +18,7 @@ begrudgingly did so. The 0.13.2 PureScript compiler release, which we cut last
 week, is the first release of the compiler since we took over the `purescript`
 npm package.
 
-### Quick summary
+## Quick summary
 
 * Malicious code was added to various dependencies of the purescript npm
   installer
@@ -35,7 +35,7 @@ npm package.
 * We are in ongoing discussion with npm support in order to ascertain what else
   we can do to mitigate the issue
 
-### Where did the malicious code come from?
+## Where did the malicious code come from?
 
 The code was inserted first into the npm package [`load-from-cwd-or-npm`][] at
 version 3.0.2, and later into the npm package [`rate-map`][] starting at
@@ -45,7 +45,7 @@ can tell the only remaining version of `load-from-cwd-or-npm` including any
 malicious code is 3.0.2, and the only remaining version of `rate-map` including
 any malicious code is version 1.0.3.
 
-### What did it do?
+## What did it do?
 
 In short, the code sabotages the purescript npm installer to prevent the
 download from completing, making the installer hang during the "Check if a
@@ -57,7 +57,7 @@ downloading compiler binaries). The second iteration of the exploit did this by
 modifying a source file to prevent a download callback from firing. I've gone
 into more detail at the bottom of the post.
 
-### Timeline
+## Timeline
 
 This is my current understanding of what happened:
 
@@ -120,7 +120,7 @@ This is my current understanding of what happened:
   installer in which every dependency of [@shinnn][]'s has been either dropped
   or vendored (and of course those which I vendored I also audited).
 
-### How has this been addressed?
+## How has this been addressed?
 
 In the `purescript-installer` package, we have dropped all dependencies which
 are maintained by [@shinnn][] as of v0.2.5. We have also marked all earlier
@@ -133,11 +133,11 @@ some other means. We are currently in discussion with npm's security team to
 discuss how best to resolve the issue of previous versions of the `purescript`
 package.
 
-### How did the exploits work?
+## How did the exploits work?
 
 I've archived [complete copies of the packages I've identified including the malicious code in a gist](https://gist.github.com/hdgarrood/358e98b5956e5f7f59c85c2e56534f2b).
 
-#### Exploit version 1: load-from-cwd-or-npm
+### Exploit version 1: load-from-cwd-or-npm
 
 The first version of the exploit, in `load-from-cwd-or-npm@3.0.2`, occurs in
 [lines 50 to 83 of index.js](https://gist.github.com/hdgarrood/358e98b5956e5f7f59c85c2e56534f2b#file-load-from-cwd-or-npm-3-0-2-js-L50-L83):
@@ -237,7 +237,7 @@ request("https://github.com/.../archive.tar.gz").pipe(...);
 
 nothing happens; no HTTP request is performed.
 
-#### Exploit version 2: rate-map
+### Exploit version 2: rate-map
 
 `rate-map@1.0.3` includes the same `do`-`while` loop to control whether or not
 the exploit runs, although it also includes some interesting modifications.

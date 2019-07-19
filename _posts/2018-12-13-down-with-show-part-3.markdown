@@ -262,18 +262,18 @@ with colours in your terminal.
 Let's go back and check we've addressed all of the the shortcomings of `Show`
 with this new design.
 
-#### Many types, such as `(->)` or `IORef`, don't have `Show` instances.
+### Many types, such as `(->)` or `IORef`, don't have `Show` instances.
 
 This should hopefully be solved with the `opaque` constructor. I haven't yet
 come across a type which can't be given a useful `Debug` instance, but if
 one day we do encounter such a type, it's easy to add a dedicated
 constructor function for it without causing a breaking change to this API.
 
-#### The `Show` output for large and complex values is difficult to read.
+### The `Show` output for large and complex values is difficult to read.
 
 This is solved by the `prettyPrint` and `prettyPrintWith` functions.
 
-#### The fact that we produce a `String` makes it tempting to abuse the `Show` class for other purposes.
+### The fact that we produce a `String` makes it tempting to abuse the `Show` class for other purposes.
 
 Now, when we provide `Debug` instances, we are constrained in that we may
 only produce a `Repr` value rather than any old `String`. We don't expose any
@@ -281,7 +281,7 @@ only produce a `Repr` value rather than any old `String`. We don't expose any
 functions I've described above. This constraint ensures that a `Debug` instance
 is very unlikely to be useful in any situation other than its intended purpose.
 
-### I want this!!!
+## I want this!!!
 
 Of course you do. You can check out [my PureScript implementation on GitHub](https://github.com/hdgarrood/purescript-debugged).
 I probably won't do a Haskell port, so feel free to port it to Haskell

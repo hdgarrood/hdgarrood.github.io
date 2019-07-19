@@ -15,7 +15,7 @@ PureScript toolchain) is causing you problems, we would like to know! The
 \#purescript IRC channel on freenode is a good place to ask, as is the [mailing
 list](https://groups.google.com/forum/#!forum/purescript).
 
-### Handling dependency conflicts
+## Handling dependency conflicts
 
 The main reason PureScript does not use npm is to do with the way npm deals
 with *dependency conflicts*.
@@ -34,7 +34,7 @@ to declare different version bounds for `purescript-maps`: it uses `>= 1.0.0 <
 Unfortunately, there is no version of `purescript-maps` which can satisfy both
 of these constraints. So what does the package manager do here?
 
-### Nesting dependencies
+## Nesting dependencies
 
 npm's solution to this problem is to nest the dependencies. The files end up
 looking a bit like this on the disk:
@@ -75,7 +75,7 @@ runtime errors. Additionally, there is a lot we could do to reduce the
 likelihood of such dependency conflicts happening (and I might write about this
 later).
 
-### Technical details: what happened?
+## Technical details: what happened?
 
 That runtime error happened because `purescript-foo` is expecting the `Map`
 argument to `doSomething` to have been constructed by the same copy of
@@ -90,7 +90,7 @@ discuss a few of them now, but my current view is that they all end up
 introducing worse problems, and so I think we should stick to flat dependencies
 for now.
 
-#### Distinguishing versions in the type checker
+### Distinguishing versions in the type checker
 
 One solution could be to allow multiple versions of a particular library to be
 installed, but distinguish them in the type checker, so, for example,
@@ -110,7 +110,7 @@ problems:
 *Note that these ideas came from Evan Czaplicki, the creator of Elm, and not
 me. See also the relevant [elm-package issue][].*
 
-#### Private dependencies
+### Private dependencies
 
 An alternative approach could be to allow "private dependencies". For example,
 let's suppose now that some other library, `purescript-bar`, depends on
@@ -132,7 +132,7 @@ lead to bugs which would be incredibly difficult to diagnose.
 
 
 
-### Some additional notes/resources
+## Some additional notes/resources
 
 * This post is based on npm >= 3. npm <= 2 behaves slightly differently:
   dependencies are *always* nested, even if there are no conflicts, which means

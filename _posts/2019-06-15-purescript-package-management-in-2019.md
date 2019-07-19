@@ -17,7 +17,7 @@ and there are a few frequently asked questions I think are worth clarifying.
 Before I begin I'd like to mention that this is just my personal view, which is
 not necessarily shared by other maintainers.
 
-### Isn't it more urgent to move away from Bower now that it is deprecated?
+## Isn't it more urgent to move away from Bower now that it is deprecated?
 
 I don't think so. The fact that Bower now prints a deprecation message when you
 install it does hurt UX a bit, which is unfortunate, but not much has really
@@ -31,7 +31,7 @@ To be clear, there are good reasons to move away from Bower, but in my mind,
 the fact that it prints a deprecation message on installation is not
 particularly high on the list.
 
-### What about yarn and flat mode?
+## What about yarn and flat mode?
 
 Yarn is an alternative package manager for JavaScript which offers a `--flat`
 command line option to allow you to specify that you only want one version of
@@ -55,7 +55,7 @@ There is an [npm rfc for singleton
 packages](https://github.com/npm/rfcs/pull/23) which addresses both of these
 issues, but it has not yet been accepted or implemented.
 
-### What about package sets and Spago?
+## What about package sets and Spago?
 
 Most package managers, including Bower, work by having package authors specify
 version ranges, or bounds, on each of their dependencies. When you ask your
@@ -103,7 +103,7 @@ make it easier to get all of your dependencies installed and working together.
 Seriously, if you use PureScript and you haven't tried Spago out yet, drop
 everything and do it right now.
 
-### Package sets versus bounds and solving
+## Package sets versus bounds and solving
 
 Note that the two approaches are _not_ incompatible with each other. Take for
 example the Haskell ecosystem, which makes good use of both approaches. In
@@ -124,7 +124,7 @@ to situate yourself on the spectrum where you have no package sets and just
 version solving at one end, and no solving and just package sets on the other.
 Currently in PureScript you have to choose between one of the two extremes.
 
-### It would be nice to have a proper package registry
+## It would be nice to have a proper package registry
 
 Two of the most important properties you want in package registries are
 _availability_ and _integrity_. By 'availability' I mean being able to get

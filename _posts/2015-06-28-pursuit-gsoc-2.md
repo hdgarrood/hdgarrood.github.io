@@ -5,7 +5,7 @@ title: 'GSOC progress update #2: Extracted libraries & Hoogle'
 
 More progress updates on my GSOC project. Things seem to be going well!
 
-### Extracted Haskell libraries
+## Extracted Haskell libraries
 
 I extracted two Haskell libraries out of what I've been doing recently.
 
@@ -40,7 +40,7 @@ a data type and `ToJSON`/`FromJSON` instances for Bower's package manifest file
 format (that is, `bower.json` files). You can find [bower-json on Hackage][]
 too.
 
-### Changes to the psc-publish tool
+## Changes to the psc-publish tool
 
 `psc-publish` is the tool which looks through all the source code of a
 PureScript package, extracts the information required to host it on Pursuit,
@@ -71,7 +71,7 @@ would currently be encoded like this (although this is very much a first pass):
 Once we have things working, I will probably investigate whether other
 encodings are more effective.
 
-### The Pursuit server
+## The Pursuit server
 
 Phil Freeman has now deployed a pre-alpha version of pursuit to
 <http://new-pursuit.purescript.org>. Feel free to have a look around, but

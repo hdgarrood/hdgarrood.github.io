@@ -19,7 +19,7 @@ particularly when it's difficult to work out how to give things types in
 PureScript. But when you feel like you want to use it, I would like to ask you
 to consider the following:
 
-### 1. Is there a PureScript library for what I want to do already?
+## 1. Is there a PureScript library for what I want to do already?
 
 If you're not sure, [Pursuit](http://pursuit.purescript.org) can be a good
 place to look. One example of an existing library that doesn't get used as much
@@ -33,7 +33,7 @@ case, then consider opening an issue or sending a pull request. There is a good
 chance that this will result in improvements to the library that everyone can
 then benefit from.
 
-### 2. Could I write this without using the FFI?
+## 2. Could I write this without using the FFI?
 
 If it is possible to write the code you want just in PureScript, without using
 the FFI, consider doing so. You may well find that avoiding the FFI means that
@@ -50,7 +50,7 @@ gives a better result than trying to write bindings to it via the FFI. I
 certainly found this to be the case when I wrote
 [ansi](http://pursuit.purescript.org/packages/purescript-ansi).
 
-### 3. Could I create a separate library for this?
+## 3. Could I create a separate library for this?
 
 Admittedly, this option is particularly time-consuming. But it does allow you
 to leverage the community; I think we're best equipped to design good APIs when
@@ -62,7 +62,7 @@ Coming up with a typed, purely functional layer on top of stateful or effectful
 APIs can be *hard;* if we want to create good bindings, I think the opportunity
 to get input from other users is just too valuable to pass up.
 
-### But why?
+## But why?
 
 In addition to what I've already written, there are a few reasons:
 

@@ -16,7 +16,7 @@ post will address two issues:
 Before we start, some vocabulary. If we write $a / b$, then $a$ is called the
 _dividend_, and $b$ is called the _divisor_.
 
-### What is a sensible notion of 'integer division'?
+## What is a sensible notion of 'integer division'?
 
 First, I want to argue that when we define a form of integer division, we
 really ought to consider the result to be a _pair_ of integers; the first is
@@ -78,7 +78,7 @@ following constraints:
 2. $\lvert q - a/b \rvert < 1$,
 3. If $a,b > 0$, then $q = \max \\{ t \in \mathbb{Z} : bt \leq a \\}$.
 
-### So what are the options?
+## So what are the options?
 
 As we have seen, there is only one option which satisfies all three of these
 constraints if both of $a$ and $b$ are nonnegative, or if $b$ goes into $a$
@@ -229,7 +229,7 @@ You can try it out using the table below.
   </tr>
 </table>
 
-### Comparison of some programming languages
+## Comparison of some programming languages
 
 Java's `/` and `%` operators, when applied to integers, implement truncating
 division. The `Math` class provides flooring division via `Math.floorDiv` and
@@ -251,7 +251,7 @@ the functions `div` and `mod`, when specialised to the builtin `Int` type,
 implement truncating division, but in a future release they may implement
 Euclidean division.
 
-### Bibliography
+## Bibliography
 
 Much of the insight in this post comes from the paper
 

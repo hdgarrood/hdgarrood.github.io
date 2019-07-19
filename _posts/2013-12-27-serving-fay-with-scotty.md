@@ -95,7 +95,7 @@ Things I learned
 What I'm going to do now
 ------------------------
 
-### Wai middleware
+## Wai middleware
 
 I've realised that building this on scotty isn't the best option. It adds
 unnecessary dependencies (it uses a tiny amount of the scotty library), and
@@ -104,7 +104,7 @@ Yesod).
 
 The solution is simple: Convert it to a Wai middleware.
 
-### How?
+## How?
 
 The most obvious approach might look something like this:
 
@@ -129,7 +129,7 @@ The most obvious approach might look something like this:
 
 Okay, seems easy enough. But there's a pattern here!
 
-### Arbitrary preprocessing
+## Arbitrary preprocessing
 
 I used [Sprockets] when I was building the Ruby version of multicopter. I'm
 starting to miss it, especially with CSS (vs Sass), so I [asked about it on

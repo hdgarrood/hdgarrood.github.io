@@ -20,7 +20,7 @@ class Show a where
 Haskellers may be wondering why I've missed out `showsPrec` and `showList`:
 the answer is that they're not really relevant to this discussion.
 
-### What is Show for?
+## What is Show for?
 
 I can think of at least three distinct situations where you might want a
 function of the type `T -> String` for some type `T`:
@@ -52,7 +52,7 @@ displaying values.
 Let's look at each of these purposes in turn, and how effective the `Show`
 class is in fulfilling them.
 
-#### Serialization
+### Serialization
 
 Contrary to what [Real World Haskell: Chapter 6][] argues, I would say that
 `Show` should not be used for serialization (and I don't expect this to be very
@@ -62,7 +62,7 @@ know you're only ever going to communicate between other Haskell programs using
 the same data definitions, binary formats are likely to be a more efficient
 alternative.
 
-#### Display
+### Display
 
 To address this use case, I am going to refer back to the rules of thumb for
 use of type classes from [the previous post][].
@@ -93,7 +93,7 @@ I would argue, therefore, that displaying values as strings for use in e.g. a
 user interface is a good example of a situation where regular functions are
 more appropriate than a type class.
 
-#### Debugging and the repl
+### Debugging and the repl
 
 So we've established that `Show` should not be used for serialization or
 display, and we have seen better alternatives for both of these purposes.
@@ -219,7 +219,7 @@ when [@rightfold][] suggested it in [a GitHub thread discussing this issue][].
 This is a tremendously valuable insight; without it, I most likely never would
 have managed to come up with what I'm going to show you in the next post.
 
-### Summary
+## Summary
 
 In this post, I've argued that the design of the `Show` class falls short on a
 number of fronts: most importantly, that it tries to do too much at once, and

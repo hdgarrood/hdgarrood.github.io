@@ -9,9 +9,9 @@ title: Stuff I made
   </ol>
 </nav>
 
-## Stuff I made
+# Stuff I made
 
-### Pursuit
+## Pursuit
 
 * [visit](https://pursuit.purescript.org/)
 * [source on GitHub](https://github.com/purescript/pursuit)
@@ -22,7 +22,7 @@ since then, and has now received contributions from quite a few other
 PureScripters. It is now an indispensable tool for both beginner and more
 advanced PureScript practitioners.
 
-### A guide to the PureScript numeric hierarchy
+## A guide to the PureScript numeric hierarchy
 
 * [read on ReadTheDocs](https://a-guide-to-the-purescript-numeric-hierarchy.readthedocs.io/en/latest/)
 
@@ -35,7 +35,7 @@ background knowledge might find them a little arcane at first. I wrote this
 text to share some of my knowledge and hopefully demystify these ideas, since
 they are the basis of some of the most commonly used `Prelude` type classes.
 
-### Multiplayer Pacman
+## Multiplayer Pacman
 
 * [play](https://mpac.herokuapp.com/)
 * [source on GitHub](https://github.com/hdgarrood/multipac)
@@ -44,7 +44,7 @@ A multiplayer version of the classic Pacman game. The server and the client
 were both written in PureScript. To play, you'll need to find at least one
 other person to play against; just send them to the same URL.
 
-### purescript-sequences
+## purescript-sequences
 
 * [announcement blog post](/blog/announcing-purescript-sequences)
 * [source on GitHub](https://github.com/hdgarrood/purescript-sequences)
@@ -54,7 +54,7 @@ a data structure designed for use in PureScript code, in order to take
 advantage of immutability: giving benefits related to both time complexity of
 operations and memory churn.
 
-### solitaire
+## solitaire
 
 * [play](./solitaire/)
 * [source on GitHub](https://github.com/hdgarrood/solitaire)
@@ -62,14 +62,14 @@ operations and memory churn.
 A simple Solitaire game, writen in PureScript, a Haskell-like language which
 compiles to PureScript.
 
-### Redmine release notes plugin
+## Redmine release notes plugin
 
 * [source on GitHub](https://github.com/hdgarrood/redmine_release_notes)
 
 A plugin for the open-source bug tracking and project management system,
 Redmine.
 
-### King of the Network
+## King of the Network
 
 * [download .EXE](https://docs.google.com/file/d/0B2TmqHg3DPXLblUtbUh4bmE4cVk/edit)
 
@@ -77,7 +77,7 @@ The winning entry to the Edinburgh University GameDevSoc Game Jam 2013. The
 theme was 'networks'. We used GameMaker, so there's only an EXE file. It seems
 to work well under Wine though.
 
-### Down the Rabbit Hole
+## Down the Rabbit Hole
 
 * [source on GitHub](https://github.com/hdgarrood/inf1-fp-competition)
 
@@ -85,7 +85,7 @@ Won joint 1st place in the Edinburgh University Functional Programming
 Competition in 2013. It is a zoom sequence of the Mandelbrot set, written
 in Haskell.
 
-### klasma
+## klasma
 
 * [source on GitHub](https://github.com/hdgarrood/klasma)
 
@@ -93,7 +93,7 @@ A program for composing chiptune music. Reads a text file containing a
 description of a track in a purpose-built domain specific language, and turns
 it into music.
 
-### Tank game
+## Tank game
 
 * [play](./tank-game)
 
