@@ -2,7 +2,13 @@
 layout: default
 ---
 
-## Blog
+<nav>
+  <ol>
+    <li><a href="/">Harry Garrood</a></li>
+  </ol>
+</nav>
+
+<h1>Blog</h1>
 
 <ul>
 {% for post in site.posts %}

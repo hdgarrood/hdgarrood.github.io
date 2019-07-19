@@ -3,6 +3,12 @@ layout: default
 title: Stuff I made
 ---
 
+<nav>
+  <ol>
+    <li><a href="/">Harry Garrood</a></li>
+  </ol>
+</nav>
+
 ## Stuff I made
 
 ### Pursuit

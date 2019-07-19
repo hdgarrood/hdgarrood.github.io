@@ -2,10 +2,10 @@
 layout: default
 ---
 
-<div class="hero">
+<h1>Harry Garrood</h1>
+
 <p>
-I'm a software engineer / recent Mathematics graduate from the University of
-Edinburgh. You can contact me
+I'm a software engineer based in Edinburgh, Scotland. You can contact me
 via <a rel="me" href="mailto:harry@garrood.me">email</a>, or find me on
 <a rel="me" href="https://github.com/hdgarrood">github</a> or
 <a rel="me" href="https://twitter.com/hdgarrood">twitter</a>.
@@ -16,4 +16,14 @@ On this website you can find a (non-exhaustive) collection of
 <a href="/stuff-i-made">some stuff I made</a> as well as
 <a href="/blog">my blog</a>.
 </p>
-</div>
+
+<h2>Recent posts</h2>
+<ul>
+{% for post in site.posts limit:5 %}
+<li class="blog-post">
+  <time datetime="{{ post.date | date: "%Y-%m-%d" }}">{{ post.date | date: "%d %b %Y" }}</time> &ndash;
+  <a href="{{ post.url }}">{{ post.title }}</a>
+  <div>{{ post.content | truncatehtml | truncatewords: 40 }}</div>
+</li>
+{% endfor %}
+</ul>

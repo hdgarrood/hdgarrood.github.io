@@ -2,29 +2,22 @@
 layout: default
 ---
 
-<article class=hentry>
+<nav>
+  <ol>
+    <li><a href="/">Harry Garrood</a></li>
+    <li><a href="/blog">blog</a></li>
+  </ol>
+</nav>
 
-<header>
-{% if page.link %}
-<h2><a class=entry-title href="{{ page.link | escape }}">{{ page.title }}</a>&nbsp;→</h2>
-{% else %}
-<h2 class=entry-title>{{ page.title }}</h2>
-{% endif %}
+<article>
+  <header>
+    <h1>{{ page.title }}</h1>
+    <p class="byline">
+      <time datetime="{{ page.date | date_to_xmlschema }}">{{ page.date | date_to_string }}</time>
+    </p>
+  </header>
 
-<p class="byline instapaper_ignore entry-unrelated">
-  {% if page.updated %}
-  <time class=published datetime="{{ page.date | date_to_xmlschema }}" pubdate>{{ page.date | date_to_string }}</time>
-  <time class=updated datetime="{{ page.updated | date_to_xmlschema }}"></time>
-  {% else %}
-  <time class=updated datetime="{{ page.date | date_to_xmlschema }}" pubdate>{{ page.date | date_to_string }}</time>
-  {% endif %}
-</p>
-</header>
-
-<div id="post" class="entry-content{% if page.link %} link{% endif %}">
   {{ content }}
-</div>
 
-{% include post_footer.html %}
-
+  {% include post_footer.html %}
 </article>
