@@ -273,6 +273,12 @@ hr.end-of-post {
   color: $base-fg2;
 }
 
+/* Insert zero-width spaces after punctuation
+  for nicer line breaking on narrow viewports */
+.highlight .p:after {
+  content: "\200b";
+}
+
 .highlight .gd /* Generic.Deleted */
 {
   color: $red;
