@@ -89,8 +89,8 @@ pre {
 code {
     @include corners;
     background: rgba(0,0,0, 5%);
-    font-size: 0.8em;
-    padding: 0.25em;
+    padding: 0.2em;
+    font-size: 0.95em;
     border: 1px solid rgba(0,0,0, 2%);
 }
 
@@ -98,7 +98,6 @@ pre code {
     border: none;
     background: transparent;
     padding: 0;
-    font-size: 0.9em;
 }
 
 img {
