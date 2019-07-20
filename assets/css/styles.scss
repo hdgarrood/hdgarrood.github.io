@@ -113,7 +113,7 @@ img {
 }
 
 tbody tr:nth-child(odd) {
-  background: #eee;
+  background: rgba(0,0,0, 5%);
 }
 
 th {
@@ -160,7 +160,7 @@ li.blog-post {
 }
 
 .blog-post time {
-  color: #444;
+  color: $base-fg2;
   font-style: italic;
 }
 
