@@ -12,9 +12,11 @@ arrays in JavaScript.
 This is arguably quite unfortunate: immutability can offer some very
 significant benefits. For example, consider the following (JavaScript) code:
 
-    var s1 = getDataset1()
-    var s2 = getDataset2()
-    var allData = s1.concat(s2)
+```javascript
+var s1 = getDataset1()
+var s2 = getDataset2()
+var allData = s1.concat(s2)
+```
 
 Assume that `getDataset1` and `getDataset2` each returns an array &mdash; so we
 are getting two separate data sets and concatenating them.

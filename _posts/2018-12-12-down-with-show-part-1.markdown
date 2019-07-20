@@ -50,7 +50,7 @@ This means for a class `C a`, it should be possible to write useful functions
 of the form `C a => whatever`, and know that these functions will behave
 sensibly for any choice of `a` having a `C a` instance. For example, the
 function
-```
+```haskell
 (<=<) :: Monad m => (b -> m c) -> (a -> m b) -> (a -> m c)
 ```
 which performs Kleisli composition of functions of the form `a -> m b`, is
@@ -87,14 +87,14 @@ and multiplication both form a monoid.
 
 I'll illustrate what I mean by this with an example. Take `fmap` from
 `Functor`:
-```
+```haskell
 fmap :: Functor f => (a -> b) -> f a -> f b
 ```
 There are three type variables `f`, `a`, and `b` which appear in this type
 signature, and all of them appear more than once (in fact, exactly twice).
 This helps us make the most out of the type checker. For example, suppose I
 wrote the following:
-```
+```haskell
 fmap not "hello, world"
 ```
 This won't compile, because `not` expects an argument of type `Bool`, so we can
@@ -103,7 +103,7 @@ However, the second argument, being a `String`, tells us that we will have to
 instantiate `a` to `Char`. We can't do both of these together, so type-checking
 fails; this is good, because what we had written didn't make sense.  By
 contrast, consider
-```
+```haskell
 fromJSON :: FromJSON a => Data.Aeson.Value -> Data.Aeson.Result a
 ```
 The type variable `a` appears only once (ignoring the constraint), which means
@@ -113,7 +113,7 @@ thing at runtime. For instance, suppose I was parsing a JavaScript library's
 `package.json`, and I wanted to represent the `dependencies` property as a `Map
 PackageName VersionRange`. Here's an example of the `dependencies` property in
 a `package.json` file:
-```
+```json
 "dependencies": {
   "loose-envify": "^1.1.0",
   "object-assign": "^4.1.1",
@@ -122,7 +122,7 @@ a `package.json` file:
 }
 ```
 But the `FromJSON (Map k v)` instance expects something quite different:
-```
+```json
 "dependencies": [
   ["loose-envify", "^1.1.0"],
   ["object-assign", "^4.1.1"],

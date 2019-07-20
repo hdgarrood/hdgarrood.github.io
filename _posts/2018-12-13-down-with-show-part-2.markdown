@@ -156,7 +156,7 @@ difficult to extract useful information from &mdash; at least, it is if we're
 using the derived instances. Here's an example of what happens if I try to
 `show` a Pursuit package, for instance:
 
-```
+```haskell
 λ: latest <- handler getLatestPackages
 λ: handler (uncurry lookupPackage (latest !! 1))
 Right (Package {pkgMeta = PackageMeta {bowerName = PackageName "purescript-web-storage", bowerDescription = Nothing, bowerMain = [], bowerModuleType = [], bowerLicense = ["MIT"], bowerIgnore = ["**/.*","bower_components","node_modules","output","bower.json","package.json"], bowerKeywords = [], bowerAuthors = [], bowerHomepage = Just "https://github.com/purescript-web/purescript-web-storage", bowerRepository = Just (Repository {repositoryUrl = "git://github.com/purescript-web/purescript-web-storage.git", repositoryType = "git"}), bowerDependencies = [(PackageName "purescript-web-events",VersionRange {runVersionRange = "^1.0.0"}),(PackageName "purescript-nullable",VersionRange {runVersionRange = "^4.0.0"})], bowerDevDependencies = [], bowerResolutions = [], bowerPrivate = False}, pkgVersion = Version {versionBranch = [2,0,0], versionTags = []}, pkgVersionTag = "v2.0.0", pkgTagTime = Just 2018-05-25 14:05:13 UTC, pkgModules = [Module {modName = ModuleName [ProperName {runProperName = "Web"},ProperName {runProperName = "Storage"},ProperName {runProperName = "Event"},ProperName {runProperName = "StorageEvent"}], modComments = Nothing, modDeclarations = [Declaration {declTitle = "StorageEvent", declComments = Nothing, declSourceSpan = Just (SourceSpan {spanName = "/home/travis/build/purescript-web/purescript-web-storage/src/Web/Storage/Event/StorageEvent.purs", spanStart = SourcePos {sourcePosLine = 21, sourcePosColumn = 1}, spanEnd = SourcePos {sourcePosLine = 21, sourcePosColumn = 41}}), declChildren = [], declInfo = ExternDataDeclaration (NamedKind (Qualified (Just (ModuleName [ProperName {runProperName = "Prim"}])) (ProperName {runProperName = "Type"})))},Declaration {declTitle = "fromEvent", declComments = Nothing, declSourceSpan = Just (SourceSpan {spanName = "/home/travis/build/purescript-web/purescript-web-storage/src/Web/Storage/Event/StorageEvent.purs", spanStart = SourcePos {sourcePosLine = 23, sourcePosColumn = 1}, spanEnd = SourcePos {sourcePosLine = 23, sourcePosColumn = 41}}), declChildren = [], ...
@@ -165,7 +165,7 @@ Right (Package {pkgMeta = PackageMeta {bowerName = PackageName "purescript-web-s
 The node.js repl handles cases like this one a lot better by using
 pretty-printing, and by omitting details beyond a certain depth:
 
-```
+```javascript
 > require('tls')
 { CLIENT_RENEG_LIMIT: 3,
   CLIENT_RENEG_WINDOW: 600,
@@ -192,7 +192,7 @@ the `Package` type in Pursuit, but hopefully my point is clear. The string
 in full because it's too deep in the structure. If we want to see it, we can
 drill down deeper into the structure:
 
-```
+```javascript
 > require('tls').Server
 { [Function: Server]
   super_: 

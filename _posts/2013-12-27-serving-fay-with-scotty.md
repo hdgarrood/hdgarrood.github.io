@@ -12,33 +12,34 @@ Here's the result: [scotty-fay].
 
 And a basic example:
 
-    {-# LANGUAGE OverloadedStrings #-}
-    import Data.Monoid
-    import qualified Data.Text.Lazy as T
-    import Web.Scotty
-    import Web.Scotty.Fay
+```haskell
+{-# LANGUAGE OverloadedStrings #-}
+import Data.Monoid
+import qualified Data.Text.Lazy as T
+import Web.Scotty
+import Web.Scotty.Fay
 
-    main :: IO ()
-    main = scotty 3000 $ do
-        serveFay $
-            -- If the first segment of the request path matches this, try to serve
-            -- Fay. Otherwise try the next route.
-            under "/scotty-fay" .
-            -- Specify the directory where your Fay files are.
-            from "src/fay"
+main :: IO ()
+main = scotty 3000 $ do
+    serveFay $
+        -- If the first segment of the request path matches this, try to serve
+        -- Fay. Otherwise try the next route.
+        under "/scotty-fay" .
+        -- Specify the directory where your Fay files are.
+        from "src/fay"
 
-        get "/" $ do
-            html $
-                "<!doctype html>" <>
-                "<html>" <>
-                "<head>" <>
-                "<script type=text/javascript src=/scotty-fay/HelloWorld.hs></script>" <>
-                "</head>" <>
-                "<body><h1>lol</h1></body>" <>
-                "</html>"
+    get "/" $ do
+        html $
+            "<!doctype html>" <>
+            "<html>" <>
+            "<head>" <>
+            "<script type=text/javascript src=/scotty-fay/HelloWorld.hs></script>" <>
+            "</head>" <>
+            "<body><h1>lol</h1></body>" <>
+            "</html>"
+```
 
-Is it any good?
----------------
+## Is it any good?
 
 It's... ok.
 
@@ -51,8 +52,7 @@ It's... ok.
 
 Having said that, it has been a nice asset.
 
-Things I learned
-----------------
+## Things I learned
 
 1. The argument to `serveFay` acts as the entire configuration; the method I
    decided on was:
@@ -92,10 +92,9 @@ Things I learned
 
    I need to do some more experimentation.
 
-What I'm going to do now
-------------------------
+## What I'm going to do now
 
-## Wai middleware
+### Wai middleware
 
 I've realised that building this on scotty isn't the best option. It adds
 unnecessary dependencies (it uses a tiny amount of the scotty library), and
@@ -104,28 +103,30 @@ Yesod).
 
 The solution is simple: Convert it to a Wai middleware.
 
-## How?
+### How?
 
 The most obvious approach might look something like this:
 
-    fay :: Middleware
-    fay app req =
-        maybe (app req)
-              (\f -> compile f >> serve f)
-              (getFaySourcePath req)
-        where
-        -- If the request asks for some compiled Fay code, give Just <its path
-        -- on the disk>; otherwise, Nothing.
-        getFaySourcePath :: Request -> Maybe FilePath
+```haskell
+fay :: Middleware
+fay app req =
+    maybe (app req)
+          (\f -> compile f >> serve f)
+          (getFaySourcePath req)
+    where
+    -- If the request asks for some compiled Fay code, give Just <its path
+    -- on the disk>; otherwise, Nothing.
+    getFaySourcePath :: Request -> Maybe FilePath
 
-        -- compile the Fay source referenced by the request and dump it to
-        -- disk. If the file hasn't changed since the last time it was compiled,
-        -- do nothing.
-        compile :: FilePath -> IO ()
+    -- compile the Fay source referenced by the request and dump it to
+    -- disk. If the file hasn't changed since the last time it was compiled,
+    -- do nothing.
+    compile :: FilePath -> IO ()
 
-        -- Serve the static file which is the result of compiling the Fay module at
-        -- the given FilePath.
-        serve :: FilePath -> IO Response
+    -- Serve the static file which is the result of compiling the Fay module at
+    -- the given FilePath.
+    serve :: FilePath -> IO Response
+```
 
 Okay, seems easy enough. But there's a pattern here!
 

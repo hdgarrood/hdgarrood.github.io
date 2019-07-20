@@ -17,7 +17,7 @@ PureScript code. In particular:
   definition.
 * Pursuit now integrates [Hoogle][] for code search, meaning that the name
   search is significantly better, and also meaning that you can search by type!
-  For example, try searching for [s (t a) -> t (s a)](http://pursuit.purescript.org/search?q=s+%28t+a%29+-%3E+t+%28s+a%29).
+  For example, try searching for [`s (t a) -> t (s a)`](http://pursuit.purescript.org/search?q=s+%28t+a%29+-%3E+t+%28s+a%29).
 * Each package now has its own homepage, showing where it can be found on
   GitHub, and displaying its README and a list of the modules it contains.
 * Unlike GitHub markdown documentation, Pursuit will only display released

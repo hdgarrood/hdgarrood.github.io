@@ -36,7 +36,7 @@ something printable".
 Since this class is going to be specifically for debugging purposes, we are
 going to call it `Debug`. So far we've got something like this
 
-```
+```haskell
 class Debug a where
   debug :: a -> Repr
 ```
@@ -47,7 +47,7 @@ but we know that we want it to represent some sort of tree structure.
 We'll first need to provide some functions for constructing values of the type
 `Repr` from primitive types:
 
-```
+```haskell
 int :: Int -> Repr
 number :: Number -> Repr
 boolean :: Boolean -> Repr
@@ -63,7 +63,7 @@ will usually have children, which they receive as arguments.
 
 We'll also want a function for algebraic data types with named constructors:
 
-```
+```haskell
 constructor :: String -> Array Repr -> Repr
 ```
 
@@ -78,7 +78,7 @@ We will call types like `Ref` or `(->)` which can't be given an injective
 `Show` instance "opaque". They should probably be handled separately, so we
 will provide a separate function for them:
 
-```
+```haskell
 opaque :: String -> Array (Tuple String Repr) -> Repr
 ```
 
@@ -87,7 +87,7 @@ list of any other information which might be useful to see in a debugging
 representation. For instance, we could create a `Repr` for a function `a -> b`
 with the expression `opaque "function" []`, or perhaps even
 
-```
+```haskell
 opaque "function"
   [ Tuple "domain" (typeRepr (Proxy :: Proxy a))
   , Tuple "codomain" (typeRepr (Proxy :: Proxy b))
@@ -96,7 +96,7 @@ opaque "function"
 
 if we are able to implement a function along the lines of
 
-```
+```haskell
 typeRepr :: forall a. Typeable a => Proxy a -> Repr
 ```
 
@@ -105,7 +105,7 @@ to produce a value-level representation of the type `a`.
 Finally, to handle collection types like `Map` which keep their internal
 structure hidden, we will add two more functions:
 
-```
+```haskell
 collection :: String -> Array Repr -> Repr
 assoc :: String -> Array (Tuple Repr Repr) -> Repr
 ```
@@ -123,7 +123,7 @@ these instances (otherwise it's going to be too much of a pain). Thankfully
 this is not too difficult; using `purescript-generics-rep`, we can provide a
 `GenericDebug a` class, which allows us to write e.g.
 
-```
+```haskell
 instance debugMyType :: Debug MyType where
   debug = genericDebug
 ```
@@ -138,7 +138,7 @@ will not be what you want.
 
 Now all we need is a function
 
-```
+```haskell
 prettyPrint :: Repr -> String
 ```
 
@@ -146,7 +146,7 @@ for displaying these values in the repl, together with a bunch of `Debug`
 instances for all of the types in the core libraries. Let's put it all together
 and see what we get:
 
-```
+```haskell
 module Test.Main2 where
 
 import Prelude
@@ -199,7 +199,7 @@ complex, uses multiple lines for its pretty-printed representation.
 
 We can even go further and define a more flexible pretty-printing function:
 
-```
+```haskell
 prettyPrintWith ::
   { maxDepth :: Maybe Int
   , compactThreshold :: Int
@@ -212,20 +212,20 @@ tree may become before it is considered too large to appear on one line.
 That's not all, though. Since the `Repr` data type retains the tree structure,
 we can also define a type
 
-```
+```haskell
 data ReprDelta :: Type
 ```
 
 which represents the *difference* between any two `Repr` values, together with
 a function
 
-```
+```haskell
 diff :: Repr -> Repr -> ReprDelta
 ```
 
 for diffing `Repr` values, plus another pretty-printing function
 
-```
+```haskell
 prettyPrintDelta :: ReprDelta -> String
 ```
 
@@ -234,13 +234,13 @@ values; all we need is a `Debug` instance! This is really useful for diffing
 expected versus actual values in tests, for example. Using the above API, it's
 easy to provide a function
 
-```
+```haskell
 assertEqual :: forall a. Eq a => Debug a => a -> a -> Effect Unit
 ```
 
 which enables us to do this:
 
-```
+```haskell
   let
     items = [Tuple "a" 3, Tuple "b" 6, Tuple "c" 13]
     x = Map.fromFoldable items

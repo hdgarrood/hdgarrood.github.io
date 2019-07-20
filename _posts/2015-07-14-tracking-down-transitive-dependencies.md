@@ -30,9 +30,11 @@ to B indicates that A depends on B. Therefore, we want to select all of the
 edges which point towards the package we're interested in.  Here, I wanted to
 know which package was depending on `cpphs`, so I did this:
 
-<pre><code>$ cabal sandbox hc-pkg dot | \
+```bash
+$ cabal sandbox hc-pkg dot | \
     gvpr 'E[$.head.name=="cpphs*"]' | \
-    dot -Tsvg > deps.svg</code></pre>
+    dot -Tsvg > deps.svg
+```
 
 That argument to `gvpr` is saying to select edges (E) where the head node
 ($.head) had a name starting with "cpphs". The star means "match any string of
