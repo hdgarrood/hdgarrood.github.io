@@ -32,18 +32,35 @@ npm package.
   machine, you should delete your `node_modules` directories and your
   `package-lock.json` files, and set a lower bound of `0.13.2` on the
   `purescript` package
-* We are in ongoing discussion with npm support in order to ascertain what else
-  we can do to mitigate the issue
+* ~~We are in ongoing discussion with npm support in order to ascertain what
+  else we can do to mitigate the issue~~
+
+**update:** npm have responded:
+
+> The maintainer of rate-map and load-from-cwd-or-npm has replied and informed
+> us that they had not published the packages and feared that their account had
+> been compromised.
+>
+> We have removed rate-map@1.0.3 and load-from-cwd-or-npm@3.0.2 from the
+> registry.
+>
+> The maintainer also published install-purescript-cli@0.5.1, whose
+> dependencies are pinned to load-from-cwd-or-npm@3.0.1 and rate-map@1.0.2.
+> This was done to prevent purescript v0.12.x from installing malicious
+> versions of load-from-cwd-or-npm and rate-map.
 
 ## Where did the malicious code come from?
 
 The code was inserted first into the npm package [`load-from-cwd-or-npm`][] at
 version 3.0.2, and later into the npm package [`rate-map`][] starting at
 version 1.0.3.  A number of versions of both of these packages were published
-over the last few days, and many of them have now been unpublished. As far as I
-can tell the only remaining version of `load-from-cwd-or-npm` including any
+over the last few days, and many of them have now been unpublished. ~~As far as
+I can tell the only remaining version of `load-from-cwd-or-npm` including any
 malicious code is 3.0.2, and the only remaining version of `rate-map` including
-any malicious code is version 1.0.3.
+any malicious code is version 1.0.3.~~
+
+**update:** npm have now removed both `load-from-cwd-or-npm@3.0.2` and
+`rate-map@1.0.3` from the registry.
 
 ## What did it do?
 
