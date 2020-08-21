@@ -633,12 +633,12 @@ looks the way it does, and what exactly is going on underneath, so that you can
 write your own Generic deriving mechanisms and cut right through all that
 boilerplate you've been struggling with. For further inspiration and examples
 on how to use Generic to derive type class instances, I recommend reading the
-[generics-rep][] and [argonaut-codecs][] packages. Happy deriving!
+[generics-rep][] and [argonaut-generic][] packages. Happy deriving!
 
 [generics-rep library]: https://pursuit.purescript.org/packages/purescript-generics-rep
 [tutorial from the Haskell package generic-deriving]: https://hackage.haskell.org/package/generic-deriving-1.13.1/docs/Generics-Deriving-Base.html
 [Data.Generic.Rep module]: https://pursuit.purescript.org/packages/purescript-generics-rep/docs/Data.Generic.Rep
-[argonaut-codecs]: https://pursuit.purescript.org/packages/purescript-argonaut-codecs
+[argonaut-generic]: https://pursuit.purescript.org/packages/purescript-argonaut-generic
 [generics-rep]: https://pursuit.purescript.org/packages/purescript-generics-rep
 
 [@yugiohxlight]: https://twitter.com/yugiohxlight
