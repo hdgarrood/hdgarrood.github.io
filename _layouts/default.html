@@ -9,12 +9,13 @@
         <title>{% if page.title %}{{ page.title }} - {% endif %}Harry Garrood</title>
         <meta name="author" content="Harry Garrood">
         <meta name="keywords" content="Harry Garrood personal me blog portfolio">
-        <meta name="description" content="My personal website. Blog posts, portfolio, and contact information.">
+        <meta name="description" content="I’m a software engineer based in Edinburgh, Scotland. My interests include getting computers to behave, helping other people get computers to behave, open source, maths, and music.">
 
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <link rel="alternate" type="application/atom+xml" title="Harry Garrood’s blog" href="{{ site.baseurl }}/atom.xml">
 
-        <link href="https://fonts.googleapis.com/css?family=Montserrat:400,400i,700|Roboto+Slab&display=swap" rel="stylesheet">
+				<link rel="preconnect" href="https://fonts.gstatic.com">
+				<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700&family=Source+Serif+Pro:ital,wght@0,400;0,600;1,400;1,600&display=swap" rel="stylesheet">
         <link href="/assets/css/normalize.css" rel="stylesheet" type="text/css">
         <link href="/assets/css/styles.css" rel="stylesheet" type="text/css">
 
@@ -36,6 +37,27 @@
         {% endfor %}
     </head>
     <body>
+				<div class="sidebar">
+					<h2><a href="/">Harry Garrood</a></h2>
+					<p>
+						I'm a software engineer based in Edinburgh, Scotland. My interests
+						include helping people program computers more effectively, open
+						source, maths, and music. I help maintain the
+						<a href="https://www.purescript.org">PureScript</a> compiler and
+						ecosystem, and I work for <a href="https://www.lumi.com">Lumi</a>.
+					</p>
+					<p>You can get hold of me via:</p>
+					<ul>
+						<li>Email: <a rel="me" href="mailto:harry@garrood.me">harry@garrood.me</a></li>
+						<li>Twitter: <a rel="me" href="https://twitter.com/hdgarrood">@hdgarrood</a></li>
+						<li>GitHub: <a rel="me" href="https://github.com/hdgarrood">@hdgarrood</a></li>
+					</ul>
+					<ul class="horizontal-menu">
+						<li><a href="/">Blog</a></li>
+						<li><a href="/projects">Projects</a></li>
+						<li><a href="/talks">Talks</a></li>
+					</ul>
+				</div>
         <main role="main">
             {{ content }}
         </main>

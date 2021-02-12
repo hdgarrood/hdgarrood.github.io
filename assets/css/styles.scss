@@ -28,20 +28,27 @@ $red: #c03221;
 $green: #88a408;
 
 $links: $blue;
-$links-visited: $violet;
 
 // base styles
+* {
+	box-sizing: border-box;
+}
+
 body {
-    font-family: Montserrat, Helvetica, Arial, sans-serif;
+    font-family: "Source Serif Pro", serif;
     font-weight: normal;
-    font-size: 120%;
+    font-size: 130%;
     color: $base-fg;
     line-height: 1.4;
     overflow-y: scroll;
 
-    /* Background pattern from Toptal Subtle Patterns https://toptal.com/designers/subtlepatterns */
-    background: $outer-bg url("/assets/img/prism.png") repeat scroll 0% 0%;
+    background-color: $base-bg;
 }
+
+strong {
+		font-weight: 600;
+}
+
 
 a {
     color: $links;
@@ -51,20 +58,14 @@ a:hover, a:focus {
     color: lighten($links, 10%);
 }
 
-a:visited {
-    color: $links-visited;
-}
-
-a:visited:hover, a:visited:focus {
-    color: lighten($links-visited, 10%);
-}
-
 h1, h2, h3, h4, h5 {
-    font-family: "Roboto Slab", serif;
+    font-family: "Montserrat", sans-serif;
 }
 
 h1 {
-    margin-bottom: 0;
+    margin-bottom: 0.15em;
+		line-height: 0.9;
+		font-size: 2.4em;
 }
 
 h2 {
@@ -142,10 +143,54 @@ nav li:not(:first-child):before {
 main {
     padding: 2em;
     max-width: 45em;
-    margin-left: auto;
+    margin-left: 25%;
     margin-right: auto;
     margin-bottom: 5em;
     background-color: $base-bg;
+}
+
+.sidebar {
+		position: fixed;
+		top: 0;
+		bottom: 0;
+		width: 23%;
+		color: $base-bg;
+		padding: 2em 2% 2% 2%;
+    /* Background pattern from Toptal Subtle Patterns https://toptal.com/designers/subtlepatterns */
+    background: $outer-bg url("/assets/img/prism.png") repeat scroll 0% 0%;
+}
+
+.sidebar h2 {
+		font-size: 2em;
+}
+
+.sidebar a {
+		color: $base-bg;
+		font-weight: 600;
+}
+
+.sidebar a:hover {
+		color: saturate($base-bg, 20%);
+		text-decoration: underline;
+}
+
+.sidebar h2 a {
+		text-decoration: none;
+}
+
+.sidebar ul.horizontal-menu {
+		list-style-type: none;
+		display: flex;
+		margin-top: 1em;
+		padding-left: 0;
+		
+		li {
+				padding-left: 5px;
+		}
+
+		li:not(:first-child):before {
+				content: " · ";
+		}
 }
 
 blockquote, svg, pre {
@@ -154,18 +199,21 @@ blockquote, svg, pre {
 }
 
 // blog index styles
+ul.blog-index {
+		padding-left: 0;
+		list-style-type: none;
+}
+
+ul.blog-index h2 {
+		font-size: 2em;
+}
+
 li.blog-post {
-  margin-bottom: 0.6em;
+		margin-bottom: 0.6em;
 }
 
 .blog-post time {
-  color: $base-fg2;
-  font-style: italic;
-}
-
-.continue-reading {
-  font-style: italic;
-  margin-left: 1em;
+		font-style: italic;
 }
 
 // blog post styles
