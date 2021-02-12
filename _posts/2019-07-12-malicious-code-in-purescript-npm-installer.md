@@ -1,6 +1,6 @@
 ---
 layout: post
-title: Malicious code in the purescript npm installer
+title: Malicious code in the PureScript npm installer
 ---
 
 Earlier this week, I found and addressed some malicious code in the purescript
