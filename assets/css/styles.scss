@@ -135,10 +135,6 @@ nav ol, nav li {
   padding: 0;
 }
 
-nav li:not(:first-child):before {
-  content: " » ";
-}
-
 // layout
 main {
     padding: 4em 2em 2em 2em;
@@ -161,7 +157,7 @@ main {
     background: $outer-bg url("/assets/img/prism.png") repeat scroll 0% 0%;
 }
 
-.sidebar, main, header {
+.sidebar-content, main, header {
     & > *:first-child {
         margin-top: 0;
     }
@@ -169,6 +165,34 @@ main {
 
 .sidebar h2 {
     font-size: 2em;
+}
+
+@media (max-width: 1200px) {
+    .sidebar .about {
+        display: none;
+    }
+
+    main, .sidebar-content {
+        margin-left: auto;
+        margin-right: auto;
+        max-width: 45em;
+    }
+
+    .sidebar {
+        padding: 2em;
+        position: static;
+        width: 100%;
+    }
+
+    .sidebar-content {
+        padding: 0 2em;
+    }
+}
+
+@media (max-width: 950px) {
+    .sidebar {
+        padding: 2em 0;
+    }
 }
 
 .sidebar a {
@@ -188,6 +212,7 @@ main {
 .sidebar ul.horizontal-menu {
     list-style-type: none;
     display: flex;
+    flex-wrap: wrap;
     margin-top: 1em;
     padding-left: 0;
 
@@ -197,6 +222,20 @@ main {
 
     li:not(:first-child):before {
         content: " · ";
+    }
+
+    li.about {
+        display: none;
+    }
+}
+
+@media (max-width: 1200px) {
+    .sidebar ul.horizontal-menu {
+        margin-bottom: 0;
+
+        li.about {
+            display: block;
+        }
     }
 }
 

@@ -38,26 +38,19 @@
     </head>
     <body>
 				<div class="sidebar">
-					<h2><a href="/">Harry Garrood</a></h2>
-					<p>
-						I'm a software engineer based in Edinburgh, Scotland. My interests
-						include helping people program computers more effectively, open
-						source, maths, and music. I help maintain the
-						<a href="https://www.purescript.org">PureScript</a> compiler and
-						ecosystem, and I work for <a href="https://www.lumi.com">Lumi</a>.
-					</p>
-					<p>You can get hold of me via:</p>
-					<ul>
-						<li>Email: <a rel="me" href="mailto:harry@garrood.me">harry@garrood.me</a></li>
-						<li>Twitter: <a rel="me" href="https://twitter.com/hdgarrood">@hdgarrood</a></li>
-						<li>GitHub: <a rel="me" href="https://github.com/hdgarrood">@hdgarrood</a></li>
-					</ul>
-					<ul class="horizontal-menu">
-						<li><a href="/">Blog</a></li>
-						<li><a href="/projects">Projects</a></li>
-						<li><a href="/talks">Talks</a></li>
-					</ul>
-				</div>
+          <div class="sidebar-content">
+            <h2><a href="/">Harry Garrood</a></h2>
+            <div class="about">
+              {% include about_content.html %}
+            </div>
+            <ul class="horizontal-menu">
+              <li><a href="/">Blog</a></li>
+              <li class="about"><a href="/about">About</a></li>
+              <li><a href="/projects">Projects</a></li>
+              <li><a href="/talks">Talks</a></li>
+            </ul>
+          </div>
+        </div>
         <main role="main">
             {{ content }}
         </main>
