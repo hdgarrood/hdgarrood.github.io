@@ -313,9 +313,10 @@ hr.end-of-post {
     flex-direction: column;
     justify-content: flex-end;
     height: 180px;
+    min-width: 300px;
     width: 100%;
     margin: 1%;
-    flex: 0 0 48%;
+    flex: 1 0 48%;
     text-decoration: none;
     border-radius: 5px;
     background-color: $blue;
