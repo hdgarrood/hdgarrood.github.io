@@ -49,10 +49,10 @@ Another one of my projects in this vein was a [Legendre symbol calculator](/lege
   <a href="https://a-guide-to-the-purescript-numeric-hierarchy.readthedocs.io/en/latest/introduction.html" style="background-image:url(/assets/img/project-thumbs/hierarchy-guide.png">
     <span class="label">Numeric hierarchy guide</span>
   </a>
-  <a href="https://pursuit.purescript.org/packages/purescript-symmetric-groups/docs/Data.SymmetricGroup">
+  <a href="https://pursuit.purescript.org/packages/purescript-symmetric-groups/docs/Data.SymmetricGroup" style="background-image:url(/assets/img/project-thumbs/rubik-cube.png); background-size:60%; background-position:30% 50%;">
     <span class="label">Permutations library</span>
   </a>
-  <a href="https://pursuit.purescript.org/packages/purescript-polynomials/docs/Data.Polynomial">
+  <a href="https://pursuit.purescript.org/packages/purescript-polynomials/docs/Data.Polynomial" style="background-image:url(/assets/img/project-thumbs/polynomials.png); background-position:bottom;">
     <span class="label">Polynomials library</span>
   </a>
   <a href="/legendre-symbol-calculator" style="background-image:url(/assets/img/project-thumbs/legendre-symbol-calculator.png); background-position:bottom;">
