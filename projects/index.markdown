@@ -38,13 +38,7 @@ In 2017-18, I wrote [a guide to the PureScript numeric
 hierarchy](https://a-guide-to-the-purescript-numeric-hierarchy.readthedocs.io/en/latest/introduction.html)
 to try to rectify this.
 
-Another one of my explorations was [a Legendre symbol calculator](/legendre-symbol-calculator).
-Sometimes when you're doing number theory, it's useful to know whether a number
-is a square modulo some odd prime _p_ (for reasons I don't completely remember).
-The [Legendre symbol](https://en.wikipedia.org/wiki/Legendre_symbol) can tell
-you whether this is the case, and by making use of some of its properties we
-can quickly determine whether a number is a square without needing to
-calculate the squares of every number modulo _p_.
+Another one of my projects in this vein was a [Legendre symbol calculator](/legendre-symbol-calculator).  Sometimes when you're doing number theory, it's useful to know whether a number is a square modulo some odd prime _p_ (for reasons I don't completely remember).  The [Legendre symbol](https://en.wikipedia.org/wiki/Legendre_symbol) can tell you whether this is the case, and by making use of some of its properties we can quickly determine whether a number is a square without needing to calculate the squares of every number modulo _p_.
 
 <div class="project-links">
   <a href="https://a-guide-to-the-purescript-numeric-hierarchy.readthedocs.io/en/latest/introduction.html">
