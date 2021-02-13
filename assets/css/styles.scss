@@ -258,6 +258,13 @@ ul.blog-index {
     }
 }
 
+@media (max-width: 950px) {
+    ul.blog-index h2 {
+        font-size: 1.5em;
+    }
+}
+
+
 li.blog-post {
     margin-bottom: 0.6em;
 }
