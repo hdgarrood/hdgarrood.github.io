@@ -141,7 +141,7 @@ nav li:not(:first-child):before {
 
 // layout
 main {
-    padding: 2em;
+    padding: 4em 2em 2em 2em;
     max-width: 45em;
     margin-left: 25%;
     margin-right: auto;
@@ -154,11 +154,17 @@ main {
     top: 0;
     bottom: 0;
     width: 23%;
-    overflow-y: scroll;
-    padding: 2em 2% 2% 2%;
+    overflow-y: auto;
+    padding: 4em 2% 2% 2%;
     color: $base-bg;
     /* Background pattern from Toptal Subtle Patterns https://toptal.com/designers/subtlepatterns */
     background: $outer-bg url("/assets/img/prism.png") repeat scroll 0% 0%;
+}
+
+.sidebar, main, header {
+    & > *:first-child {
+        margin-top: 0;
+    }
 }
 
 .sidebar h2 {
@@ -203,10 +209,14 @@ blockquote, svg, pre {
 ul.blog-index {
     padding-left: 0;
     list-style-type: none;
-}
 
-ul.blog-index h2 {
-    font-size: 2em;
+    h2 {
+        font-size: 2em;
+    }
+
+    & > li:first-child h2 {
+        margin-top: 0;
+    }
 }
 
 li.blog-post {
