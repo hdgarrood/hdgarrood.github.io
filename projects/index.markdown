@@ -7,88 +7,87 @@ title: Projects
 
 ## Pursuit
 
-* [visit](https://pursuit.purescript.org/)
-* [source on GitHub](https://github.com/purescript/pursuit)
+Pursuit is one of the contributions to PureScript which I'm most proud of. It
+hosts searchable API documentation for PureScript libraries, and it initially
+came to life in 2015 as my Google Summer of Code project. It's also had a
+number of enhancements since then, from various contributors.
 
-A documentation hosting and code search service for PureScript libraries.
-Originally my Google Summer of Code 2015 project, it has continued to evolve
-since then, and has now received contributions from quite a few other
-PureScripters. It is now an indispensable tool for both beginner and more
-advanced PureScript practitioners.
+<div class="project-links">
+  <a href="https://pursuit.purescript.org">
+    <span class="label">Pursuit</span>
+  </a>
+  <a href="https://github.com/purescript/pursuit">
+    <span class="label">Source code on GitHub</span>
+  </a>
+</div>
 
-## A guide to the PureScript numeric hierarchy
+## Explorations in abstract algebra in PureScript
 
-* [read on ReadTheDocs](https://a-guide-to-the-purescript-numeric-hierarchy.readthedocs.io/en/latest/)
+While studying maths at university, I often found it quite useful (and fun) to
+try implementing concepts from abstract algebra in PureScript. For example,
+most group theory courses will involve some work with permutations, and working
+with permutations by hand can be quite fiddly and error-prone, so being able to
+check your work is quite handy.
 
-A text I wrote in order to explain some of the mathematics behind the
-PureScript numeric hierarchy &mdash; that is, the hierarchy consisting of the
-type classes `Semiring`, `Ring`, `Field`, etc. The mathematical concepts of
-rings and fields come from abstract algebra and are usually not encountered
-until undergraduate level, which means that PureScript users without this
-background knowledge might find them a little arcane at first. I wrote this
-text to share some of my knowledge and hopefully demystify these ideas, since
-they are the basis of some of the most commonly used `Prelude` type classes.
+One quality of PureScript which makes it a great choice for this kind of
+exploration is that its numeric type class hierarchy is explicitly inspired by
+abstract algebra: there are type classes for semirings, rings, fields, and
+others. However, this hierarchy can be a bit difficult to understand,
+especially for people who don't have previous experience of abstract algebra.
+In 2017-18, I wrote [a guide to the PureScript numeric
+hierarchy](https://a-guide-to-the-purescript-numeric-hierarchy.readthedocs.io/en/latest/introduction.html)
+to try to rectify this.
 
-## Multiplayer Pacman
+Another one of my explorations was [a Legendre symbol calculator](/legendre-symbol-calculator).
+Sometimes when you're doing number theory, it's useful to know whether a number
+is a square modulo some odd prime _p_ (for reasons I don't completely remember).
+The [Legendre symbol](https://en.wikipedia.org/wiki/Legendre_symbol) can tell
+you whether this is the case, and by making use of some of its properties we
+can quickly determine whether a number is a square without needing to
+calculate the squares of every number modulo _p_.
 
-* [play](https://mpac.herokuapp.com/)
-* [source on GitHub](https://github.com/hdgarrood/multipac)
+<div class="project-links">
+  <a href="https://a-guide-to-the-purescript-numeric-hierarchy.readthedocs.io/en/latest/introduction.html">
+    <span class="label">Numeric hierarchy guide</span>
+  </a>
+  <a href="https://pursuit.purescript.org/packages/purescript-symmetric-groups/0.1.2/docs/Data.SymmetricGroup">
+    <span class="label">Symmetric groups library</span>
+  </a>
+  <a href="https://pursuit.purescript.org/packages/purescript-polynomials/1.0.1/docs/Data.Polynomial">
+    <span class="label">Polynomials library</span>
+  </a>
+  <a href="/legendre-symbol-calculator">
+    <span class="label">Legendre symbol calculator</span>
+  </a>
+</div>
 
-A multiplayer version of the classic Pacman game. The server and the client
-were both written in PureScript. To play, you'll need to find at least one
-other person to play against; just send them to the same URL.
+## Games
 
-## purescript-sequences
+The idea of being able to create video games was mostly what got me into
+programming originally, because I am a walking stereotype. Here are a few of
+mine.
 
-* [announcement blog post](/blog/announcing-purescript-sequences)
-* [source on GitHub](https://github.com/hdgarrood/purescript-sequences)
+The [multiplayer pacman](https://mpac.herokuapp.com) and
+[solitaire](/projects/solitaire) games are both written in PureScript. The
+multiplayer pacman has a server and a client component, both in PureScript,
+with node.js on the backend. King of the Network was my group's entry in the
+2013 University of Edinburgh GameDevSoc game jam, and it won! (Mostly by virtue
+of being one of the only entries which was actually complete enough to be
+playable.) Unfortunately the source code for that one is lost. The [tank
+game](/projects/tank-game) is quite special to me because it was my first
+JavaScript project; it's from 2012, back when I had just started programming.
 
-An efficient, general-purpose sequence type for PureScript. This library offers
-a data structure designed for use in PureScript code, in order to take
-advantage of immutability: giving benefits related to both time complexity of
-operations and memory churn.
-
-## solitaire
-
-* [play](./solitaire/)
-* [source on GitHub](https://github.com/hdgarrood/solitaire)
-
-A simple Solitaire game, writen in PureScript, a Haskell-like language which
-compiles to PureScript.
-
-## Redmine release notes plugin
-
-* [source on GitHub](https://github.com/hdgarrood/redmine_release_notes)
-
-A plugin for the open-source bug tracking and project management system,
-Redmine.
-
-## King of the Network
-
-* [download .EXE](https://docs.google.com/file/d/0B2TmqHg3DPXLblUtbUh4bmE4cVk/edit)
-
-The winning entry to the Edinburgh University GameDevSoc Game Jam 2013. The
-theme was 'networks'. We used GameMaker, so there's only an EXE file. It seems
-to work well under Wine though.
-
-## Down the Rabbit Hole
-
-* [source on GitHub](https://github.com/hdgarrood/inf1-fp-competition)
-
-Won joint 1st place in the Edinburgh University Functional Programming
-Competition in 2013. It is a zoom sequence of the Mandelbrot set, written
-in Haskell.
-
-## klasma
-
-* [source on GitHub](https://github.com/hdgarrood/klasma)
-
-A program for composing chiptune music. Reads a text file containing a
-description of a track in a purpose-built domain specific language, and turns
-it into music.
-
-## Tank game
-
-* [play](./tank-game)
-
-Just a little game I put together in JavaScript. It runs in the browser.
+<div class="project-links">
+  <a href="https://mpac.herokuapp.com">
+    <span class="label">Multiplayer pacman</span>
+  </a>
+  <a href="/projects/solitaire">
+    <span class="label">Solitaire</span>
+  </a>
+  <a href="https://pursuit.purescript.org/packages/purescript-polynomials/1.0.1/docs/Data.Polynomial">
+    <span class="label">King of the Network (.exe download)</span>
+  </a>
+  <a href="/projects/tank-game">
+    <span class="label">Tank game</span>
+  </a>
+</div>

@@ -31,7 +31,7 @@ $links: $blue;
 
 // base styles
 * {
-	box-sizing: border-box;
+  box-sizing: border-box;
 }
 
 body {
@@ -46,7 +46,7 @@ body {
 }
 
 strong {
-		font-weight: 600;
+    font-weight: 600;
 }
 
 
@@ -64,8 +64,8 @@ h1, h2, h3, h4, h5 {
 
 h1 {
     margin-bottom: 0.15em;
-		line-height: 0.9;
-		font-size: 2.4em;
+    line-height: 0.9;
+    font-size: 2.4em;
 }
 
 h2 {
@@ -150,47 +150,48 @@ main {
 }
 
 .sidebar {
-		position: fixed;
-		top: 0;
-		bottom: 0;
-		width: 23%;
-		color: $base-bg;
-		padding: 2em 2% 2% 2%;
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    width: 23%;
+    overflow-y: scroll;
+    padding: 2em 2% 2% 2%;
+    color: $base-bg;
     /* Background pattern from Toptal Subtle Patterns https://toptal.com/designers/subtlepatterns */
     background: $outer-bg url("/assets/img/prism.png") repeat scroll 0% 0%;
 }
 
 .sidebar h2 {
-		font-size: 2em;
+    font-size: 2em;
 }
 
 .sidebar a {
-		color: $base-bg;
-		font-weight: 600;
+    color: $base-bg;
+    font-weight: 600;
 }
 
 .sidebar a:hover {
-		color: saturate($base-bg, 20%);
-		text-decoration: underline;
+    color: saturate($base-bg, 20%);
+    text-decoration: underline;
 }
 
 .sidebar h2 a {
-		text-decoration: none;
+    text-decoration: none;
 }
 
 .sidebar ul.horizontal-menu {
-		list-style-type: none;
-		display: flex;
-		margin-top: 1em;
-		padding-left: 0;
-		
-		li {
-				padding-left: 5px;
-		}
+    list-style-type: none;
+    display: flex;
+    margin-top: 1em;
+    padding-left: 0;
 
-		li:not(:first-child):before {
-				content: " · ";
-		}
+    li {
+        padding-left: 5px;
+    }
+
+    li:not(:first-child):before {
+        content: " · ";
+    }
 }
 
 blockquote, svg, pre {
@@ -200,20 +201,20 @@ blockquote, svg, pre {
 
 // blog index styles
 ul.blog-index {
-		padding-left: 0;
-		list-style-type: none;
+    padding-left: 0;
+    list-style-type: none;
 }
 
 ul.blog-index h2 {
-		font-size: 2em;
+    font-size: 2em;
 }
 
 li.blog-post {
-		margin-bottom: 0.6em;
+    margin-bottom: 0.6em;
 }
 
 .blog-post time {
-		font-style: italic;
+    font-style: italic;
 }
 
 // blog post styles
@@ -233,6 +234,36 @@ li.blog-post {
 
 hr.end-of-post {
     margin-top: 3em;
+}
+
+// Projects page styles
+.project-links {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.project-links a {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    height: 180px;
+    width: 100%;
+    margin: 1%;
+    flex: 0 0 48%;
+    text-decoration: none;
+    border-radius: 5px;
+    background-color: $blue;
+
+    span.label {
+      display: block;
+      text-align: center;
+      border-radius: 0 0 5px 5px;
+      height: 1.8em;
+      padding-top: 4px;
+      width: 100%;
+      background: $base-fg;
+      color: $base-bg;
+    }
 }
 
 .highlight .c, /* Comment */
