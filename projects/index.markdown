@@ -28,7 +28,11 @@ While studying maths at university, I often found it quite useful (and fun) to
 try implementing concepts from abstract algebra in PureScript. For example,
 most group theory courses will involve some work with permutations, and working
 with permutations by hand can be quite fiddly and error-prone, so being able to
-check your work is quite handy.
+check your work is quite handy. I have implemented libraries for
+[permutations](https://pursuit.purescript.org/packages/purescript-symmetric-groups/docs/Data.SymmetricGroup),
+[modular arithmetic](https://pursuit.purescript.org/packages/purescript-modular-arithmetic),
+[quaternions](https://pursuit.purescript.org/packages/purescript-quaternions/docs/Data.Quaternion),
+and [polynomials](https://pursuit.purescript.org/packages/purescript-polynomials/docs/Data.Polynomial).
 
 One quality of PureScript which makes it a great choice for this kind of
 exploration is that its numeric type class hierarchy is explicitly inspired by
@@ -45,10 +49,10 @@ Another one of my projects in this vein was a [Legendre symbol calculator](/lege
   <a href="https://a-guide-to-the-purescript-numeric-hierarchy.readthedocs.io/en/latest/introduction.html" style="background-image:url(/assets/img/project-thumbs/hierarchy-guide.png">
     <span class="label">Numeric hierarchy guide</span>
   </a>
-  <a href="https://pursuit.purescript.org/packages/purescript-symmetric-groups/0.1.2/docs/Data.SymmetricGroup">
+  <a href="https://pursuit.purescript.org/packages/purescript-symmetric-groups/docs/Data.SymmetricGroup">
     <span class="label">Permutations library</span>
   </a>
-  <a href="https://pursuit.purescript.org/packages/purescript-polynomials/1.0.1/docs/Data.Polynomial">
+  <a href="https://pursuit.purescript.org/packages/purescript-polynomials/docs/Data.Polynomial">
     <span class="label">Polynomials library</span>
   </a>
   <a href="/legendre-symbol-calculator" style="background-image:url(/assets/img/project-thumbs/legendre-symbol-calculator.png); background-position:bottom;">
@@ -73,16 +77,16 @@ game](/projects/tank-game) is quite special to me because it was my first
 JavaScript project; it's from 2012, back when I had just started programming.
 
 <div class="project-links">
-  <a href="https://mpac.herokuapp.com">
+  <a href="https://mpac.herokuapp.com" style="background-image:url(/assets/img/project-thumbs/pacman.png)">
     <span class="label">Multiplayer pacman</span>
   </a>
-  <a href="/projects/solitaire">
+  <a href="/projects/solitaire" style="background-image:url(/assets/img/project-thumbs/solitaire.png)">
     <span class="label">Solitaire</span>
   </a>
-  <a href="https://pursuit.purescript.org/packages/purescript-polynomials/1.0.1/docs/Data.Polynomial">
+  <a href="https://docs.google.com/file/d/0B2TmqHg3DPXLblUtbUh4bmE4cVk/edit" style="background-image:url(/assets/img/project-thumbs/king-of-the-network.png)">
     <span class="label">King of the Network (.exe download)</span>
   </a>
-  <a href="/projects/tank-game">
+  <a href="/projects/tank-game" style="background-image:url(/assets/img/project-thumbs/tank-game.png)">
     <span class="label">Tank game</span>
   </a>
 </div>
