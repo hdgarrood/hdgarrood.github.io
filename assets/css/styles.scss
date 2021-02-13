@@ -197,6 +197,9 @@ main {
 }
 
 @media (max-width: 950px) {
+    main {
+        padding: 2em;
+    }
     .sidebar {
         padding: 2em 0;
         h2 {
@@ -313,7 +316,7 @@ hr.end-of-post {
     flex-direction: column;
     justify-content: flex-end;
     height: 180px;
-    min-width: 300px;
+    min-width: 250px;
     width: 100%;
     margin: 1%;
     flex: 1 0 48%;
