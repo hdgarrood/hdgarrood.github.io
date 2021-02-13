@@ -68,6 +68,13 @@ h1 {
     font-size: 2.4em;
 }
 
+@media (max-width: 950px) {
+    h1 {
+        font-size: 1.8em;
+        hyphens: auto;
+    }
+}
+
 h2 {
     margin-top: 1.2em;
     margin-bottom: 0;
@@ -192,6 +199,9 @@ main {
 @media (max-width: 950px) {
     .sidebar {
         padding: 2em 0;
+        h2 {
+            font-size: 1.4em;
+        }
     }
 }
 
@@ -216,12 +226,12 @@ main {
     margin-top: 1em;
     padding-left: 0;
 
-    li {
+    li:not(:first-child) {
         padding-left: 5px;
-    }
 
-    li:not(:first-child):before {
-        content: " · ";
+        &:before {
+            content: " · ";
+        }
     }
 
     li.about {
