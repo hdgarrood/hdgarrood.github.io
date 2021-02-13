@@ -13,10 +13,11 @@ came to life in 2015 as my Google Summer of Code project. It's also had a
 number of enhancements since then, from various contributors.
 
 <div class="project-links">
-  <a href="https://pursuit.purescript.org">
+  <a href="https://pursuit.purescript.org" style="background-image:url(/assets/img/project-thumbs/pursuit.png)">
     <span class="label">Pursuit</span>
   </a>
-  <a href="https://github.com/purescript/pursuit">
+  <a href="https://github.com/purescript/pursuit" style="background-image:url(/assets/img/project-thumbs/pursuit-source.png); background-position:left;">
+>
     <span class="label">Source code on GitHub</span>
   </a>
 </div>
@@ -41,16 +42,16 @@ to try to rectify this.
 Another one of my projects in this vein was a [Legendre symbol calculator](/legendre-symbol-calculator).  Sometimes when you're doing number theory, it's useful to know whether a number is a square modulo some odd prime _p_ (for reasons I don't completely remember).  The [Legendre symbol](https://en.wikipedia.org/wiki/Legendre_symbol) can tell you whether this is the case, and by making use of some of its properties we can quickly determine whether a number is a square without needing to calculate the squares of every number modulo _p_.
 
 <div class="project-links">
-  <a href="https://a-guide-to-the-purescript-numeric-hierarchy.readthedocs.io/en/latest/introduction.html">
+  <a href="https://a-guide-to-the-purescript-numeric-hierarchy.readthedocs.io/en/latest/introduction.html" style="background-image:url(/assets/img/project-thumbs/hierarchy-guide.png">
     <span class="label">Numeric hierarchy guide</span>
   </a>
   <a href="https://pursuit.purescript.org/packages/purescript-symmetric-groups/0.1.2/docs/Data.SymmetricGroup">
-    <span class="label">Symmetric groups library</span>
+    <span class="label">Permutations library</span>
   </a>
   <a href="https://pursuit.purescript.org/packages/purescript-polynomials/1.0.1/docs/Data.Polynomial">
     <span class="label">Polynomials library</span>
   </a>
-  <a href="/legendre-symbol-calculator">
+  <a href="/legendre-symbol-calculator" style="background-image:url(/assets/img/project-thumbs/legendre-symbol-calculator.png); background-position:bottom;">
     <span class="label">Legendre symbol calculator</span>
   </a>
 </div>
