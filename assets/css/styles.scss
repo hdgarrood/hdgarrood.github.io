@@ -211,6 +211,18 @@ main {
     }
 }
 
+@media (max-width: 600px) {
+    body {
+        font-size: 110%;
+    }
+    main {
+        padding: 2em 1em;
+    }
+    .sidebar-content {
+        padding: 0 1em;
+    }
+}
+
 .sidebar a {
     color: $base-bg;
     font-weight: 600;
