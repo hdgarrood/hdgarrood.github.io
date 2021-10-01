@@ -1,3 +1,4 @@
 _site
 .sass-cache/
 .psci_modules/
+.jekyll-cache/
