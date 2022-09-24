@@ -11,7 +11,7 @@ That patch was rolled into [GHC merge request !5661][]. I'm thrilled that the fu
 What does this have to do with CI?
 The problem with using source file timestamps for recompilation checking is that in CI, the timestamps of all of your source files are likely to be around the time the current build started, which is going to be newer than any cached build products.
 This means that GHC will consider every single source file to have changed, even if most of your source files are unchanged since the previous commit.
-One approach you can take is to start modifying source file timestamps manually - perhaps by setting the modification time of each source file to the time of the commit that most recently touched that source file.
+One approach you can take is to start modifying source file timestamps manually &mdash; perhaps by setting the modification time of each source file to the time of the commit that most recently touched that source file.
 However, modifying source file timestamps is dangerous, because you can easily end up persuading GHC that build products are up to date when they aren't!
 Using content hashes for recompilation is much safer; there's basically no way GHC can make mistakes about whether a source file should be considered up to date, other than perhaps as a result of a hash collision.
 
