@@ -1,7 +1,6 @@
 ---
 layout: post
 title: Easy incremental Haskell CI builds with GHC 9.4
-render_with_liquid: false
 ---
 
 Last year, I spent a little while putting together a GHC patch which changed how GHC determines whether a source file has been modified since a previous compile (and therefore whether it needs to be recompiled).
@@ -33,11 +32,11 @@ index afe4dbf1..8d8260bb 100644
        - uses: actions/cache@v2
          with:
            path: |
-             ${{ steps.setup-haskell-cabal.outputs.cabal-store }}
+             $\{\{ steps.setup-haskell-cabal.outputs.cabal-store }}
 +            dist-newstyle
-           key: ${{ runner.os }}-${{ matrix.ghc }}-${{ hashFiles('cabal.project.freeze') }}
+           key: $\{\{ runner.os }}-$\{\{ matrix.ghc }}-$\{\{ hashFiles('cabal.project.freeze') }}
            restore-keys: |
-             ${{ runner.os }}-${{ matrix.ghc }}-${{ hashFiles('cabal.project.freeze') }}
+             $\{\{ runner.os }}-$\{\{ matrix.ghc }}-$\{\{ hashFiles('cabal.project.freeze') }}
 ```
 
 Here's [an example CI build](https://github.com/hdgarrood/persistent/actions/runs/3118763968/jobs/5058276209) where I added a new exported value `secret` to the module `Database.Persist.Postgresql`.
