@@ -20,31 +20,46 @@ Using content hashes for recompilation is much safer; there's basically no way G
 Just cache the directory that your build tool stores its build products in!
 By default, with Cabal, that's `dist-newstyle`.
 For Stack, it's `.stack-work`.
-You're probably already caching Haskell dependencies in CI, so if you're using GitHub Actions, it may be that all you need to do is add one or both of those directories to your `actions/cache` block.
-Here's how I got incremental builds working for the `persistent` library:
+If you're using GitHub Actions, it may be that all you need to do is add an `actions/cache` block to your CI workflow.
+Here's an excerpt from the GitHub Actions configuration I used to get incremental builds in CI for the `persistent` library:
 
-```patch
-diff --git a/.github/workflows/haskell.yml b/.github/workflows/haskell.yml
-index afe4dbf1..8d8260bb 100644
---- a/.github/workflows/haskell.yml
-+++ b/.github/workflows/haskell.yml
-@@ -78,7 +77,7 @@ jobs:
-       - uses: actions/cache@v2
-         with:
-           path: |
-             ${{ '{{' }} steps.setup-haskell-cabal.outputs.cabal-store }}
-+            dist-newstyle
-           key: ${{ '{{' }} runner.os }}-${{ '{{' }} matrix.ghc }}-${{ '{{' }} hashFiles('cabal.project.freeze') }}
-           restore-keys: |
-             ${{ '{{' }} runner.os }}-${{ '{{' }} matrix.ghc }}-${{ '{{' }} hashFiles('cabal.project.freeze') }}
+```yaml
+- uses: actions/cache@v2
+  with:
+    path: |
+      ${{ '{{' }} steps.setup-haskell-cabal.outputs.cabal-store }}
+    key: deps-${{ '{{' }} runner.os }}-${{ '{{' }} matrix.ghc }}-${{ '{{' }} hashFiles('cabal.project.freeze') }}
+    restore-keys: |
+      deps-${{ '{{' }} runner.os }}-${{ '{{' }} matrix.ghc }}-
+- uses: actions/cache@v2
+  with:
+    path: |
+      dist-newstyle
+    key: dist-${{ '{{' }} runner.os }}-${{ '{{' }} matrix.ghc }}-${{ '{{' }} github.sha }}
+    restore-keys: |
+      dist-${{ '{{' }} runner.os }}-${{ '{{' }} matrix.ghc }}-
 ```
 
-Here's [an example CI build](https://github.com/hdgarrood/persistent/actions/runs/3118763968/jobs/5058276209) where I added a new exported value `secret` to the module `Database.Persist.Postgresql`.
-Note that the only modules in the repository which get rebuilt in this build are `Database.Persist.Postgresql` (because it was changed) and `PgInit`, which is part of the `persistent-postgresql` tests, which is rebuilt because that module imports `Database.Persist.Postgresql`, whose interface has changed.
+This configuration ought to work for most Haskell projects (perhaps with some minor tweaking).
+
+Note that I've opted to create two separate `actions/cache` blocks.
+The first block is for caching compiled Haskell dependencies, and the second is for caching incremental build products for the Haskell modules in your repository.
+It makes sense to keep these separate because the dependencies cache will change quite rarely, whereas the incremental build products cache will change after most builds.
+By keeping the caches separate, we can control how often each gets uploaded.
+This lets us update the incremental build products cache at the end of each build, without needing to upload copies of the usually-unchanged dependencies cache at the end of each build as well.
+
+This configuration assumes that your GHC version is available in `matrix.ghc`.
+It's a good idea to include the GHC version you're using in your cache key even if you aren't building with multiple GHC versions, so that you don't waste time or disk space trying to reuse a cache from a previous GHC version when upgrading to a new GHC version.
+If your CI uses `stack` instead of `cabal`, you may wish to use the hash of `stack.yaml.lock` instead of `cabal.project.freeze` as the last section of the key for your dependencies cache, and cache the `.stack-work` directory instead of the `dist-newstyle` directory for your incremental build products cache.
+If you don't have a freeze file checked in to your repository (either `cabal.project.freeze` or `stack.yaml.lock`) you'll have to create one before the `actions/cache` block.
+Cabal projects can do this by running `cabal freeze`.
+
+Here's [an example CI build](https://github.com/hdgarrood/persistent/actions/runs/3122786941/jobs/5064956005) where I added a new exported value `secret` to the module `Database.Persist.Postgresql`.
+Note that the only modules in the repository which get rebuilt in this build are `Database.Persist.Postgresql` itself and the `persistent-postgresql` test suite, which are rebuilt because they import `Database.Persist.Postgresql`, whose interface has changed.
 Note also that while Cabal threatens to rebuild everything due to configuration changes, once we get to the building stage, no unnecessary rebuilding actually happens.
 
-For `persistent`, these incremental builds take the build time from around 9 minutes down to around 5 minutes (for a near no-op build).
-Of course, the difference will be more pronounced the larger your project is. 
+For `persistent`, this configuration shaves around 2 minutes off the build time (~20%).
+Of course, the difference will be more pronounced the larger your project is.
 Happy caching!
 
 [GHC merge request !5661]: https://gitlab.haskell.org/ghc/ghc/-/merge_requests/5661
