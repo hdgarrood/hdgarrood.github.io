@@ -3,6 +3,8 @@ layout: post
 title: Easy incremental Haskell CI builds with GHC 9.4
 ---
 
+**EDIT 25 Sep 2022:** I've updated the suggested caching configuration below to use separate caches for dependencies and incremental build products.
+
 Last year, I spent a little while putting together a GHC patch which changed how GHC determines whether a source file has been modified since a previous compile (and therefore whether it needs to be recompiled).
 Until recently, GHC would detect whether source files had been modified by comparing the source file modification time to the object file modification time; if the former was newer than the latter, then GHC would trigger a recompile.
 My patch changed this behaviour so that the hash of the contents of the source file would be stored within the corresponding .hi file, and GHC would determine whether the source file had been changed by comparing this hash to the source file's current hash; if the hashes match, the source file can be considered unchanged, even if its modification timestamp has changed. With this patch, source file modification times play no part in recompilation checking.
