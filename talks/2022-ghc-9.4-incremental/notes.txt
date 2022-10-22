@@ -1,0 +1,57 @@
+## GHC 9.4 incremental builds
+
+- A patch I wrote last year and which made it into GHC 9.4, which enables this
+  technique.
+- I want to spread the word about this because it gets results that are similar
+  to Bazel, but can usually be made to work with significantly less ceremony.
+
+### The problem 
+
+- Before GHC 9.2, GHC determined whether a source file had changed by looking
+  at its timestamp, and comparing that timestamp to the corresponding object
+  file's timestamp.
+- This works reasonably well for local development: if a file hasn't been
+  touched, its timestamp won't have changed either.
+- However, it doesn't in CI, because usually the CI job will begin by cloning
+  the repository, which means that
+- Git deliberately (and correctly) does not set file's modified timestamps to
+  the timestamp of the commit that last modified that file, for a few reasons:
+	- Getting this wrong and incorrectly deciding that a recompile is not
+	  required can be catastrophic, leading to all kinds of crashes and
+	  other incorrect behaviour that doesn't surface until runtime.
+	- Authors can freely set timestamps; there's no guarantee that the
+	  timestamp in the git history was the time the file was actually
+	  modified.
+	- If CI builds run concurrently and a new cache is created and uploaded
+	  after a new job has started, it might look as if things are up to
+	  date when they aren't.
+	- If a CI build fails for a reason that isn't to do with your code and
+	  gets rerun, it might restore a newer cache with timestamps that are
+	  newer than the commit timestamp
+
+When the stakes are this high, we really need a totally foolproof system.
+
+### The solution
+
+The first step is to realise that filesystem timestamps are meaningless.
+What actually matters is the contents of the file. What we need is a build
+system that can reliably tell us whether the *contents* of a source file have
+changed or not since the last build. How do we do this? With hashes!
+
+Thankfully computers are fast, and hashing source files is cheap -
+significantly cheaper than unnecessary rebuilds.
+
+It is my opinion that any build system whose behaviour depends on the the
+timestamps of source files is defective.
+
+My patch modified GHC so that a hash of the source file is stored within the
+corresponding .hi file. When rebuilding, GHC hashes the source file again and
+compares the new hash to the hash stored in the .hi file; if they are the same
+(and no upstream modules have changed in a way that necessitates a rebuild), we
+can skip recompilation.
+
+### How to set up CI
+
+All you need to do is cache the .hi and .o files at the end of each build, and
+restore them at the start of the next one. Here's how you can do this with
+GitHub Actions <code>
