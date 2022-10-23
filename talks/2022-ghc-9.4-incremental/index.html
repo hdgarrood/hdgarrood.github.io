@@ -3,17 +3,17 @@
   <head>
     <meta charset="utf-8">
     <meta http-equiv="x-ua-compatible" content="ie=edge">
-    <script type="text/javascript" src="reveal.js"></script>
-    <link rel="stylesheet" type="text/css" href="reveal.css">
-    <link rel="stylesheet" type="text/css" href="style.css">
+    <link rel="stylesheet" href="dist/reset.css">
+    <link rel="stylesheet" href="dist/reveal.css">
+    <link rel="stylesheet" href="dist/theme/black.css">
     <title>Easy incremental CI builds with GHC 9.4</title>
   </head>
   <body>
     <div class="reveal">
       <div class="slides">
-	<section id="title">
-	  <h1>Easy incremental CI builds with GHC 9.4</h1>
-	  <h3>Harry Garrood</h3>
+	<section>
+	  <h2>Easy incremental CI builds with GHC 9.4</h2>
+	  <p>Harry Garrood</p>
 
 	  <!--
 	    Hi, and thank you for coming to my talk. I'm going to tell you about
@@ -22,16 +22,16 @@
 	  -->
 	</section>
 
-	<section id="1">
-	  <h2>We spend a huge amount of time recompiling the same code in CI over and over again.</h2>
-	  <h1>What if we stopped doing that?</h1>
+	<section>
+	  <p>We spend a huge amount of time recompiling the same code in CI over and over again.</p>
+	  <p class=fragment>What if we stopped doing that?</p>
 	  <!--
 	    This has probably occurred to some of you before. We spend a
 	    huge amount of time recompiling the same code in CI over and
 	    over again.
 
 	    Why should I have to wait for 3000 modules to compile in CI
-	    when my changes only affect 100 of those modules?
+	    when my changes only affect 10 of those modules?
 
 	    How much time and energy have we cumulatively been wasted due
 	    to unnecessary recompiles? To me, it's almost an embarrassment
@@ -39,8 +39,9 @@
 	  -->
 	</section>
 
-	<section id="2">
-	  <h1>Ok, well, let's just cache our build products.</h1>
+	<section>
+	  <p>Ok, well, let's just cache our build products.</p>
+	  <p class=fragment>Wait, everything is still getting rebuilt. What?</p>
 	  <!--
 	    So the next thing you might think is, okay, well GHC already
 	    has a perfectly good incremental build system built-in right?
@@ -57,71 +58,207 @@
 	    what happens.
 	  -->
 	</section>
-	<section id="3">
-	  <h2>Ok, well, let's just cache our build products.</h2>
-	  <h1>Wait, everything is still getting rebuilt. What?</h1>
-	  <!--
-	    Unfortunately, before GHC 9.4, there was one fatal flaw in
-	    GHC's recompilation checking that made it near useless in CI
-	    environments.
-	  -->
+	<section>
+	  <p>Source file change checking (pre-9.4)</p>
+	  <table style="width:100%">
+	    <thead>
+	      <tr>
+		<th>Action</th>
+		<th>A.hs</th>
+		<th>A.o</th>
+		<th>B.hs</th>
+		<th>B.o</th>
+	      </tr>
+	    </thead>
+	    <tbody>
+	      <tr class=fragment>
+		<td>Create A.hs and B.hs</td>
+		<td class="fragment highlight-red">0</td>
+		<td>-</td>
+		<td class="fragment highlight-red">0</td>
+		<td>-</td>
+	      </tr>
+	      <tr class=fragment>
+		<td>First build</td>
+		<td>0</td>
+		<td class="fragment highlight-red">1</td>
+		<td>0</td>
+		<td class="fragment highlight-red">1</td>
+	      </tr>
+	      <tr class=fragment>
+		<td>Another build (no-op)</td>
+		<td>0</td>
+		<td>1</td>
+		<td>0</td>
+		<td>1</td>
+	      </tr>
+	      <tr class=fragment>
+		<td>Modify A.hs</td>
+		<td class="fragment highlight-red">2</td>
+		<td>1</td>
+		<td>0</td>
+		<td>1</td>
+	      </tr>
+	      <tr class=fragment>
+		<td>Build again</td>
+		<td>2</td>
+		<td class="fragment highlight-red">3</td>
+		<td>0</td>
+		<td>1</td>
+	      </tr>
+	    </tbody>
+	  </table>
 	</section>
-
-	<section id="4">
-	  <h1>Source file change checking</h1>
-	  <ul>
-	    <li>GHC needs to figure out which files have changed since the last build, so that it knows what to rebuild</li>
-	    <li>In GHC 9.2 and earlier, this was implemented by comparing the timestamps of each source file and its corresponding object file; if the object file is newer, the file is considered up to date.</li>
-	    <li>(Real World Haskell argues that Show is good for serialization!)</li>
-	    <li>Better served by other serialization libraries</li>
-	  </ul>
+	<section>
+	  <p>Source file change checking in CI</p>
+	  <table style="width:100%">
+	    <thead>
+	      <tr>
+		<th>Action</th>
+		<th>A.hs</th>
+		<th>A.o</th>
+		<th>B.hs</th>
+		<th>B.o</th>
+	      </tr>
+	    </thead>
+	    <tbody>
+	      <tr class=fragment>
+		<td>Check out repository</td>
+		<td class="fragment highlight-red">0</td>
+		<td>-</td>
+		<td class="fragment highlight-red">0</td>
+		<td>-</td>
+	      </tr>
+	      <tr class=fragment>
+		<td>Restore cache</td>
+		<td>0</td>
+		<td class="fragment highlight-red">-1</td>
+		<td>0</td>
+		<td class="fragment highlight-red">-1</td>
+	      </tr>
+	      <tr class=fragment>
+		<td>Build</td>
+		<td>0</td>
+		<td class="fragment highlight-red">1</td>
+		<td>0</td>
+		<td class="fragment highlight-red">1</td>
+	      </tr>
+	    </tbody>
+	  </table>
 	</section>
-
-	<section id="show-3">
-	  <h1>Display</h1>
-	  <ul>
-	    <li>Doesn't really make sense as an abstraction. Eg Parsec's
-	      error messages: "unexpected ')', expected new line or end of
-	      input"</li>
-	    <li>Too many sensible implementations for some types, eg dates/times</li>
-	    <li>Too easy to <code>show</code> the wrong thing</li>
-	    <li>Impossible to change in a non-breaking way</li>
-	    <li>Better served by individual functions</li>
-	  </ul>
+	<section>
+	  <p>Timestamps are pretty much meaningless for build systems.</p>
+	  <p class="fragment">What we actually care about is the file's <em>contents</em>.</p>
+	  <p class="fragment">We can fix this with hashing!</p>
 	</section>
-
-	<section id="show-4">
-	  <h1>Debugging / the repl</h1>
-	  <ul>
-	    <li>Lots of types don't have instances: <code>(-&gt;), IORef, IO</code></li>
-	    <li>Poor display for large / complex values</li>
-	    <li>No configurability in how printing is done</li>
-	    <li>Better served by ...?</li>
-	  </ul>
+	<section>
+	  <p>Source file change checking (as of 9.4)</p>
+	  <table>
+	    <thead>
+	      <tr>
+		<th>Action</th>
+		<th>A.hs</th>
+		<th>A.hi</th>
+		<th>B.hs</th>
+		<th>B.hi</th>
+	      </tr>
+	    </thead>
+	    <tbody>
+	      <tr class=fragment>
+		<td>Create A.hs and B.hs</td>
+		<td class="fragment highlight-red">cafe</td>
+		<td>-</td>
+		<td class="fragment highlight-red">beef</td>
+		<td>-</td>
+	      </tr>
+	      <tr class=fragment>
+		<td>First build</td>
+		<td>cafe</td>
+		<td class="fragment highlight-red">cafe</td>
+		<td>beef</td>
+		<td class="fragment highlight-red">beef</td>
+	      </tr>
+	      <tr class=fragment>
+		<td>Another build (no-op)</td>
+		<td>cafe</td>
+		<td>cafe</td>
+		<td>beef</td>
+		<td>beef</td>
+	      </tr>
+	      <tr class=fragment>
+		<td>Modify A.hs</td>
+		<td class="fragment highlight-red">feed</td>
+		<td>cafe</td>
+		<td>beef</td>
+		<td>beef</td>
+	      </tr>
+	      <tr class=fragment>
+		<td>Build again</td>
+		<td>feed</td>
+		<td class="fragment highlight-red">feed</td>
+		<td>beef</td>
+		<td>beef</td>
+	      </tr>
+	    </tbody>
+	  </table>
 	</section>
+	<section>
+	  <p>Source file change checking in CI (as of 9.4)</p>
+	  <table>
+	    <thead>
+	      <tr>
+		<th>Action</th>
+		<th>A.hs</th>
+		<th>A.hi</th>
+		<th>B.hs</th>
+		<th>B.hi</th>
+	      </tr>
+	    </thead>
+	    <tbody>
+	      <tr class=fragment>
+		<td>Check out repository</td>
+		<td class="fragment highlight-red">feed</td>
+		<td>-</td>
+		<td class="fragment highlight-red">beef</td>
+		<td>-</td>
+	      </tr>
+	      <tr class=fragment>
+		<td>Restore cache</td>
+		<td>feed</td>
+		<td class="fragment highlight-red">cafe</td>
+		<td>beef</td>
+		<td class="fragment highlight-red">beef</td>
+	      </tr>
+	      <tr class=fragment>
+		<td>Build</td>
+		<td>feed</td>
+		<td class="fragment highlight-red">feed</td>
+		<td>beef</td>
+		<td>beef</td>
+	      </tr>
+	    </tbody>
+	  </table>
 	</section>
-
-	<section id="debug-class">
-	  <section id="debug-class-1">
-	    <h1>A replacement for Show</h1>
-	    <pre><code>class Debug a where
-  debug :: a -&gt; Repr</code></pre>
-	    <p>To recap, it should:</p>
-	    <ul>
-	      <li>explicitly only be for use in the repl and debugging</li>
-	      <li>be possible to give every type of kind <code>Type</code> an instance</li>
-	      <li>use a type with more structure than <code>String</code></li>
-	      <li>allow us to perform configurable pretty-printing in the repl</li>
-	    </ul>
-	  </section>
+	<section>
+	  <p>How do I use this?</p>
+	  <pre><code style="font-size:85%">
+- uses: actions/cache@v2
+  with:
+    path: |
+      dist-newstyle
+    key: dist-${{ runner.os }}-${{ matrix.ghc }}-${{ github.sha }}
+    restore-keys: |
+      dist-${{ runner.os }}-${{ matrix.ghc }}-
+	  </code></pre>
 	</section>
       </div>
     </div>
 
-    <script type="text/javascript">
+    <script src="dist/reveal.js"></script>
+    <script>
       Reveal.initialize({
-	      history: true,
-	    })
+	      hash: true,
+	    });
     </script>
   </body>
 </html>
