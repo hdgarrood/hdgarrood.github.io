@@ -20,6 +20,7 @@ $outer-bg: #353535;
 $base-bg2: #cbc6cb;
 $base-fg: #353535;
 $base-fg2: #444444;
+$code-bg: #e5e1ec;
 $violet: #891a93;
 $blue: #275dad;
 $darkblue: #454ade;
@@ -99,7 +100,7 @@ pre {
 
 code {
     @include corners;
-    background: rgba(0,0,0, 5%);
+    background: $code-bg;
     padding: 0.2em;
     font-size: 0.95em;
     border: 1px solid rgba(0,0,0, 2%);
