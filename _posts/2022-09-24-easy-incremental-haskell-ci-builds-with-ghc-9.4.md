@@ -3,7 +3,9 @@ layout: post
 title: Easy incremental Haskell CI builds with GHC 9.4
 ---
 
-**EDIT 25 Sep 2022:** I've updated the suggested caching configuration below to use separate caches for dependencies and incremental build products.
+_Edit history:_
+- _25 Sep 2022: I've updated the suggested caching configuration below to use separate caches for dependencies and incremental build products._
+- _3 Nov 2022: I've added an appendix which discusses options for incremental Haskell builds in Nix._
 
 Last year, I spent a little while putting together a GHC patch which changed how GHC determines whether a source file has been modified since a previous compile (and therefore whether it needs to be recompiled).
 Until recently, GHC would detect whether source files had been modified by comparing the source file modification time to the object file modification time; if the former was newer than the latter, then GHC would trigger a recompile.
@@ -63,5 +65,25 @@ Note also that while Cabal threatens to rebuild everything due to configuration 
 For `persistent`, this configuration shaves around 2 minutes off the build time (~20%).
 Of course, the difference will be more pronounced the larger your project is.
 Happy caching!
+
+## Appendix: Nix
+
+There are a couple of options for incremental Haskell builds with Nix.
+Some of them rely on the GHC patch I mentioned and therefore require GHC 9.4, and some others don't.
+
+One option is to use the normal Haskell nixpkgs infrastructure for building Haskell packages, but modify it slightly to allow producing build products as an output alongside the other outputs, and then to also allow passing in build products from a previous build.
+This approach does require GHC 9.4 as we're using GHC's build system.
+The idea for this came from [Jonas Chevalier](https://zimbatm.com) at NixCon 2022.
+
+- [Jade Lovelace](https://jade.fyi) and I put together [a proof of concept of this approach](https://github.com/hdgarrood/haskell-incremental-nix-example) at NixCon 2022;
+- [Felix Springer](https://felixspringer.xyz) also wrote up [an example that uses Nix flakes](https://felixspringer.xyz/homepage/blog/incrementalHaskellBuildsWithNix) based on the same idea.
+
+The previous option gives you one derivation per Haskell package, like you normally get with Nix.
+An alternative option is to generate one derivation per Haskell _module_, which means that there's no need for the user to keep track of the build products from a previous build to pass back in - if no recompile is required for a particular module, the build products should generally already be in the Nix store.
+This aproach is a bit more complex, but has some nice properties.
+For example, it means that if you make a change to a module, build, and then revert the change and go back to the older version that you previously built, the build products from the older version should still be in the Nix store, which should allow us to skip recompiling - this wouldn't happen with the above approach.
+This approach also allows you to take advantage of various other nice Nix features such as caching, so that your colleagues might be able to check out new changes from upstream and try them out without having to compile them.
+[ghc-nix](https://github.com/matthewbauer/ghc-nix) implements this approach.
+Because the build graph exists in Nix and change checking is handled by Nix, this approach doesn't require GHC 9.4.
 
 [GHC merge request !5661]: https://gitlab.haskell.org/ghc/ghc/-/merge_requests/5661
