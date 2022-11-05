@@ -149,9 +149,6 @@
         <section>
           <p>Timestamps are pretty much meaningless for build systems.</p>
           <p class="fragment">What we actually care about is the file's <em>contents</em>.</p>
-        </section>
-        <section>
-          <p>As far as I am aware, timestamp-based change detection was the only impediment to reliable incremental CI.</p>
           <p class=fragment>As of GHC 9.4, source file change detection is based on hashes.</p>
         </section>
         <section>
@@ -241,6 +238,9 @@
               </tr>
             </tbody>
           </table>
+        </section>
+        <section>
+          <p>As far as I am aware, timestamp-based change checking was the only remaining impediment to incremental CI builds with Haskell.</p>
         </section>
         <section>
           <p>How do I use this?</p>
