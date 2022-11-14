@@ -36,3 +36,15 @@ perform one of them.)
   type class in Haskell and PureScript should be, and whether we can do better
   (I'd argue: yes).
 </p>
+
+<h2>
+  <a href="/talks/2022-ghc-9.4-incremental">Easy incremental CI builds with GHC 9.4</a>
+</h2>
+<p>
+  I gave this talk to SF Haskell in Nov 2022. It describes a patch that I
+  contributed to GHC, which changes how GHC determines whether source files
+  have changed during incremental builds so that it is based on content hashes
+  rather than timestamps, and how this change makes it significantly easier to
+  speed up Haskell CI builds by only needing to recompile modules that have
+  changed since the previous CI build.
+</p>
