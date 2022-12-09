@@ -146,6 +146,16 @@ nav ol, nav li {
   padding: 0;
 }
 
+dt {
+  font-style: italic;
+  font-size: 90%;
+}
+
+dd {
+  margin-left: 16px;
+  margin-bottom: 10px;
+}
+
 // layout
 main {
     padding: 4em 2em 2em 2em;
