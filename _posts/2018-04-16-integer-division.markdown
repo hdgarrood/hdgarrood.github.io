@@ -235,7 +235,8 @@ Java's `/` and `%` operators, when applied to integers, implement truncating
 division. The `Math` class provides flooring division via `Math.floorDiv` and
 `Math.floorMod`.
 
-Python's and Ruby's `/` and `%` operators both implement flooring division.
+Ruby's `/` and `%` operators both implement flooring division, as do Python's
+`//` and `%` operators.
 
 Haskell's `div` and `mod` implement flooring division, whereas `quot` and `rem`
 implement truncating division.
