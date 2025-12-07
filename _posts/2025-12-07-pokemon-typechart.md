@@ -3,7 +3,7 @@ layout: post
 title: Pokémon type chart
 ---
 
-Have you ever struggled to understand the Pokémon type efectiveness chart type effectiveness information?
+Have you ever struggled to understand the Pokémon type effectiveness chart when it's laid out like this?
 
 <p><img src="https://img.pokemondb.net/images/typechart.png" alt="Traditional Pokémon type chart" style="width:50%"></p>
 
