@@ -16,4 +16,4 @@ The page is also responsive, so it should be much easier to use on a phone.
 
 Take a look and let me know what you think: [Pokémon type chart](/typechart)
 
-<p><img src="/typechart/screenshot.png" alt="Pokémon type chart" style="width:50%"></p>
+<p><img src="/typechart/screenshot.png" alt="Pokémon type chart"></p>
